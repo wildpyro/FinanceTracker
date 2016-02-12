@@ -1,0 +1,31 @@
+<section data-ng-controller="AccountsController">
+    <div class="page-header">
+        <h1>Accounts</h1>
+    </div>
+
+    <div class="pull-right">
+      <a type="button" class="btn btn-success" href="/#!/accounts/create">
+        <i class="glyphicon glyphicon-open"></i> New Account
+      </a>
+    </div>
+
+    <div>
+        <table ng-table="tableParams" show-filter="true">
+            <tr ng-repeat="account in $data">
+                <td data-title="'Name'" sortable="'
+                name'" filter="{ 'name': 'text' }">{{formatTitle(account.name,account.accountNo,account.accountType)}}</td>
+                <td data-title="'Balance'" sortable="'balance'">{{calcBalance(account._id)}}</td>
+                <td>
+                   <div class="table-actions">
+                        <a class="btn btn-default" title="Details" href="/#!/stockpositions/{{account.accountType[0]}}">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                        </a>
+                        <a class="btn btn-default" title="Edit" href="/#!/accounts/{{account._id}}/edit">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </a>
+                    </div>
+                </td>
+            </tr>                    
+        </table>
+    </div>
+</section>

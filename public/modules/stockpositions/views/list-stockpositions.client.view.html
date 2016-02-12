@@ -1,0 +1,39 @@
+<section data-ng-controller="StockpositionsController">
+    <div class="page-header">
+        <h1>Stockpositions</h1>
+    </div>
+
+    <div class="pull-right">
+      <a type="button" class="btn btn-success" href="/#!/stockpositions/create">
+        <i class="glyphicon glyphicon-open"></i> New Stockposition
+      </a>
+    </div>
+
+    <div>
+        <table ng-table="tableParams" show-filter="true">
+            <tr ng-repeat="stockposition in $data">
+                <td data-title="'Account Type'" filter="{ 'accountType': 'text' }">{{stockposition.accountType}}</td>
+                <td data-title="'Symbol'" sortable="'symbol'" filter="{ 'symbol': 'text' }">{{stockposition.symbol}}</td>
+                <td data-title="'Description'" sortable="'description'" filter="{ 'description': 'text' }">{{stockposition.description}}</td>
+                <td data-title="'Price'" sortable="'price'" sort="{ 'price': 'text' }">{{stockposition.price}}</td>
+                <td data-title="'Shares'" sortable="'shares'" sort="{ 'shares': 'text' }">{{stockposition.shares}}</td>
+                <td data-title="'Market Value'" sortable="'market'" sort="{ 'market': 'text' }">{{calcMV(stockposition.price,stockposition.shares)}}</td>
+                <td>
+                    <div class="table-actions">
+                <td>
+                   <div class="table-actions">
+                        <a class="btn btn-default" title="View" href="/#!/stockpositions/{{stockposition._id}}">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                        </a>
+                        <a class="btn btn-default" title="Edit" href="/#!/stockpositions/{{stockposition._id}}/edit">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </a>
+                        <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove(stockposition)" item="stockposition">
+                  				<span class="glyphicon glyphicon-remove-circle"></span>
+                  			</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</section>

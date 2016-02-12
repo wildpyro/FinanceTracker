@@ -1,0 +1,100 @@
+[4mRunning "jshint:all" (jshint) task[24m
+
+[1m   public/modules/core/services/table-settings.client.service.js[22m
+     38 |[90m        tableParams.settings({getData: getData(Entity)});[39m
+                 ^ 'tableParams' is not defined.
+     39 |[90m        return tableParams;[39m
+                        ^ 'tableParams' is not defined.
+[1m   public/modules/stockpositions/services/stockpositions.form.client.service.js[22m
+     29 |[90m          { [39m
+                   ^ Expected ']' to match '[' from line 19 and instead saw '{'.
+     29 |[90m          { [39m
+                    ^ Missing semicolon.
+     30 |[90m                      key: 'symbol',[39m
+                                    ^ Label 'key' on symbol statement.
+     31 |[90m                      type: 'input',[39m
+                               ^ Expected an assignment or function call and instead saw an expression.
+     31 |[90m                      type: 'input',[39m
+                                   ^ Missing semicolon.
+     31 |[90m                      type: 'input',[39m
+                                   ^ Expected '}' to match '{' from line 17 and instead saw ':'.
+     31 |[90m                      type: 'input',[39m
+                                    ^ Missing semicolon.
+     32 |[90m                      templateOptions: {[39m
+                               ^ Expected an assignment or function call and instead saw an expression.
+     32 |[90m                      templateOptions: {[39m
+                                              ^ Missing semicolon.
+     32 |[90m                      templateOptions: {[39m
+                                              ^ Expected '}' to match '{' from line 9 and instead saw ':'.
+     33 |[90m                    label: 'Symbol:',[39m
+                                    ^ Label 'label' on Symbol: statement.
+     34 |[90m                          disabled: disabled[39m
+                                   ^ Expected an assignment or function call and instead saw an expression.
+     34 |[90m                          disabled: disabled[39m
+                                           ^ Missing semicolon.
+     34 |[90m                          disabled: disabled[39m
+                                           ^ Expected '}' to match '{' from line 32 and instead saw ':'.
+     34 |[90m                          disabled: disabled[39m
+                                             ^ Expected an assignment or function call and instead saw an expression.
+     34 |[90m                          disabled: disabled[39m
+                                                     ^ Missing semicolon.
+     36 |[90m          },[39m
+                   ^ Expected ')' to match '(' from line 1 and instead saw '}'.
+      1 |[90m(function() {[39m
+         ^ Wrapping non-IIFE function literals in parens is unnecessary.
+     68 |[90m          }            [39m
+                   ^ Expected an assignment or function call and instead saw an expression.
+     68 |[90m          }            [39m
+                    ^ Missing semicolon.
+     69 |[90m              ];[39m
+                       ^ Expected an identifier and instead saw ']'.
+     69 |[90m              ];[39m
+                       ^ Expected an assignment or function call and instead saw an expression.
+     73 |[90m      };[39m
+               ^ Expected '(end)' and instead saw '}'.
+     31 |[90m                      type: 'input',[39m
+                               ^ 'type' is not defined.
+     32 |[90m                      templateOptions: {[39m
+                               ^ 'templateOptions' is not defined.
+     34 |[90m                          disabled: disabled[39m
+                                   ^ 'disabled' is not defined.
+     34 |[90m                          disabled: disabled[39m
+                                             ^ 'disabled' is not defined.
+     42 |[90m              disabled: disabled[39m
+                                 ^ 'disabled' is not defined.
+     50 |[90m              disabled: disabled[39m
+                                 ^ 'disabled' is not defined.
+     58 |[90m              disabled: disabled[39m
+                                 ^ 'disabled' is not defined.
+     71 |[90m        return fields;[39m
+                        ^ 'fields' is not defined.
+
+[31m>> [39m33 errors in 71 files
+[33mWarning: Task "jshint:all" failed. [4mUsed --force, continuing.[24m[39m
+
+[4mRunning "csslint:all" (csslint) task[24m
+[32m>> [39m2 files lint free.
+
+[4mRunning "concurrent:default" (concurrent) task[24m
+[4mRunning "nodemon:dev" (nodemon) task[24m
+[4mRunning "watch" task[24m
+Waiting...
+[33m[nodemon] v1.2.1[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching: app/views/**/*.* gruntfile.js server.js config/**/*.js app/**/*.js[39m
+[32m[nodemon] starting `node --debug server.js`[39m
+MEAN.JS application started on port 3000
+[32m>> [39mFile "public/modules/stockpositions/services/stockpositions.form.client.service.js" changed.
+[4mRunning "jshint:all" (jshint) task[24m
+
+[1m   public/modules/core/services/table-settings.client.service.js[22m
+     38 |[90m        tableParams.settings({getData: getData(Entity)});[39m
+                 ^ 'tableParams' is not defined.
+     39 |[90m        return tableParams;[39m
+                        ^ 'tableParams' is not defined.
+
+[31m>> [39m2 errors in 71 files
+[33mWarning: Task "jshint:all" failed. [4mUsed --force, continuing.[24m[39m
+
+[31mDone, but with warnings.[39m
+[36mCompleted in 2.143s at Mon Feb 08 2016 16:53:10 GMT-0500 (EST)[39m - Waiting...

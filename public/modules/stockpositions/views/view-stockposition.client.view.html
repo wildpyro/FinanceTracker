@@ -1,0 +1,28 @@
+<section data-ng-controller="StockpositionsController" data-ng-init="toViewStockposition()">
+	<div class="page-header">
+		<h1 data-ng-bind="stockposition.name"></h1>
+	</div>
+
+	<div class="col-md-12">
+
+		<form novalidate>
+			<formly-form model="stockposition" fields="formFields">
+			</formly-form>
+		</form>
+
+		<hr/>
+		<div data-ng-show="((authentication.user) && (authentication.user._id == stockposition.user._id))">
+			<a class="btn btn-success" href="/#!/stockpositions/{{stockposition._id}}/edit">
+				<i class="glyphicon glyphicon-edit"></i> Edit
+			</a>
+			<a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove()" item="stockposition">
+				<i class="glyphicon glyphicon-remove-circle"></i> Delete
+			</a>
+			<a class="btn btn-primary" href="/#!/stockpositions">
+				<i class="glyphicon glyphicon-list"></i> List Stockpositions
+			</a>
+		</div>
+
+	</div>
+
+</section>
