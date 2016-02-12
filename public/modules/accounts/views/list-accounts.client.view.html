@@ -17,7 +17,8 @@
                 <td data-title="'Balance'" sortable="'balance'">{{calcBalance(account._id)}}</td>
                 <td>
                    <div class="table-actions">
-                        <a class="btn btn-default" title="Details" href="/#!/stockpositions/{{account.accountType[0]}}">
+                        <!-- Looks like this can't be like the others putting the #!/ causes it to do to the regular list !-->
+                        <a class="btn btn-default" title="Details" href="/stockpositions/{{account.accountType[0]}}/list"> 
                             <span class="glyphicon glyphicon-eye-open"></span>
                         </a>
                         <a class="btn btn-default" title="Edit" href="/#!/accounts/{{account._id}}/edit">

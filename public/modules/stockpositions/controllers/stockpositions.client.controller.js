@@ -65,7 +65,7 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		};
 
 		$scope.calcMV = function(price,shares) {
-			return price * shares;
+			return Math.round(price * shares,4);
 		};
 	}
 

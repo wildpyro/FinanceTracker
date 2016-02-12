@@ -10,7 +10,7 @@ angular.module('stockpositions').config(['$stateProvider',
 			templateUrl: 'modules/stockpositions/views/list-stockpositions.client.view.html'
 		}).
 		state('listStockpositionsByAccount', {
-			url: '/stockpositions/:accoountType',
+			url: '/stockpositions/:accoountType/list',
 			templateUrl: 'modules/stockpositions/views/list-stockpositions.client.view.html'
 		}).
 		state('createStockposition', {
