@@ -9,7 +9,7 @@ module.exports = function(app) {
 		.get(stockpositions.list)
 		.post(users.requiresLogin, stockpositions.create);
 
-	app.route('/stockpositions/:accountType/list')
+	app.route('/stockpositions/:accountType')
 		.get(stockpositions.listByAccountType)
 		.put(users.requiresLogin, stockpositions.hasAuthorization, stockpositions.update);
 

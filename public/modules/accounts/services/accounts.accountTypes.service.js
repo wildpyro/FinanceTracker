@@ -3,7 +3,7 @@
 
     angular
         .module('accounts')
-        .factory('accountTypeService', accountTypes);
+        .factory('AccountTypeService', accountTypes);
 
     function accountTypes() {
     	function getAccountTypes(){

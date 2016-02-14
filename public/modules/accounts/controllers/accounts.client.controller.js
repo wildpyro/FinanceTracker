@@ -1,22 +1,22 @@
 'use strict';
 
 // Accounts controller
-angular.module('accounts').controller('AccountsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Accounts', 'TableSettings', 'AccountsForm',
-	function($scope, $stateParams, $location, Authentication, Accounts, TableSettings, AccountsForm ) {
+angular.module('accounts').controller('AccountsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Accounts', 
+															 'TableSettings', 'AccountsForm', 'Stockpositions',
+	function($scope, $stateParams, $location, Authentication, Accounts, TableSettings, AccountsForm, Stockpositions) {
 		$scope.authentication = Authentication;
-		$scope.tableParams = TableSettings.getParams(Accounts);
+		$scope.tableParams = TableSettings.getParams(Stockpositions);
 		$scope.account = {};
+		$scope.accounts = Accounts;
+		$scope.accountsSeach = Accounts.get();
 
 		$scope.setFormFields = function(disabled) {
 			$scope.formFields = AccountsForm.getFormFields(disabled);
 		};
 
-
 		// Create new Account from create-account.client.view.html
 		$scope.create = function() {
 			var account = new Accounts($scope.account);
-
-			console.log($scope.account);
 
 			// Redirect after save
 			account.$save(function(response) {
@@ -65,18 +65,25 @@ angular.module('accounts').controller('AccountsController', ['$scope', '$statePa
 		};
 
 		$scope.formatTitle = function(accountName, accountNo, accountType) {
-			var account =  accountName.concat(' ',accountType,' - ',' ~ ',accountNo); 
-			//console.log($scope);
+			var account =  accountName.concat(' ~ ',accountNo); 
 			return account;
 		};
 
 		$scope.calcBalance = function(accountId) {
-			//var stockpostions = Accounts.get( {accountId: $stateParams.accountId} ).stockpostions;
-			/*for (var i = stockpostions.length - 1; i >= 0; i--) {
-				console.log(stockpostions[i]);
-			};*/
-			//console.log(stockpostions);
+
 			return 0.00; 
+		};
+
+		$scope.getVal = function(stockposition) {
+			if (stockposition[0] === undefined) {
+				return;	
+			}
+
+			console.log(stockposition[0]);
+		};
+
+		$scope.getAccounts = function() {
+			$scope.accountsSearch = Accounts.get();
 		};
 	}
 

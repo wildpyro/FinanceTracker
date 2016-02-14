@@ -9,6 +9,9 @@ module.exports = function(app) {
 		.get(accounts.list)
 		.post(users.requiresLogin, accounts.create);
 
+	app.route('/accountsFetch')
+		.get(accounts.list);	
+
 	app.route('/accounts/:accountId')
 		.get(accounts.read)
 		.put(users.requiresLogin, accounts.hasAuthorization, accounts.update)

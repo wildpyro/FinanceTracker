@@ -1,11 +1,13 @@
 'use strict';
 
 // Stockpositions controller
-angular.module('stockpositions').controller('StockpositionsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Stockpositions', 'TableSettings', 'StockpositionsForm',
-	function($scope, $stateParams, $location, Authentication, Stockpositions, TableSettings, StockpositionsForm ) {
+angular.module('stockpositions').controller('StockpositionsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Stockpositions', 
+																		 'TableSettings', 'StockpositionsForm', 'AccountTypeService', 
+	function($scope, $stateParams, $location, Authentication, Stockpositions, TableSettings, StockpositionsForm, AccountTypeService ) {
 		$scope.authentication = Authentication;
 		$scope.tableParams = TableSettings.getParams(Stockpositions);
 		$scope.stockposition = {};
+		$scope.AccountType = AccountTypeService;
 
 		$scope.setFormFields = function(disabled) {
 			$scope.formFields = StockpositionsForm.getFormFields(disabled);
@@ -67,6 +69,14 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		$scope.calcMV = function(price,shares) {
 			return Math.round(price * shares,4);
 		};
+
+		// Create new Stockposition
+		$scope.listByAccountType = function() {
+			//Stockpositions.query();			
+
+			// Redirect after save
+			
+		};		
 	}
 
 ]);

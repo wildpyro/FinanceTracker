@@ -1,15 +1,14 @@
 'use strict';
 
 //Setting up route
-angular.module('accounts').config(['$stateProvider',
-	function($stateProvider) {
+angular.module('accounts').config(['$stateProvider', function($stateProvider) {
 		// Accounts state routing
 		$stateProvider.
 		state('listAccounts', {
 			url: '/accounts',
 			templateUrl: 'modules/accounts/views/list-accounts.client.view.html'
-		}).
-		state('createAccount', {
+		})
+		.state('createAccount', {
 			url: '/accounts/create',
 			templateUrl: 'modules/accounts/views/create-account.client.view.html'
 		}).

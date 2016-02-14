@@ -1,12 +1,6 @@
-(function() {
-    'use strict';
+'use strict';
 
-    angular
-        .module('stockpositions')
-        .factory('StockpositionsForm', factory);
-
-      //todo - maybe try and pass the account type in to the factory? Figure out where that comes from 
-    function factory() {
+angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeService', function(AccountTypeService) {
 
       var accountTypesEnum = [{name: 'RESP', value: 0},
                               {name: 'Open', value: 1},
@@ -22,7 +16,7 @@
             type: 'select',
             templateOptions: {
               label: 'Account Type:',
-              options: accountTypesEnum,
+              options: AccountTypeService.getAccountTypes(),
               disabled: true
             }
           },
@@ -79,7 +73,4 @@
       return service;
 
   }
-
-
-
-})();
+]);

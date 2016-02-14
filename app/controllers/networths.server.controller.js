@@ -5,72 +5,72 @@
  */
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
-	Account = mongoose.model('Account'),
+	Networth = mongoose.model('Networth'),
 	_ = require('lodash');
 
 /**
- * Create a Account
+ * Create a Networth
  */
 exports.create = function(req, res) {
-	var account = new Account(req.body);
-	account.user = req.user;
+	var networth = new Networth(req.body);
+	networth.user = req.user;
 
-	account.save(function(err) {
+	networth.save(function(err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-			res.jsonp(account);
+			res.jsonp(networth);
 		}
 	});
 };
 
 /**
- * Show the current Account
+ * Show the current Networth
  */
 exports.read = function(req, res) {
-	res.jsonp(req.account);
+	res.jsonp(req.networth);
 };
 
 /**
- * Update a Account
+ * Update a Networth
  */
 exports.update = function(req, res) {
-	var account = req.account ;
+	var networth = req.networth ;
 
-	account = _.extend(account , req.body);
+	networth = _.extend(networth , req.body);
 
-	account.save(function(err) {
+	networth.save(function(err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-			res.jsonp(account);
+			res.jsonp(networth);
 		}
 	});
 };
 
 /**
- * Delete an Account
+ * Delete an Networth
  */
 exports.delete = function(req, res) {
-	var account = req.account ;
+	var networth = req.networth ;
 
-	account.remove(function(err) {
+	networth.remove(function(err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-			res.jsonp(account);
+			res.jsonp(networth);
 		}
 	});
 };
 
 /**
- * List of Accounts
+ * List of Networths
  */
 exports.list = function(req, res) {
 
@@ -78,8 +78,6 @@ exports.list = function(req, res) {
 	var sortObject = {};
 	var count = req.query.count || 5;
 	var page = req.query.page || 1;
-
-	console.log('got here');
 
 
 	var filter = {
@@ -109,39 +107,39 @@ exports.list = function(req, res) {
 	};
 
 
-	Account
+	Networth
 		.find()
 		.filter(filter)
 		.order(sort)
-		.page(pagination, function(err, accounts){
+		.page(pagination, function(err, networths){
 			if (err) {
 				return res.status(400).send({
 					message: errorHandler.getErrorMessage(err)
 				});
 			} else {
-				res.jsonp(accounts);
+				res.jsonp(networths);
 			}
 		});
 
 };
 
 /**
- * Account middleware
+ * Networth middleware
  */
-exports.accountByID = function(req, res, next, id) {
-	Account.findById(id).populate('user', 'displayName').exec(function(err, account) {
+exports.networthByID = function(req, res, next, id) {
+	Networth.findById(id).populate('user', 'displayName').exec(function(err, networth) {
 		if (err) return next(err);
-		if (! account) return next(new Error('Failed to load Account ' + id));
-		req.account = account ;
+		if (! networth) return next(new Error('Failed to load Networth ' + id));
+		req.networth = networth ;
 		next();
 	});
 };
 
 /**
- * Account authorization middleware
+ * Networth authorization middleware
  */
 exports.hasAuthorization = function(req, res, next) {
-	if (req.account.user.id !== req.user.id) {
+	if (req.networth.user.id !== req.user.id) {
 		return res.status(403).send('User is not authorized');
 	}
 	next();
