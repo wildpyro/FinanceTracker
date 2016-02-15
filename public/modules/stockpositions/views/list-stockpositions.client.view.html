@@ -12,7 +12,7 @@
     <div>
         <table ng-table="tableParams" show-filter="true">
             <tr ng-repeat="stockposition in $data">
-                <td data-title="'Account Type'" filter="{ 'accountType': 'text' }">{{stockposition.accountType}}</td>
+                <td data-title="'Account Type'" filter="{ 'accountType': 'text' }">{{resolveAccountType(stockposition.accountType)}}</td>
                 <td data-title="'Symbol'" sortable="'symbol'" filter="{ 'symbol': 'text' }">{{stockposition.symbol}}</td>
                 <td data-title="'Description'" sortable="'description'" filter="{ 'description': 'text' }">{{stockposition.description}}</td>
                 <td data-title="'Price'" sortable="'price'" sort="{ 'price': 'text' }">{{stockposition.price}}</td>

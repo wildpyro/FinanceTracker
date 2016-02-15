@@ -7,13 +7,8 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		$scope.authentication = Authentication;
 		$scope.tableParams = TableSettings.getParams(Stockpositions);
 		$scope.stockposition = {};
-		$scope.AccountType = AccountTypeService;
 
-		$scope.setFormFields = function(disabled) {
-			$scope.formFields = StockpositionsForm.getFormFields(disabled);
-		};
-
-
+//Single Record functions
 		// Create new Stockposition
 		$scope.create = function() {
 			var stockposition = new Stockpositions($scope.stockposition);
@@ -36,8 +31,8 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 					stockposition.$remove();
 					$scope.tableParams.reload();
 				});
-
-			} else {
+			} 
+			else {
 				$scope.stockposition.$remove(function() {
 					$location.path('stockpositions');
 				});
@@ -66,17 +61,18 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 			$scope.setFormFields(false);
 		};
 
+//Listing functions 
+		$scope.setFormFields = function(disabled) {
+			$scope.formFields = StockpositionsForm.getFormFields(disabled);
+		};
+
 		$scope.calcMV = function(price,shares) {
 			return Math.round(price * shares,4);
 		};
 
-		// Create new Stockposition
-		$scope.listByAccountType = function() {
-			//Stockpositions.query();			
-
-			// Redirect after save
-			
-		};		
+		$scope.resolveAccountType = function(enumValue) {
+			return AccountTypeService.getText(enumValue);
+		};
 	}
 
 ]);

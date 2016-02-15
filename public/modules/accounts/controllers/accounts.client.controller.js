@@ -2,18 +2,16 @@
 
 // Accounts controller
 angular.module('accounts').controller('AccountsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Accounts', 
-															 'TableSettings', 'AccountsForm', 'Stockpositions',
-	function($scope, $stateParams, $location, Authentication, Accounts, TableSettings, AccountsForm, Stockpositions) {
+															 'TableSettings', 'AccountsForm', 
+	function($scope, $stateParams, $location, Authentication, Accounts, TableSettings, AccountsForm) {
 		$scope.authentication = Authentication;
-		$scope.tableParams = TableSettings.getParams(Stockpositions);
+		$scope.tableParams = TableSettings.getParams(Accounts);
 		$scope.account = {};
 		$scope.accounts = Accounts;
-		$scope.accountsSeach = Accounts.get();
+		$scope.accountsSearch = null;
+		var balance = 0;
 
-		$scope.setFormFields = function(disabled) {
-			$scope.formFields = AccountsForm.getFormFields(disabled);
-		};
-
+//Single Record Functions 
 		// Create new Account from create-account.client.view.html
 		$scope.create = function() {
 			var account = new Accounts($scope.account);
@@ -28,7 +26,6 @@ angular.module('accounts').controller('AccountsController', ['$scope', '$statePa
 
 		// Remove existing Account
 		$scope.remove = function(account) {
-
 			if ( account ) {
 				account = Accounts.get({accountId:account._id}, function() {
 					account.$remove();
@@ -64,22 +61,21 @@ angular.module('accounts').controller('AccountsController', ['$scope', '$statePa
 			$scope.setFormFields(false);
 		};
 
-		$scope.formatTitle = function(accountName, accountNo, accountType) {
-			var account =  accountName.concat(' ~ ',accountNo); 
-			return account;
+
+//Listing Functions 
+		$scope.formatTitle = function(accountName, accountNo) {
+			return accountName.concat(' ~ ',accountNo);
 		};
 
-		$scope.calcBalance = function(accountId) {
-
-			return 0.00; 
+		$scope.calcMV = function(price,shares) {
+			var mv = price * shares;
+			balance += mv;
+			return mv;
 		};
 
-		$scope.getVal = function(stockposition) {
-			if (stockposition[0] === undefined) {
-				return;	
-			}
 
-			console.log(stockposition[0]);
+		$scope.getBalance = function() {
+			return 0;
 		};
 
 		$scope.getAccounts = function() {

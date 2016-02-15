@@ -1,40 +1,47 @@
-(function() {
-    'use strict';
+'use strict';
 
-    angular
-        .module('accounts')
-        .factory('AccountTypeService', accountTypes);
+angular.module('accounts').factory('AccountTypeService', function() { 
 
-    function accountTypes() {
-    	function getAccountTypes(){
-    		return [
-				{
-					'name': 'Open',
-					'value': 0
-	    		},
-	    		{
-					'name': 'RSP',
-					'value': 1
-	    		},
-	    		{
-					'name': 'RESP',
-					'value': 2
-	    		},
-	    		{
-					'name': 'TFSA',
-					'value': 3
-	    		},
-	    		{
-					'name': 'Joint',
-					'value': 4
-	    		}
-    		];
-    	}
-      }
+    var enums = [
+            {
+                'name': 'Open',
+                'value': 0
+            },
+            {
+                'name': 'RSP',
+                'value': 1
+            },
+            {
+                'name': 'RESP',
+                'value': 2
+            },
+            {
+                'name': 'TFSA',
+                'value': 3
+            },
+            {
+                'name': 'Joint',
+                'value': 4
+            }
+        ];
 
-      var service = {
-        getAccountTypes: accountTypes.getAccountTypes
-      };
+    function getEnums(){
+        return enums;
+    }
 
-      return service;
-})();
+    function getText(enumValue){
+        return enums[enumValue].name;
+    }
+
+    function getValue(enumValue){
+        return enums[enumValue].value;
+    }
+
+  var service = {
+    getEnums: getEnums,
+    getText: getText,
+    getValue: getValue
+  };
+
+  return service;
+});

@@ -6,7 +6,5 @@ angular.module('accounts').run(['Menus',
 		// Set top bar menu items
 		Menus.addMenuItem('topbar', 'Accounts', 'accounts', 'dropdown', '/accounts(/create)?');
 		Menus.addSubMenuItem('topbar', 'accounts', 'List Accounts', 'accounts');
-		Menus.addSubMenuItem('topbar', 'accounts', 'Current Account Positions', 'accountsFetch');
-		//Menus.addSubMenuItem('topbar', 'accounts', 'New Account', 'accounts/create');
 	}
 ]);

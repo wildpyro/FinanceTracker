@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeService', function(AccountTypeService) {
+angular.module('stockpositions').factory('StockpositionsForm', ['ACCOUNT_TYPES_1', function(ACCOUNT_TYPES_1) {
 
       var accountTypesEnum = [{name: 'RESP', value: 0},
                               {name: 'Open', value: 1},
@@ -16,8 +16,8 @@ angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeServ
             type: 'select',
             templateOptions: {
               label: 'Account Type:',
-              options: AccountTypeService.getAccountTypes(),
-              disabled: true
+              options: [ACCOUNT_TYPES_1],
+              disabled: disabled
             }
           },
           { 
