@@ -79,9 +79,6 @@ exports.list = function(req, res) {
 	var count = req.query.count || 5;
 	var page = req.query.page || 1;
 
-	console.log('got here');
-
-
 	var filter = {
 		filters : {
 			mandatory : {
@@ -112,13 +109,16 @@ exports.list = function(req, res) {
 	Account
 		.find()
 		.filter(filter)
+		.populate({path: 'stockPositions', model: 'Stockposition'})
 		.order(sort)
 		.page(pagination, function(err, accounts){
 			if (err) {
 				return res.status(400).send({
 					message: errorHandler.getErrorMessage(err)
 				});
-			} else {
+			}	
+  			else {
+				console.log(accounts);
 				res.jsonp(accounts);
 			}
 		});

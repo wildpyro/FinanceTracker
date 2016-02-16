@@ -1,12 +1,6 @@
 'use strict';
 
-angular.module('stockpositions').factory('StockpositionsForm', ['ACCOUNT_TYPES_1', function(ACCOUNT_TYPES_1) {
-
-      var accountTypesEnum = [{name: 'RESP', value: 0},
-                              {name: 'Open', value: 1},
-                              {name: 'RSP', value: 2},
-                              {name: 'TFSA', value: 3}];
-
+angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeService', function(AccountTypeService) {
 
       var getFormFields = function(disabled) {
 
@@ -16,7 +10,7 @@ angular.module('stockpositions').factory('StockpositionsForm', ['ACCOUNT_TYPES_1
             type: 'select',
             templateOptions: {
               label: 'Account Type:',
-              options: [ACCOUNT_TYPES_1],
+              options: AccountTypeService.getEnums(),
               disabled: disabled
             }
           },

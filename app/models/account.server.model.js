@@ -13,44 +13,6 @@ var validateLocalStrategyProperty = function(property) {
 	return ((this.provider !== 'local' && !this.updated) || property.length);
 };
 
-var StockpositionSchema = new Schema({
-	symbol: {
-		type: String,
-		default: '',
-		required: 'Please fill in a symbol',
-		uppercase: true,
-		trim: true
-	},
-	price: {
-		type: Number,
-		default: 0,
-		required: 'Please fill in a price'
-	},
-	shares: {
-		type: Number,
-		default: 0,
-		required: 'Please fill in the number of shares'
-	},
-	market: {
-		type: Number,
-		default: 0,
-		required: 'Please fill in a market value'
-	},
-	description: {
-		type: String,
-		default: '',
-		trim: true
-	},	
-	created: {
-		type: Date,
-		default: Date.now
-	},
-	user: {
-		type: Schema.ObjectId,
-		ref: 'User'
-	}
-});
-
 /**
  * Account Schema
  */
@@ -85,7 +47,7 @@ var AccountSchema = new Schema({
 		type: Schema.ObjectId,
 		ref: 'User'
 	},
-	stocksPositions: [StockpositionSchema]
+	stockPositions: [{type: Schema.Types.ObjectId, ref: 'Stockposition'}]
 });
 
 mongoose.model('Account', AccountSchema);

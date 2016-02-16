@@ -63,6 +63,10 @@ angular.module('accounts').controller('AccountsController', ['$scope', '$statePa
 
 
 //Listing Functions 
+		$scope.setFormFields = function(disabled) {
+			$scope.formFields = AccountsForm.getFormFields(disabled);
+		};
+
 		$scope.formatTitle = function(accountName, accountNo) {
 			return accountName.concat(' ~ ',accountNo);
 		};
