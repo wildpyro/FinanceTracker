@@ -1,4 +1,4 @@
-<section data-ng-controller="AccountsController" ng-init="getAccounts()">
+<section data-ng-controller="AccountsController as ctrl">
     <div class="page-header">
         <h1>Accounts</h1>
         <div class="pull-right">
@@ -8,11 +8,12 @@
         </div>        
     </div>
 
-    <div ng-repeat="value in accountsSearch.results">
-        <h2>{{formatTitle(value.name,value.accountNo, value.accountType, accountsSeach.results)}}</h2>
-        <div data-ng-controller="StockpositionsController">
-            <table ng-table="tableParams" show-filter="true">
-                <tr ng-repeat="stockposition in $data" >
+    <div ng-repeat="value in ctrl.accountsSearch.results">
+        <h2>{{formatTitle(value.name,value.accountNo, value.accountType)}}</h2>
+        <div data-ng-controller="StockpositionsController as stockCtrl">
+            {{getData(value)}}
+            <table ng-table="stockCtrl.tableParams" show-filter="true">
+                <tr ng-repeat="stockposition in stockCtrl.$data" >
                     <td data-title="'Symbol'" sortable="'symbol'" filter="{ 'symbol': 'text' }">{{stockposition.symbol}}</td>
                     <td data-title="'Description'" sortable="'description'" filter="{ 'description': 'text' }">{{stockposition.description}}</td>
                     <td data-title="'Price'" sortable="'price'" sort="{ 'price': 'number' }">{{stockposition.price}}</td>

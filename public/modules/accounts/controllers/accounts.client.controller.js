@@ -1,20 +1,22 @@
 'use strict';
 
-// Accounts controller
-angular.module('accounts').controller('AccountsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Accounts', 
+// AccountService controller
+angular.module('accounts').controller('AccountsController', ['$scope', '$stateParams', '$location', 'Authentication', 'AccountService', 
 															 'TableSettings', 'AccountsForm', 
-	function($scope, $stateParams, $location, Authentication, Accounts, TableSettings, AccountsForm) {
-		$scope.authentication = Authentication;
-		$scope.tableParams = TableSettings.getParams(Accounts);
-		$scope.account = {};
-		$scope.accounts = Accounts;
-		$scope.accountsSearch = null;
-		var balance = 0;
-
+	function($scope, $stateParams, $location, Authentication, AccountService, TableSettings, AccountsForm) {
+		this.authentication = Authentication;
+		this.account = {};
+		this.accountsSearch = AccountService.get();
+		this.balance = 0;
+		
 //Single Record Functions 
+		$scope.setFormFields = function(disabled) {
+			$scope.formFields = AccountsForm.getFormFields(disabled);
+		};
+
 		// Create new Account from create-account.client.view.html
 		$scope.create = function() {
-			var account = new Accounts($scope.account);
+			var account = new AccountService(this.account);
 
 			// Redirect after save
 			account.$save(function(response) {
@@ -27,18 +29,18 @@ angular.module('accounts').controller('AccountsController', ['$scope', '$statePa
 		// Remove existing Account
 		$scope.remove = function(account) {
 			if ( account ) {
-				account = Accounts.get({accountId:account._id}, function() {
+				account = AccountService.get({accountId:account._id}, function() {
 					account.$remove();
-					$scope.tableParams.reload();
+					this.tableParams.reload();
 				});
 
 			} else {
-				$scope.account.$remove(function() {
+				this.account.$remove(function() {
 					$location.path('accounts');
 				});
 			}
 
-		};
+		};		
 
 		// Update existing Account
 		$scope.update = function() {
@@ -52,39 +54,46 @@ angular.module('accounts').controller('AccountsController', ['$scope', '$statePa
 		};
 
 		$scope.toViewAccount = function() {
-			$scope.account = Accounts.get( {accountId: $stateParams.accountId} );
-			$scope.setFormFields(true);
+			this.account = AccountService.get( {accountId: $stateParams.accountId} );
+			this.setFormFields(true);
 		};
 
 		$scope.toEditAccount = function() {
-			$scope.account = Accounts.get( {accountId: $stateParams.accountId} );
-			$scope.setFormFields(false);
+			this.account = AccountService.get( {accountId: $stateParams.accountId} );
+			this.setFormFields(false);
 		};
 
 
 //Listing Functions 
-		$scope.setFormFields = function(disabled) {
-			$scope.formFields = AccountsForm.getFormFields(disabled);
-		};
-
-		$scope.formatTitle = function(accountName, accountNo) {
-			return accountName.concat(' ~ ',accountNo);
+		$scope.formatTitle = function(accountName, accountNo, accountType) {
+			var account =  accountName.concat(' ~ ',accountNo);
+			
+			return account;
 		};
 
 		$scope.calcMV = function(price,shares) {
 			var mv = price * shares;
-			balance += mv;
+			this.balance += mv;
 			return mv;
 		};
 
 
 		$scope.getBalance = function() {
-			return 0;
+			return this.balance;
 		};
 
-		$scope.getAccounts = function() {
-			$scope.accountsSearch = Accounts.get();
-		};
+		var getStockPositionsFromAccount = function() {
+			/*if (!angular.isUndefined(accountType)) {
+				getStockPositionsFromAccount(accountType);
+			}*/			
+			for (var i = $scope.accountsSearch.results.length - 1; i >= 0; i--) {
+				var stockPosition = $scope.accountsSearch.results[i].stockPositions;
+				$scope.dataFromAccount.push(stockPosition);
+				/*if (stockPosition !== null && stockPosition.length > 0 && accountType[0] === stockPosition[0].accountType[0]) {
+					$scope.dataFromAccount.push(stockPosition);
+				}*/
+			}
+		};		
 	}
 
 ]);

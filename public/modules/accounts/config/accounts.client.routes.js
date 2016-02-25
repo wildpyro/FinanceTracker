@@ -7,6 +7,19 @@ angular.module('accounts').config(['$stateProvider', function($stateProvider) {
 		state('listAccounts', {
 			url: '/accounts',
 			templateUrl: 'modules/accounts/views/list-accounts.client.view.html'
+			/*resolve: {
+				AccountService: 'AccountService',
+				accountsSearch: function(AccountService) {
+					var test = AccountService.get();
+					console.log(test);
+					return test.results;
+				}						            
+			},
+			controller: function($scope, accountsSearch) {
+				$scope.accountsSearch = accountsSearch;
+				$scope.ben = 'test';
+			},
+			controllerAs: 'AccountsController'			*/
 		})
 		.state('createAccount', {
 			url: '/accounts/create',

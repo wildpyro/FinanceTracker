@@ -5,10 +5,23 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 																		 'TableSettings', 'StockpositionsForm', 'AccountTypeService', 
 	function($scope, $stateParams, $location, Authentication, Stockpositions, TableSettings, StockpositionsForm, AccountTypeService ) {
 		$scope.authentication = Authentication;
-		$scope.tableParams = TableSettings.getParams(Stockpositions);
 		$scope.stockposition = {};
-
+		
+		//The table params carries through the $scope from account, this needs to be isolate scope.  
+		$scope.getData = function(data) {
+			if ($location.$$url === '/accounts') {
+				$scope.tableParams = TableSettings.setData(data);
+			}
+			else {
+				$scope.tableParams = TableSettings.getParams(Stockpositions);
+			}			
+		};
+		
 //Single Record functions
+		$scope.setFormFields = function(disabled) {
+			$scope.formFields = StockpositionsForm.getFormFields(disabled);
+		};
+
 		// Create new Stockposition
 		$scope.create = function() {
 			var stockposition = new Stockpositions($scope.stockposition);
@@ -62,10 +75,6 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		};
 
 //Listing functions 
-		$scope.setFormFields = function(disabled) {
-			$scope.formFields = StockpositionsForm.getFormFields(disabled);
-		};
-
 		$scope.calcMV = function(price,shares) {
 			return Math.round(price * shares,4);
 		};

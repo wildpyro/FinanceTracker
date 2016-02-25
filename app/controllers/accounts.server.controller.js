@@ -105,6 +105,7 @@ exports.list = function(req, res) {
 		sort: sortObject
 	};
 
+	//console.log('got here server');
 
 	Account
 		.find()
@@ -118,7 +119,6 @@ exports.list = function(req, res) {
 				});
 			}	
   			else {
-				console.log(accounts);
 				res.jsonp(accounts);
 			}
 		});

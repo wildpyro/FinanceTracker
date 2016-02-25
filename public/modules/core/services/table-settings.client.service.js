@@ -1,9 +1,7 @@
 (function() {
     'use strict';
 
-    angular
-        .module('core')
-        .factory('TableSettings', factory);
+    angular.module('core').factory('TableSettings', factory);
 
     factory.$inject = ['ngTableParams'];
 
@@ -35,11 +33,24 @@
 
       var getParams = function(Entity) {
         tableParams.settings({getData: getData(Entity)});
+        //console.log(tableParams.getData);
+        return tableParams;
+      };
+
+      var getInstance = function() {
+        return tableParams;
+      };
+
+      var setData = function(dataToSet) {
+        //console.log(dataToSet);
+        //tableParams.settings({getData: dataToSet});
         return tableParams;
       };
 
       var service = {
-        getParams: getParams
+        getParams: getParams,
+        getInstance: getInstance,
+        setData: setData
       };
 
 
