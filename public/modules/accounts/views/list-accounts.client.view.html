@@ -11,34 +11,44 @@
     <div ng-repeat="value in ctrl.accountsSearch.results">
         <h2>{{formatTitle(value.name,value.accountNo, value.accountType)}}</h2>
         <div data-ng-controller="StockpositionsController as stockCtrl">
-            {{getData(value)}}
-            <table ng-table="stockCtrl.tableParams" show-filter="true">
-                <tr ng-repeat="stockposition in stockCtrl.$data" >
-                    <td data-title="'Symbol'" sortable="'symbol'" filter="{ 'symbol': 'text' }">{{stockposition.symbol}}</td>
-                    <td data-title="'Description'" sortable="'description'" filter="{ 'description': 'text' }">{{stockposition.description}}</td>
-                    <td data-title="'Price'" sortable="'price'" sort="{ 'price': 'number' }">{{stockposition.price}}</td>
-                    <td data-title="'Shares'" sortable="'shares'" sort="{ 'shares': 'number' }">{{stockposition.shares}}</td>
-                    <td data-title="'Market Value'" sortable="'market'" sort="{ 'market': 'number' }">{{calcMV(stockposition.price,stockposition.shares)}}</td>
-                    <td>
-                        <div class="table-actions">
+            {{stockCtrl.getData(value)}}
+            <table st-table="rowCollection" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Shares</th>
+                    <th>MarketValue</th>
+                    <th></th> <!--Action !-->
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="row in stockCtrl.getInstance(value.accountType)">
+                    <td>{{row.symbol | uppercase}}</td>
+                    <td>{{row.description}}</td>
+                    <td>{{row.price | currency}}</td>
+                    <td>{{row.shares | number}}</td>
+                    <td>{{calcMV(row.price,row.shares) | currency}}</td>
                     <td>
                        <div class="table-actions">
-                            <a class="btn btn-default" title="View" href="/#!/stockpositions/{{stockposition._id}}">
+                            <a class="btn btn-default" title="View" href="/#!/stockpositions/{{row._id}}">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                             </a>
-                            <a class="btn btn-default" title="Edit" href="/#!/stockpositions/{{stockposition._id}}/edit">
+                            <a class="btn btn-default" title="Edit" href="/#!/stockpositions/{{row._id}}/edit">
                                 <span class="glyphicon glyphicon-edit"></span>
                             </a>
-                            <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove(stockposition)" item="stockposition">
+                            <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove(row)" item="stockposition">
                                     <span class="glyphicon glyphicon-remove-circle"></span>
                                 </a>
                         </div>
                     </td>
                 </tr>
-            </table>        
+                </tbody>
+            </table>
         </div>
     </div>
     <div class="pull-right">
-        <p>Current Balance: {{getBalance()}}</p>
+        <p>Current Balance: {{ctrl.getBalance()}}</p>
     </div>
 </section>

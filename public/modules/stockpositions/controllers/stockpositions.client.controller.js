@@ -3,20 +3,43 @@
 // Stockpositions controller
 angular.module('stockpositions').controller('StockpositionsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Stockpositions', 
 																		 'TableSettings', 'StockpositionsForm', 'AccountTypeService', 
-	function($scope, $stateParams, $location, Authentication, Stockpositions, TableSettings, StockpositionsForm, AccountTypeService ) {
+	function($scope, $stateParams, $location, Authentication, Stockpositions, TableSettings, StockpositionsForm, AccountTypeService) {
+		var self = this;
 		$scope.authentication = Authentication;
 		$scope.stockposition = {};
-		
-		//The table params carries through the $scope from account, this needs to be isolate scope.  
-		$scope.getData = function(data) {
+		this.tableParams = TableSettings.getInstance();
+		this.test = [];
+		var tableParamsArray = [];
+		this.rowCollection = [];
+
+		this.getData = function(data) {
 			if ($location.$$url === '/accounts') {
-				$scope.tableParams = TableSettings.setData(data);
+				if (angular.isDefined(data.stockPositions) && data.stockPositions !== null && data.stockPositions.length > 0) {
+
+					function doesMatch(dataToTest) {
+						if (angular.isDefined(data.stockPositions.accountType) && 
+							data.stockPositions.accountType !== null &&  
+							dataToTest.accountType !== data.stockPositions.accountType[0] &&
+							dataToTest.data.symbol !== data.stockPositions.symbol) {
+							return false;
+						}
+						else {
+							return true;
+						}
+					}
+
+					var test2 = this.test.filter(doesMatch);
+					if (test2.length === 0) {		
+						this.rowCollection.push({accountType: data.accountType[0], data: data.stockPositions});
+						this.test.push(data.stockPositions);
+					}
+				}
 			}
 			else {
-				$scope.tableParams = TableSettings.getParams(Stockpositions);
+				this.tableParams = new TableSettings(Stockpositions);
 			}			
 		};
-		
+
 //Single Record functions
 		$scope.setFormFields = function(disabled) {
 			$scope.formFields = StockpositionsForm.getFormFields(disabled);
@@ -42,7 +65,7 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 			if ( stockposition ) {
 				stockposition = Stockpositions.get({stockpositionId:stockposition._id}, function() {
 					stockposition.$remove();
-					$scope.tableParams.reload();
+					this.tableParams.reload();
 				});
 			} 
 			else {
@@ -50,7 +73,6 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 					$location.path('stockpositions');
 				});
 			}
-
 		};
 
 		// Update existing Stockposition
@@ -75,13 +97,25 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		};
 
 //Listing functions 
-		$scope.calcMV = function(price,shares) {
+		this.calcMV = function(price,shares) {
 			return Math.round(price * shares,4);
 		};
 
-		$scope.resolveAccountType = function(enumValue) {
+		this.resolveAccountType = function(enumValue) {
 			return AccountTypeService.getText(enumValue);
 		};
+
+		this.getAccountType = function(enumText) {
+			return 0;
+		};
+
+		this.getInstance = function(accountType) {
+			for (var i = this.rowCollection.length - 1; i >= 0; i--) {
+				if (this.rowCollection[i].accountType === accountType[0]) {
+					return this.rowCollection[i].data;
+				}
+			}
+		};		
 	}
 
 ]);

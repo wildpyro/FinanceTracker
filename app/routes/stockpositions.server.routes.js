@@ -9,10 +9,6 @@ module.exports = function(app) {
 		.get(stockpositions.list)
 		.post(users.requiresLogin, stockpositions.create);
 
-	app.route('/stockpositions/:accountType')
-		.get(stockpositions.listByAccountType)
-		.put(users.requiresLogin, stockpositions.hasAuthorization, stockpositions.update);
-
 	app.route('/stockpositions/:stockpositionId')
 		.get(stockpositions.read)
 		.put(users.requiresLogin, stockpositions.hasAuthorization, stockpositions.update)
@@ -20,5 +16,4 @@ module.exports = function(app) {
 
 	// Finish by binding the Stockposition middleware
 	app.param('stockpositionId', stockpositions.stockpositionByID);
-	app.param('accountType', stockpositions.listByAccountType);
 };

@@ -3,14 +3,14 @@
 
     angular.module('core').factory('TableSettings', factory);
 
-    factory.$inject = ['ngTableParams'];
+    factory.$inject = ['NgTableParams'];
 
-    function factory(ngTableParams) {
+    function factory(NgTableParams) {
 
       var getData = function(Entity) {
         return function($defer, params) {
   				Entity.get(params.url(), function(response) {
-  					params.total(response.total);
+            params.total(response.total);
   					$defer.resolve(response.results);
   				});
   			};
@@ -26,14 +26,14 @@
         total: 0,
         counts: [5, 10, 15],
         filterDelay: 0,
+        debugMode: true
       };
 
       /* jshint ignore:start */
-      var tableParams = new ngTableParams(params, settings);
+      var tableParams = new NgTableParams(params, settings);
 
       var getParams = function(Entity) {
         tableParams.settings({getData: getData(Entity)});
-        //console.log(tableParams.getData);
         return tableParams;
       };
 
@@ -42,8 +42,6 @@
       };
 
       var setData = function(dataToSet) {
-        //console.log(dataToSet);
-        //tableParams.settings({getData: dataToSet});
         return tableParams;
       };
 

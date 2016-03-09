@@ -77,23 +77,9 @@ angular.module('accounts').controller('AccountsController', ['$scope', '$statePa
 			return mv;
 		};
 
-
 		$scope.getBalance = function() {
 			return this.balance;
 		};
-
-		var getStockPositionsFromAccount = function() {
-			/*if (!angular.isUndefined(accountType)) {
-				getStockPositionsFromAccount(accountType);
-			}*/			
-			for (var i = $scope.accountsSearch.results.length - 1; i >= 0; i--) {
-				var stockPosition = $scope.accountsSearch.results[i].stockPositions;
-				$scope.dataFromAccount.push(stockPosition);
-				/*if (stockPosition !== null && stockPosition.length > 0 && accountType[0] === stockPosition[0].accountType[0]) {
-					$scope.dataFromAccount.push(stockPosition);
-				}*/
-			}
-		};		
 	}
 
 ]);
