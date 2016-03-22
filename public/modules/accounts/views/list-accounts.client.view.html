@@ -14,14 +14,19 @@
             {{stockCtrl.getData(value)}}
             <table st-table="rowCollection" class="table table-striped">
                 <thead>
-                <tr>
-                    <th>Symbol</th>
-                    <th>Description</th>
-                    <th>Price</th>
-                    <th>Shares</th>
-                    <th>MarketValue</th>
-                    <th></th> <!--Action !-->
-                </tr>
+                    <tr>
+                        <th st-sort-default="true">Symbol</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Shares</th>
+                        <th st-skip-natural="true">MarketValue</th>
+                        <th></th> <!--Action !-->
+                    </tr>
+                    <tr>
+                        <th colspan="5">
+                            <input st-search="symbol" class="input-sm form-control" type="search"/>
+                        </th>                
+                    </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="row in stockCtrl.getInstance(value.accountType)">
@@ -29,7 +34,7 @@
                     <td>{{row.description}}</td>
                     <td>{{row.price | currency}}</td>
                     <td>{{row.shares | number}}</td>
-                    <td>{{calcMV(row.price,row.shares) | currency}}</td>
+                    <td>{{stockCtrl.calcMV(row.price,row.shares) | currency}}</td>
                     <td>
                        <div class="table-actions">
                             <a class="btn btn-default" title="View" href="/#!/stockpositions/{{row._id}}">
@@ -46,9 +51,9 @@
                 </tr>
                 </tbody>
             </table>
+            <div class="pull-right">
+                <p>Current Balance for account: {{stockCtrl.getBalance() | currency}}</p>
+            </div>        
         </div>
-    </div>
-    <div class="pull-right">
-        <p>Current Balance: {{ctrl.getBalance()}}</p>
     </div>
 </section>
