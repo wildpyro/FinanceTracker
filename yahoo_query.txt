@@ -1,0 +1,88 @@
+var YQL = require('yql');
+
+var query = new YQL('SELECT * FROM weather.forecast WHERE (location = 94089)');
+
+query.exec(function(err, data) {
+  var location = data.query.results.channel.location;
+  var condition = data.query.results.channel.item.condition;
+  console.log('The current weather in ' + location.city + ', ' + location.region + ' is ' + condition.temp + ' degrees.');
+});
+
+
+select * from yahoo.finance.quote where symbol in ("YHOO","AAPL","GOOG","MSFT")
+
+{
+ "query": {
+  "count": 4,
+  "created": "2016-03-10T12:35:41Z",
+  "lang": "en-US",
+  "results": {
+   "quote": [
+    {
+     "symbol": "YHOO",
+     "AverageDailyVolume": "17044100",
+     "Change": "+0.58",
+     "DaysLow": "32.78",
+     "DaysHigh": "33.52",
+     "YearLow": "26.15",
+     "YearHigh": "46.17",
+     "MarketCapitalization": "31.61B",
+     "LastTradePriceOnly": "33.51",
+     "DaysRange": "32.78 - 33.52",
+     "Name": "Yahoo! Inc.",
+     "Symbol": "YHOO",
+     "Volume": "12653236",
+     "StockExchange": "NMS"
+    },
+    {
+     "symbol": "AAPL",
+     "AverageDailyVolume": "48935700",
+     "Change": "+0.09",
+     "DaysLow": "100.27",
+     "DaysHigh": "101.58",
+     "YearLow": "92.00",
+     "YearHigh": "134.54",
+     "MarketCapitalization": "560.67B",
+     "LastTradePriceOnly": "101.12",
+     "DaysRange": "100.27 - 101.58",
+     "Name": "Apple Inc.",
+     "Symbol": "AAPL",
+     "Volume": "27215050",
+     "StockExchange": "NMS"
+    },
+    {
+     "symbol": "GOOG",
+     "AverageDailyVolume": "2494000",
+     "Change": "+11.27",
+     "DaysLow": "694.00",
+     "DaysHigh": "705.68",
+     "YearLow": "515.18",
+     "YearHigh": "789.87",
+     "MarketCapitalization": "485.43B",
+     "LastTradePriceOnly": "705.24",
+     "DaysRange": "694.00 - 705.68",
+     "Name": "Alphabet Inc.",
+     "Symbol": "GOOG",
+     "Volume": "1421566",
+     "StockExchange": "NMS"
+    },
+    {
+     "symbol": "MSFT",
+     "AverageDailyVolume": "40746200",
+     "Change": "+1.19",
+     "DaysLow": "51.85",
+     "DaysHigh": "52.85",
+     "YearLow": "39.72",
+     "YearHigh": "56.85",
+     "MarketCapitalization": "417.93B",
+     "LastTradePriceOnly": "52.84",
+     "DaysRange": "51.85 - 52.85",
+     "Name": "Microsoft Corporation",
+     "Symbol": "MSFT",
+     "Volume": "28252946",
+     "StockExchange": "NMS"
+    }
+   ]
+  }
+ }
+}

@@ -2,13 +2,14 @@
 
 // Stockpositions controller
 angular.module('stockpositions').controller('StockpositionsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Stockpositions', 
-																		 'TableSettings', 'StockpositionsForm', 'AccountTypeService', 
-	function($scope, $stateParams, $location, Authentication, Stockpositions, TableSettings, StockpositionsForm, AccountTypeService) {
+																		 'TableSettings', 'StockpositionsForm', 'AccountTypeService', '$filter', 
+	function($scope, $stateParams, $location, Authentication, Stockpositions, TableSettings, StockpositionsForm, AccountTypeService, $filter) {
 		var self = this;
 		$scope.authentication = Authentication;
 		$scope.stockposition = {};
 		this.tableParams = TableSettings.getInstance();
 		this.test = [];
+		var balance = 0;
 		var tableParamsArray = [];
 		this.rowCollection = [];
 
@@ -98,7 +99,15 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 
 //Listing functions 
 		this.calcMV = function(price,shares) {
-			return Math.round(price * shares,4);
+			var mv = price * shares;
+			//balance += mv;
+			return mv;
+		};
+
+		this.getBalance = function() {
+			// console.log('got here');
+			// console.log(balance);
+			return balance;
 		};
 
 		this.resolveAccountType = function(enumValue) {
@@ -112,6 +121,8 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		this.getInstance = function(accountType) {
 			for (var i = this.rowCollection.length - 1; i >= 0; i--) {
 				if (this.rowCollection[i].accountType === accountType[0]) {
+					// balance = this.rowCollection[i].data.price * this.rowCollection[i].data.shares;
+					// console.log(this.rowCollection[i].data);
 					return this.rowCollection[i].data;
 				}
 			}
