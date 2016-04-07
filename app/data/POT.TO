@@ -1,0 +1,25 @@
+{
+ "query": {
+  "count": 1,
+  "created": "2016-03-28T20:48:48Z",
+  "lang": "en-US",
+  "results": {
+   "quote": {
+    "symbol": "POT.TO",
+    "AverageDailyVolume": "2748600",
+    "Change": "-0.30",
+    "DaysLow": "22.08",
+    "DaysHigh": "22.80",
+    "YearLow": "20.65",
+    "YearHigh": "41.82",
+    "MarketCapitalization": "18.93B",
+    "LastTradePriceOnly": "22.63",
+    "DaysRange": "22.08 - 22.80",
+    "Name": "POTASH CORP OF SASK INC",
+    "Symbol": "POT.TO",
+    "Volume": "2112136",
+    "StockExchange": "TOR"
+   }
+  }
+ }
+}

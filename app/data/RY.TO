@@ -1,0 +1,25 @@
+{
+ "query": {
+  "count": 1,
+  "created": "2016-03-28T20:47:15Z",
+  "lang": "en-US",
+  "results": {
+   "quote": {
+    "symbol": "RY.TO",
+    "AverageDailyVolume": "3182680",
+    "Change": "-0.97",
+    "DaysLow": "73.56",
+    "DaysHigh": "74.29",
+    "YearLow": "64.52",
+    "YearHigh": "81.53",
+    "MarketCapitalization": "109.88B",
+    "LastTradePriceOnly": "73.97",
+    "DaysRange": "73.56 - 74.29",
+    "Name": "ROYAL BANK OF CANADA",
+    "Symbol": "RY.TO",
+    "Volume": "2528941",
+    "StockExchange": "TOR"
+   }
+  }
+ }
+}
