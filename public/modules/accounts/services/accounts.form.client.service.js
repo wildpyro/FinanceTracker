@@ -1,28 +1,18 @@
-(function() {
-    'use strict';
+'use strict';
 
-    angular
-        .module('accounts')
-        .factory('AccountsForm', factory);
-
-    function factory() {
-
-      var accountTypesEnum = [{name: 'RESP', value: 0},
-                              {name: 'Open', value: 1},
-                              {name: 'RSP', value: 2},
-                              {name: 'TFSA', value: 3}];
+angular.module('accounts').factory('AccountsForm', ['AccountTypeService', function(AccountTypeService) {
 
       var getFormFields = function(disabled) {
 
         var fields = [
-  				{
-  					key: 'name',
-  					type: 'input',
-  					templateOptions: {
-  			      label: 'Name:',
-  						disabled: disabled
-  			    }
-  				},
+        	{
+            key: 'description',
+            type: 'input',
+            templateOptions: {
+              label: 'Description:',
+              disabled: disabled
+            }
+        	},
           {
             key: 'accountNo',
             type: 'input',
@@ -36,11 +26,11 @@
             type: 'select',
             templateOptions: {
               label: 'Account Type:',
-              options: accountTypesEnum,
+              options: AccountTypeService.getEnums(),
               disabled: disabled
             }
           }
-  			];
+        ];
 
         return fields;
 
@@ -51,7 +41,5 @@
       };
 
       return service;
-
   }
-
-})();
+]);

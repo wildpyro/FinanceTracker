@@ -53,7 +53,8 @@ var StockpositionSchema = new Schema({
 	user: {
 		type: Schema.ObjectId,
 		ref: 'User'
-	}
+	},
+	quoteData: {}
 });
 
 mongoose.model('Stockposition', StockpositionSchema);

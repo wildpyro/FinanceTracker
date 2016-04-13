@@ -12,7 +12,7 @@
         <h2>{{formatTitle(value.name,value.accountNo, value.accountType)}}</h2>
         <div data-ng-controller="StockpositionsController as stockCtrl">
             {{stockCtrl.getData(value)}}
-            <table st-table="rowCollection" class="table table-striped">
+            <table class="table table-striped" st-table="stockCtrl.rowsCollection" st-safe-src="rows">
                 <thead>
                     <tr>
                         <th st-sort-default="true">Symbol</th>

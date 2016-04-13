@@ -4,7 +4,18 @@
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
 	var applicationModuleName = 'financetracker';
-	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'ngTable', 'formly', 'formlyBootstrap'];
+	var applicationModuleVendorDependencies = ['ngResource', 
+												'ngCookies',  
+												'ngAnimate',  
+												'ngTouch',  
+												'ngSanitize',  
+												'ui.router', 
+												'ui.bootstrap', 
+												'ui.utils', 
+												'ngTable', 
+												'formly', 
+												'formlyBootstrap', 
+												'smart-table'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {

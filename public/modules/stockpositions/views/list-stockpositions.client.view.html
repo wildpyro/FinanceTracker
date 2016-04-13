@@ -1,4 +1,4 @@
-<section data-ng-controller="StockpositionsController as StockCtrl">
+<section data-ng-controller="StockpositionsController as stockCtrl">
     <div class="page-header">
         <h1>Stockpositions</h1>
     </div>
@@ -8,33 +8,53 @@
         <i class="glyphicon glyphicon-open"></i> New Stockposition
       </a>
     </div>
-
     <div>
-        {{StockCtrl.getData()}}
-        <table ng-table="StockCtrl.tableParams" show-filter="true">
-            <tr ng-repeat="stockposition in $data">
-                <td data-title="'Account Type'">{{StockCtrl.resolveAccountType(stockposition.accountType)}}</td>
-                <td data-title="'Symbol'" sortable="'symbol'" filter="{ 'symbol': 'text' }">{{stockposition.symbol}}</td>
-                <td data-title="'Description'" sortable="'description'" filter="{ 'description': 'text' }">{{stockposition.description}}</td>
-                <td data-title="'Price'" sortable="'price'" sort="{ 'price': 'text' }">{{stockposition.price | currency}}</td>
-                <td data-title="'Shares'" sortable="'shares'" sort="{ 'shares': 'text' }">{{stockposition.shares | currency}}</td>
-                <td data-title="'Market Value'" sortable="'market'" sort="{ 'market': 'text' }">{{StockCtrl.calcMV(stockposition.price,stockposition.shares) | currency}}</td>
-                <td>
-                    <div class="table-actions">
-                <td>
-                   <div class="table-actions">
-                        <a class="btn btn-default" title="View" href="/#!/stockpositions/{{stockposition._id}}">
-                            <span class="glyphicon glyphicon-eye-open"></span>
-                        </a>
-                        <a class="btn btn-default" title="Edit" href="/#!/stockpositions/{{stockposition._id}}/edit">
-                            <span class="glyphicon glyphicon-edit"></span>
-                        </a>
-                        <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove(stockposition)" item="stockposition">
-                  				<span class="glyphicon glyphicon-remove-circle"></span>
-                  			</a>
-                    </div>
+        <table class="table table-striped" st-table="stockCtrl.rowsCollection" st-safe-src="rows" st-pipe="stockCtrl.fetch">    
+            <thead>
+                <tr>
+                    <th>Account Type</th>
+                    <th st-sort-default="true">Symbol</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Shares</th>
+                    <th st-skip-natural="true">MarketValue</th>
+                    <th><!--Action !--></th> 
+                </tr>
+                <tr>
+                    <th colspan="6">
+                        <input st-search="symbol" class="input-sm form-control" type="search"/>
+                    </th>                
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in stockCtrl.rowsCollection[0].data">
+                    <td>{{stockCtrl.resolveAccountType(row.accountType)}}</td>
+                    <td>{{row.symbol | uppercase}}</td>
+                    <td>{{row.description}}</td>
+                    <td>{{row.price | currency}}</td>
+                    <td>{{row.shares | number}}</td>
+                    <td>{{stockCtrl.calcMV(row.price,row.shares) | currency}}</td>                    
+                    <td>
+                       <div class="table-actions">
+                            <a class="btn btn-default" title="View" href="/#!/stockpositions/{{row._id}}">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                            </a>
+                            <a class="btn btn-default" title="Edit" href="/#!/stockpositions/{{row._id}}/edit">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                            <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove(row)" item="stockposition">
+                                    <span class="glyphicon glyphicon-remove-circle"></span>
+                                </a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td class="text-center" st-pagination="" st-items-by-page="10" colspan="4">
                 </td>
             </tr>
+            </tfoot>            
         </table>
     </div>
 </section>

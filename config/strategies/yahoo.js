@@ -12,8 +12,8 @@ var passport = require('passport'),
 module.exports = function() {
 	// Use yahoo strategy
 	passport.use(new YahooStrategy({
-			clientID: config.yahoo.clientID,
-			clientSecret: config.yahoo.clientSecret,
+			consumerKey: config.yahoo.clientID,
+			consumerSecret: config.yahoo.clientSecret,
 			callbackURL: config.yahoo.callbackURL,
 			passReqToCallback: true
 		},

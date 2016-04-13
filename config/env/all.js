@@ -30,7 +30,8 @@ module.exports = {
 				'public/lib/ng-table/ng-table.min.js',
 				'public/lib/api-check/dist/apiCheck.min.js',
 				'public/lib/angular-formly/dist/formly.min.js',
-				'public/lib/angular-formly-templates-bootstrap/dist/angular-formly-templates-bootstrap.min.js'
+				'public/lib/angular-formly-templates-bootstrap/dist/angular-formly-templates-bootstrap.min.js',
+				'public/lib/angular-smart-table/dist/smart-table.js'
 			]
 		},
 		css: [

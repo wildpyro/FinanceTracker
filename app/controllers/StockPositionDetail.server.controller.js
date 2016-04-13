@@ -5,16 +5,9 @@
  */
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
+	//Need to add this back at some point - Make it a service? query = require('./quote.server.controller'),
 	StockPositionDetail = mongoose.model('StockPositionDetail'),
-	_ = require('lodash'),
-	yql = require('yql-node').formatAsJSON();
-
-	var query = 'select * from yahoo.finance.quote where symbol in ("YHOO","AAPL","GOOG","MSFT")';
-
-	yql.execute(query, function(error,response){
-	    console.log('yql:');
-	    console.log(response);
-	  });
+	_ = require('lodash');
 
 /**
  * Show the current StockPositionDetail

@@ -6,7 +6,44 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Stockposition = mongoose.model('Stockposition'),
+	Account = mongoose.model('Account'),
 	_ = require('lodash');
+
+
+/**
+* Update references either add or delete
+**/
+var updateReferences = function(action, stockposition) {
+
+	Account.findOne({'accountType': stockposition.accountType[0]}, function(err, account) {
+		if (err) {return err;}	
+		else {
+			//console.log(account);
+
+			if (action === 'add') {
+				if (account.stockPositions === undefined || account.stockPositions === null) {
+					account.stockpositions = [];
+				}
+
+				account.stockPositions.push(stockposition);
+			}
+			else if (action === 'remove')
+			{
+				if (account.stockPositions !== undefined && account.stockPositions !== null) {
+					account.stockPositions.pop(stockposition);	
+				}
+			}
+
+			account.save(function(err) {
+				if (err) {return err;}
+				else {
+					//console.log(account.stockPositions);
+					return null;
+				}
+			});
+		}
+	});
+}; 
 
 /**
  * Create a Stockposition
@@ -20,9 +57,14 @@ exports.create = function(req, res) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
-		} else {
+		} 
+		else {
+			err = updateReferences('add', stockposition);
+			
+			if (err) {return res.status(400).send({message: errorHandler.getErrorMessage(err)});}
+
 			res.jsonp(stockposition);
-		}
+		}	
 	});
 };
 
@@ -32,6 +74,7 @@ exports.create = function(req, res) {
 exports.read = function(req, res) {
 	res.jsonp(req.stockposition);
 };
+
 
 /**
  * Update a Stockposition
@@ -64,6 +107,11 @@ exports.delete = function(req, res) {
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
+			//remove the reference after? What happens when this fails? 
+			updateReferences('remove', stockposition);
+
+			if (err) {return res.status(400).send({message: errorHandler.getErrorMessage(err)});}
+
 			res.jsonp(stockposition);
 		}
 	});

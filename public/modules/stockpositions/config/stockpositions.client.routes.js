@@ -24,6 +24,10 @@ angular.module('stockpositions').config(['$stateProvider',
 		state('editStockposition', {
 			url: '/stockpositions/:stockpositionId/edit',
 			templateUrl: 'modules/stockpositions/views/edit-stockposition.client.view.html'
-		});
+		}).
+		state('toDetailsFromStockPosition', {
+			url: '/stockpositiondetails/:stockpositionId/',
+			templateUrl: 'modules/stockpositiondetails/views/view-stockposition.client.view.html'
+		});		
 	}
 ]);

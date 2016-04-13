@@ -2,17 +2,20 @@
 
 // Stockpositions controller
 angular.module('stockpositions').controller('StockpositionsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Stockpositions', 
-																		 'TableSettings', 'StockpositionsForm', 'AccountTypeService', '$filter', 
-	function($scope, $stateParams, $location, Authentication, Stockpositions, TableSettings, StockpositionsForm, AccountTypeService, $filter) {
+																		 'SmartTableFactory', 'StockpositionsForm', 'AccountTypeService', '$filter', 
+	function($scope, $stateParams, $location, Authentication, Stockpositions, SmartTableFactory, StockpositionsForm, AccountTypeService, $filter) {
 		var self = this;
+		var balance = 0;
+		self.isLoading = false;
 		$scope.authentication = Authentication;
 		$scope.stockposition = {};
-		this.tableParams = TableSettings.getInstance();
 		this.test = [];
-		var balance = 0;
-		var tableParamsArray = [];
-		this.rowCollection = [];
+		this.rows = [];
+		this.rowsCollection = [];
 
+		/*
+		* This only works for non-async calls. Calling this from outside the table create as I don't want this promise based. 
+		*/
 		this.getData = function(data) {
 			if ($location.$$url === '/accounts') {
 				if (angular.isDefined(data.stockPositions) && data.stockPositions !== null && data.stockPositions.length > 0) {
@@ -31,17 +34,31 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 
 					var test2 = this.test.filter(doesMatch);
 					if (test2.length === 0) {		
-						this.rowCollection.push({accountType: data.accountType[0], data: data.stockPositions});
-						this.test.push(data.stockPositions);
+						this.rows.push({accountType: data.accountType[0], data: data.stockPositions});
+		        		this.rowsCollection = [].concat(this.rows);						
+		        		this.test.push(data.stockPositions);
 					}
 				}
 			}
-			else {
-				this.tableParams = new TableSettings(Stockpositions);
-			}			
 		};
 
-//Single Record functions
+		this.fetch = function fetch(tableState) {
+		    $scope.isLoading = true;
+
+		    var pagination = tableState.pagination;
+		    var start = pagination.start || 0;     // This is NOT the page number, but the index of item in the list that you want to use to display the table.
+		    var number = pagination.number || 10;  // Number of entries showed per page.
+
+		    SmartTableFactory.getPage(start, number, tableState, Stockpositions).then(function (result) {
+
+		    	self.rows.push(result);
+        		self.rowsCollection = [].concat(self.rows);
+				tableState.pagination.numberOfPages = result.numberOfPages;//set the number of pages so the pagination can update
+				self.isLoading = false;
+		    });
+		};
+
+//Single Record functions//
 		$scope.setFormFields = function(disabled) {
 			$scope.formFields = StockpositionsForm.getFormFields(disabled);
 		};
@@ -66,7 +83,7 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 			if ( stockposition ) {
 				stockposition = Stockpositions.get({stockpositionId:stockposition._id}, function() {
 					stockposition.$remove();
-					this.tableParams.reload();
+					//this.tableParams.reload();
 				});
 			} 
 			else {
@@ -118,12 +135,15 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 			return 0;
 		};
 
+		/*
+		* This only works for non-async calls. 
+		*/
 		this.getInstance = function(accountType) {
-			for (var i = this.rowCollection.length - 1; i >= 0; i--) {
-				if (this.rowCollection[i].accountType === accountType[0]) {
-					// balance = this.rowCollection[i].data.price * this.rowCollection[i].data.shares;
-					// console.log(this.rowCollection[i].data);
-					return this.rowCollection[i].data;
+			for (var i = self.rowsCollection.length - 1; i >= 0; i--) {
+				//Never gets here
+				if (self.rowsCollection[i].accountType === accountType[0]) {
+					//balance = this.rowsCollection[i].data.price * this.rowsCollection[i].data.shares;
+					return self.rowsCollection[i].data;
 				}
 			}
 		};		

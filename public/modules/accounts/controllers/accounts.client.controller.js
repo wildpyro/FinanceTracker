@@ -1,9 +1,8 @@
 'use strict';
 
-// AccountService controller
-angular.module('accounts').controller('AccountsController', ['$scope', '$stateParams', '$location', 'Authentication', 'AccountService', 
-															 'TableSettings', 'AccountsForm', 
-	function($scope, $stateParams, $location, Authentication, AccountService, TableSettings, AccountsForm) {
+// Accounts controller
+angular.module('accounts').controller('AccountsController', ['$scope', '$stateParams', '$location', 'Authentication', 'AccountService', 'AccountsForm', 
+	function($scope, $stateParams, $location, Authentication, AccountService, AccountsForm) {
 		this.authentication = Authentication;
 		this.account = {};
 		this.accountsSearch = AccountService.get();

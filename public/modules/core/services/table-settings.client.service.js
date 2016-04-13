@@ -10,6 +10,8 @@
       var getData = function(Entity) {
         return function($defer, params) {
   				Entity.get(params.url(), function(response) {
+            var url = params.url();
+            console.log(url);
             params.total(response.total);
   					$defer.resolve(response.results);
   				});
