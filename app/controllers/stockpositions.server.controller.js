@@ -18,8 +18,6 @@ var updateReferences = function(action, stockposition) {
 	Account.findOne({'accountType': stockposition.accountType[0]}, function(err, account) {
 		if (err) {return err;}	
 		else {
-			//console.log(account);
-
 			if (action === 'add') {
 				if (account.stockPositions === undefined || account.stockPositions === null) {
 					account.stockpositions = [];
@@ -37,7 +35,6 @@ var updateReferences = function(action, stockposition) {
 			account.save(function(err) {
 				if (err) {return err;}
 				else {
-					//console.log(account.stockPositions);
 					return null;
 				}
 			});

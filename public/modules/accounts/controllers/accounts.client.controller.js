@@ -6,7 +6,6 @@ angular.module('accounts').controller('AccountsController', ['$scope', '$statePa
 		this.authentication = Authentication;
 		this.account = {};
 		this.accountsSearch = AccountService.get();
-		this.balance = 0;
 		
 //Single Record Functions 
 		$scope.setFormFields = function(disabled) {
@@ -65,19 +64,16 @@ angular.module('accounts').controller('AccountsController', ['$scope', '$statePa
 
 //Listing Functions 
 		$scope.formatTitle = function(accountName, accountNo, accountType) {
-			var account =  accountName.concat(' ~ ',accountNo);
-			
+			var account =  accountName.concat(' ~ ',accountNo);			
 			return account;
 		};
 
-		$scope.calcMV = function(price,shares) {
-			var mv = price * shares;
-			this.balance += mv;
-			return mv;
-		};
+		$scope.show = function(marketValue) {
+			if (marketValue === 0) {
+				return false;
+			}
 
-		$scope.getBalance = function() {
-			return this.balance;
+			return true;
 		};
 	}
 

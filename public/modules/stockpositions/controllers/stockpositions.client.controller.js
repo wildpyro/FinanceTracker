@@ -2,16 +2,19 @@
 
 // Stockpositions controller
 angular.module('stockpositions').controller('StockpositionsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Stockpositions', 
-																		 'SmartTableFactory', 'StockpositionsForm', 'AccountTypeService', '$filter', 
+																		 'SmartTableFactory', 'StockpositionsForm', 'AccountTypeService', '$filter',
 	function($scope, $stateParams, $location, Authentication, Stockpositions, SmartTableFactory, StockpositionsForm, AccountTypeService, $filter) {
 		var self = this;
-		var balance = 0;
 		self.isLoading = false;
 		$scope.authentication = Authentication;
 		$scope.stockposition = {};
 		this.test = [];
 		this.rows = [];
 		this.rowsCollection = [];
+
+		//$scope.$watch(() => this.rows, function (newVal) {
+		//  console.log(self.rows);
+		//});		
 
 		/*
 		* This only works for non-async calls. Calling this from outside the table create as I don't want this promise based. 
@@ -34,6 +37,9 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 
 					var test2 = this.test.filter(doesMatch);
 					if (test2.length === 0) {		
+						var marketValue = 0;
+						//marketValue =+ data.stockPositions.market;
+						//console.log(data.stockPositions);
 						this.rows.push({accountType: data.accountType[0], data: data.stockPositions});
 		        		this.rowsCollection = [].concat(this.rows);						
 		        		this.test.push(data.stockPositions);
@@ -117,14 +123,7 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 //Listing functions 
 		this.calcMV = function(price,shares) {
 			var mv = price * shares;
-			//balance += mv;
 			return mv;
-		};
-
-		this.getBalance = function() {
-			// console.log('got here');
-			// console.log(balance);
-			return balance;
 		};
 
 		this.resolveAccountType = function(enumValue) {
@@ -135,18 +134,19 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 			return 0;
 		};
 
-		/*
-		* This only works for non-async calls. 
-		*/
 		this.getInstance = function(accountType) {
 			for (var i = self.rowsCollection.length - 1; i >= 0; i--) {
-				//Never gets here
-				if (self.rowsCollection[i].accountType === accountType[0]) {
-					//balance = this.rowsCollection[i].data.price * this.rowsCollection[i].data.shares;
-					return self.rowsCollection[i].data;
+				var row = self.rowsCollection[i];
+				if (row.accountType === accountType[0]) {
+					
+					this.balance += row.data[0].market;
+					return row.data;
+				}
+				else {
+					this.balance = 0;	
 				}
 			}
-		};		
+		};
 	}
 
 ]);

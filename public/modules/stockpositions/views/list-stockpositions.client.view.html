@@ -1,15 +1,9 @@
 <section data-ng-controller="StockpositionsController as stockCtrl">
     <div class="page-header">
-        <h1>Stockpositions</h1>
-    </div>
-
-    <div class="pull-right">
-      <a type="button" class="btn btn-success" href="/#!/stockpositions/create">
-        <i class="glyphicon glyphicon-open"></i> New Stockposition
-      </a>
+        <h1 class="page-title">Stockpositions</h1>
     </div>
     <div>
-        <table class="table table-striped" st-table="stockCtrl.rowsCollection" st-safe-src="rows" st-pipe="stockCtrl.fetch">    
+        <table class="table smart-table table-hover" st-table="stockCtrl.rowsCollection" st-safe-src="rows" st-pipe="stockCtrl.fetch">    
             <thead>
                 <tr>
                     <th>Account Type</th>
@@ -56,5 +50,13 @@
             </tr>
             </tfoot>            
         </table>
+        <div class="pull-right">
+            <p><st-summary></st-summary></p>
+        </div>
+    <div class="pull-left">
+    </div>
+      <a type="button" class="btn btn-success" href="/#!/stockpositions/create">
+        <i class="glyphicon glyphicon-open"></i> New Stockposition
+      </a>
     </div>
 </section>

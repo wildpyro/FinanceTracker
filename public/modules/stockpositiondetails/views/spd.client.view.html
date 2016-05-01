@@ -1,0 +1,16 @@
+<section data-ng-controller="StockpositiondetailsController as ctrl">
+	<div class="page-header">
+        <div class="page-title">{{ctrl.symbol}}</div>
+	</div>
+
+<!-- Side panel !--> 
+	<div class="col-md-2">
+		<ul class="nav nav-pills nav-stacked">
+		  <li role="presentation" class="active"><a ui-sref="spd.home({symbol: ctrl.symbol})">Details</a></li>
+		  <li role="presentation"><a ui-sref="spd.performance({symbol: ctrl.symbol})">Performance</a></li>
+		  <li role="presentation"><a ui-sref="spd.fundamentals({symbol: ctrl.symbol})">Fundamentals</a></li>
+		</ul>
+	</div>
+<!-- Content panel - Load the individual panels!--> 
+	<div ui-view></div>
+</section>

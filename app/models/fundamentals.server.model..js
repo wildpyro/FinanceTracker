@@ -14,10 +14,16 @@ var validateLocalStrategyProperty = function(property) {
 };
 
 /**
- * Quote Schema
+ * Fundamentals Schema
  */
-var QuoteSchema = new Schema({
+var FundamentalsSchema = new Schema({
 	
+	name: {
+		type: String,
+		default: '',
+		required: 'Please fill Account name',
+		trim: true
+	},
 	lastUpdated: {
 		type: Date,
 		default: Date.now
@@ -26,39 +32,11 @@ var QuoteSchema = new Schema({
 		type: Date,
 		default: Date.now
 	},
-	Symbol: {
-		type: String
+	user: {
+		type: Schema.ObjectId,
+		ref: 'User'
 	},
-	Change: {
-		type: String
-	},
-	DaysLow: {
-		type: Number
-	},
-	DaysHigh: {
-		type: Number
-	},
-	YearLow: {
-		type: Number
-	},
-	YeahHigh: {
-		type: Number
-	},
-	DaysRange: {
-		type: String
-	},
-	Name: {
-		type: String
-	},
-	Volume: {
-		type: Number
-	},
-	StockExchange: {
-		type: String
-	},
-	YahooSymbol: {
-		type: String
-	}
+	stockPositions: [{type: Schema.Types.ObjectId, ref: 'Stockposition'}]
 });
 
-mongoose.model('Quote', QuoteSchema);
+mongoose.model('Fundamentals', FundamentalsSchema);

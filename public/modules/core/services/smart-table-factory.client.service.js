@@ -12,9 +12,6 @@ angular.module('core').factory('SmartTableFactory', ['$http', '$q', '$filter', '
             });
         });
 
-        //console.log(params);        
-
-
         return deferred.promise;
     }
 

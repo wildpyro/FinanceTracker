@@ -119,6 +119,17 @@ exports.list = function(req, res) {
 				});
 			}	
   			else {
+  				for (var i = accounts.results.length - 1; i >= 0; i--) {
+  					var balance = 0;
+
+  					//loop through the stock positions to get there current market value
+  					for (var y = accounts.results[i].stockPositions.length - 1; y >= 0; y--) {
+  						balance += accounts.results[i].stockPositions[y].market;
+  					}
+
+  					accounts.results[i].marketValue = balance;
+  				}
+
 				res.jsonp(accounts);
 			}
 		});

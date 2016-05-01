@@ -47,7 +47,10 @@ var AccountSchema = new Schema({
 		type: Schema.ObjectId,
 		ref: 'User'
 	},
-	stockPositions: [{type: Schema.Types.ObjectId, ref: 'Stockposition'}]
+	stockPositions: [{type: Schema.Types.ObjectId, ref: 'Stockposition'}],
+	marketValue: {
+		type: Number
+	}
 });
 
 mongoose.model('Account', AccountSchema);

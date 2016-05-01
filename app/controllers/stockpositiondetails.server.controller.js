@@ -5,68 +5,18 @@
  */
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
+	//Quote = require('./quote.server.controller'),
+	Quote = require('./quote.server.controller'),
+	Fundamentals = require('./fundamentals.server.controller'),
+	Performance = require('./performance.server.controller'),
 	Stockpositiondetail = mongoose.model('Stockpositiondetail'),
 	_ = require('lodash');
-
-/**
- * Create a Stockpositiondetail
- */
-exports.create = function(req, res) {
-	var stockpositiondetail = new Stockpositiondetail(req.body);
-	stockpositiondetail.user = req.user;
-
-	stockpositiondetail.save(function(err) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.jsonp(stockpositiondetail);
-		}
-	});
-};
 
 /**
  * Show the current Stockpositiondetail
  */
 exports.read = function(req, res) {
 	res.jsonp(req.stockpositiondetail);
-};
-
-/**
- * Update a Stockpositiondetail
- */
-exports.update = function(req, res) {
-	var stockpositiondetail = req.stockpositiondetail ;
-
-	stockpositiondetail = _.extend(stockpositiondetail , req.body);
-
-	stockpositiondetail.save(function(err) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.jsonp(stockpositiondetail);
-		}
-	});
-};
-
-/**
- * Delete an Stockpositiondetail
- */
-exports.delete = function(req, res) {
-	var stockpositiondetail = req.stockpositiondetail ;
-
-	stockpositiondetail.remove(function(err) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.jsonp(stockpositiondetail);
-		}
-	});
 };
 
 /**
@@ -106,7 +56,17 @@ exports.list = function(req, res) {
 		sort: sortObject
 	};
 
+	if (req.query.searchFor === '' || req.query.searchFor === 'home') {
+		Quote.search(req.query.symbol);
+	}
+	else if (req.query.searchFor === 'fundamentals') {
+		Fundamentals.search(req.query.symbol);
+	}
+	else if (req.query.searchFor === 'performance') {
+		Performance.search(req.query.symbol);		
+	}
 
+/*
 	Stockpositiondetail
 		.find()
 		.filter(filter)
@@ -120,7 +80,7 @@ exports.list = function(req, res) {
 				res.jsonp(stockpositiondetails);
 			}
 		});
-
+*/
 };
 
 /**

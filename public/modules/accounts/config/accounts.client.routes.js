@@ -3,23 +3,10 @@
 //Setting up route
 angular.module('accounts').config(['$stateProvider', function($stateProvider) {
 		// Accounts state routing
-		$stateProvider.
-		state('listAccounts', {
+		$stateProvider
+		.state('listAccounts', {
 			url: '/accounts',
 			templateUrl: 'modules/accounts/views/list-accounts.client.view.html'
-			/*resolve: {
-				AccountService: 'AccountService',
-				accountsSearch: function(AccountService) {
-					var test = AccountService.get();
-					console.log(test);
-					return test.results;
-				}						            
-			},
-			controller: function($scope, accountsSearch) {
-				$scope.accountsSearch = accountsSearch;
-				$scope.ben = 'test';
-			},
-			controllerAs: 'AccountsController'			*/
 		})
 		.state('createAccount', {
 			url: '/accounts/create',
@@ -32,6 +19,6 @@ angular.module('accounts').config(['$stateProvider', function($stateProvider) {
 		state('editAccount', {
 			url: '/accounts/:accountId/edit',
 			templateUrl: 'modules/accounts/views/edit-account.client.view.html'
-		});
+		});		
 	}
 ]);

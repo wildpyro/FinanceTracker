@@ -14,33 +14,49 @@
 	border-color: #78FA89;
 }
 
-/* ng-table */
-
-.ng-table {
-  width: 100%;
+/*Page Headers */
+.page-title {
+  height: 80px;
+  font-size: 60px;
+  text-align: center;
 }
 
-.ng-table > thead > tr > th {
+.page-header {
+  height: 150px;
+}
+
+/* smart-table */
+.smart-table {
+  width: 100%;
+  padding-bottom: 50px;
+}
+
+.smart-table > thead > tr > th {
   text-align: left;
   border-bottom: 1px solid #c8c8c8;
 }
 
-.ng-table > tbody > tr > th, .ng-table > tfoot > tr > th, .ng-table > thead > tr > td, .ng-table > tbody > tr > td, .ng-table > tfoot > tr > td {
-  height: 50px;
-  border-bottom: 1px solid #e8e8e8;
+.smart-table > tbody > tr > th, .smart-table > tfoot > tr > th, .smart-table > thead > tr > td, .smart-table > tbody > tr > td, .smart-table > tfoot > tr > td {
+  height: 60px;
+  border-bottom: 2px solid #e8e8e8;
 }
 
-.ng-table-filters {
+.smart-table-filters {
   height: 60px;
 }
 
-.ng-table-filters .filter {
+.smart-table-filters .filter {
   vertical-align: top;
 }
 
-.ng-table > thead > tr > th {
+.smart-table > thead > tr > th {
   padding-bottom: 0;
   padding-top: 0;
+}
+
+.smart-table > tbody > tr > td {
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .actions {
@@ -51,12 +67,19 @@
   width: 130px;
 }
 
-.ng-table th.filter .input-filter {
+.smart-table th.filter .input-filter {
   margin: 12px;
   width: 90%;
 }
 
-
-.ng-table-pager {
+.smart-table-pager {
   margin-top: 20px;
+}
+
+.money {
+  text-align: right;
+}
+
+.centered {
+  text-align: center;
 }

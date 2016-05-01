@@ -3,23 +3,40 @@
 //Setting up route
 angular.module('stockpositiondetails').config(['$stateProvider',
 	function($stateProvider) {
-		// Stockpositiondetails state routing
-		$stateProvider.
-		state('listStockpositiondetails', {
-			url: '/stockpositiondetails',
-			templateUrl: 'modules/stockpositiondetails/views/list-stockpositiondetails.client.view.html'
-		}).
-		state('createStockpositiondetail', {
-			url: '/stockpositiondetails/create',
-			templateUrl: 'modules/stockpositiondetails/views/create-stockpositiondetail.client.view.html'
-		}).
-		state('viewStockpositiondetail', {
-			url: '/stockpositiondetails/:stockpositiondetailId',
-			templateUrl: 'modules/stockpositiondetails/views/view-stockpositiondetail.client.view.html'
-		}).
-		state('editStockpositiondetail', {
-			url: '/stockpositiondetails/:stockpositiondetailId/edit',
-			templateUrl: 'modules/stockpositiondetails/views/edit-stockpositiondetail.client.view.html'
-		});
+		// Stockpositiondetails state routing create different routes for different views. 
+		$stateProvider
+		.state('spd', {
+			url: '/stockpositiondetails/:symbol',
+			views: {
+				'': {
+					templateUrl: 'modules/stockpositiondetails/views/spd.client.view.html',
+					controller: 'StockpositiondetailsController as ctrl'
+				}
+			}
+		})
+		.state('spd.home', {
+			views: {
+				'': {
+					templateUrl: 'modules/stockpositiondetails/views/home/spd.home.client.view.html',
+					controller: 'StockpositiondetailsController as ctrl'
+				}
+			}
+		})
+		.state('spd.performance', {
+			views: {
+				'': {
+					templateUrl: 'modules/stockpositiondetails/views/performance/spd.performance.client.view.html',
+					controller: 'StockpositiondetailsController as ctrl'
+				}
+			}
+		})
+		.state('spd.fundamentals', {
+			views: {
+				'': {
+					templateUrl: 'modules/stockpositiondetails/views/fundamentals/spd.fundamentals.client.view.html',
+					controller: 'StockpositiondetailsController as ctrl'
+				}
+			}
+		}); 
 	}
 ]);
