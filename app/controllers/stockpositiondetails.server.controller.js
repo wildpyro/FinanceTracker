@@ -7,6 +7,8 @@ var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	//Quote = require('./quote.server.controller'),
 	Quote = require('./quote.server.controller'),
+	Core = require('./core.server.controller'),
+	QuoteModel = mongoose.model('Quote'),
 	Fundamentals = require('./fundamentals.server.controller'),
 	Performance = require('./performance.server.controller'),
 	Stockpositiondetail = mongoose.model('Stockpositiondetail'),
@@ -24,63 +26,23 @@ exports.read = function(req, res) {
  */
 exports.list = function(req, res) {
 
-	var sort;
-	var sortObject = {};
-	var count = req.query.count || 5;
-	var page = req.query.page || 1;
-
-
-	var filter = {
-		filters : {
-			mandatory : {
-				contains: req.query.filter
-			}
-		}
-	};
-
-	var pagination = {
-		start: (page - 1) * count,
-		count: count
-	};
-
-	if (req.query.sorting) {
-		var sortKey = Object.keys(req.query.sorting)[0];
-		var sortValue = req.query.sorting[sortKey];
-		sortObject[sortValue] = sortKey;
+	if (req.query.symbol !== null && req.query.symbol !== undefined && req.query.symbol !== '') {
+		//Core.checkInternet(function(isConnected) {
+			var isConnected = true;
+		    if (isConnected) {
+		    	Quote.yahooQuote(req.query.symbol,res);
+		    	//Performance.yahooQuote(req.query.symbol,res);
+		    	//Fundamentals.yahooQuote(req.query.symbol,res);
+		    } else {
+		    	Quote.localSearch(req.query.symbol, res);
+		    	//Performance.localSearch(req.query.symbol, res);
+		    	//Fundamentals.localSearch(req.query.symbol, res);
+		    }
+		//});
 	}
 	else {
-		sortObject.desc = '_id';
+		return new Error('You must select a symbol');		
 	}
-
-	sort = {
-		sort: sortObject
-	};
-
-	if (req.query.searchFor === '' || req.query.searchFor === 'home') {
-		Quote.search(req.query.symbol);
-	}
-	else if (req.query.searchFor === 'fundamentals') {
-		Fundamentals.search(req.query.symbol);
-	}
-	else if (req.query.searchFor === 'performance') {
-		Performance.search(req.query.symbol);		
-	}
-
-/*
-	Stockpositiondetail
-		.find()
-		.filter(filter)
-		.order(sort)
-		.page(pagination, function(err, stockpositiondetails){
-			if (err) {
-				return res.status(400).send({
-					message: errorHandler.getErrorMessage(err)
-				});
-			} else {
-				res.jsonp(stockpositiondetails);
-			}
-		});
-*/
 };
 
 /**

@@ -5,9 +5,9 @@
  */
 var mongoose = require('mongoose'),
 	passport = require('passport'),
+	config = require('../../config/config'),
 	errorHandler = require('./errors.server.controller'),
 	Quote = mongoose.model('Quote'),
-	Core = require('./core.server.controller'),
 	_ = require('lodash'),
 	yql = require('yql-node');
 
@@ -15,8 +15,6 @@ var mongoose = require('mongoose'),
  * Create a Quote
  */
 function create(req, res) {
-	console.log('Creating a new one', req);
-
 	var quote = new Quote(req);
 
 	quote.save(function(err) {
@@ -34,7 +32,6 @@ function create(req, res) {
  * Update a Quote
  */
 function update(req, res) {
-	console.log('Updating an existing', req);
 	var quote = req;
 
 	quote = _.extend(quote , req);
@@ -51,15 +48,17 @@ function update(req, res) {
 	});
 }
 
-function yahooQuote(symbol, res) {
+exports.yahooQuote = function(symbol, res) {
+
+	console.log('yahoo');
 
 	// TSX is TO in YQL. Make this dynamic once I support other exchanges 
 	var exchange = 'TO';
 	var yahooSymbol = symbol.concat('.', exchange);
 	var query = 'select * from yahoo.finance.quote where symbol in ("'.concat(yahooSymbol).concat('");');
 
-	yql.formatAsJSON().withOAuth('','');
-	yql.execute(query, true, function(err,res) {
+	yql.formatAsJSON().withOAuth(config.yahoo.clientID,config.yahoo.clientSecret);
+	yql.execute(query, true, function(err,response) {
 
 		if (err) {
 			return res.status(400).send({
@@ -69,59 +68,56 @@ function yahooQuote(symbol, res) {
 
 			var query = {'Symbol': symbol},
 				options = {'upsert': true, 'new': true, 'setDefaultOnInsert': true},
-				quoteResponse = JSON.parse(res).query.results.quote;
+				quoteResponse = JSON.parse(response).query.results.quote;
 
 			quoteResponse.Symbol = symbol;
 			quoteResponse.YahooSymbol = yahooSymbol;
 			quoteResponse.lastUpdate = Date.now;
+			quoteResponse.LastPrice = quoteResponse.LastTradePriceOnly;
+
+			var direction = quoteResponse.Change.substring(0,1),
+				changeAmount = quoteResponse.Change.substring(1);
+
+			console.log('got here');
+
+			if (direction === '-') {
+				quoteResponse.OpenPrice = Number(quoteResponse.LastTradePriceOnly) - Number(changeAmount);
+			}
+			else {
+				quoteResponse.OpenPrice = Number(quoteResponse.LastTradePriceOnly) + Number(changeAmount);
+			}
 
 			Quote.findOneAndUpdate(query, quoteResponse, options, function (err, quote) {
 				if (err) {
+					console.log(err);
   					return res.status(400).send({message: errorHandler.getErrorMessage(err)});
   				}
   				else {
-					res.jsonp(quote);					
+					res.jsonp(quote);
 				}
 			});
 		}
 	});
-}
+};
 
 /**
 * Local Search 
 * when no connection is available, try and see if we have anything stored
 **/
-function localSearch(symbol, res) {
-	Quote.findOne({'Symbol': symbol}, function (err, quote) {
+exports.localSearch = function(symbol, res) {
+
+	console.log('local');
+
+	var query = Quote.findOne({'Symbol': symbol});
+
+	query.exec(function(err, quote ) {
 		if (err) {
 			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
 		}
-		else {
-			res.jsonp(quote);		
-		}
-	});	
-}
-
-/**
-* Search 
-* Fetch a stock quote by symbol 
-*/
-exports.search = function(symbol, res)
-{
-	if (symbol !== null && symbol !== undefined && symbol !== '') {
-		Core.checkInternet(function(isConnected) {
-		    if (isConnected) {
-		    	yahooQuote(symbol, res);
-		    } else {
-		        //Not connected, so try and search the quote db for info. 
-		        localSearch(symbol, res);
-		    }
-		});
-	}
-	else {
-		return res.status(400).send({message: new Error('You must select a symbol')});		
-	}
-
+  		else {
+			res.jsonp(quote);					
+		}		
+	});
 };
 
 /**

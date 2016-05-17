@@ -41,7 +41,7 @@ var QuoteSchema = new Schema({
 	YearLow: {
 		type: Number
 	},
-	YeahHigh: {
+	YearHigh: {
 		type: Number
 	},
 	DaysRange: {
@@ -58,6 +58,12 @@ var QuoteSchema = new Schema({
 	},
 	YahooSymbol: {
 		type: String
+	},
+	LastPrice: {
+		type: Number
+	},
+	OpenPrice: {
+		type: Number
 	}
 });
 
