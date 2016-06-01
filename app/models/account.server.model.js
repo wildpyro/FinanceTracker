@@ -18,10 +18,10 @@ var validateLocalStrategyProperty = function(property) {
  */
 var AccountSchema = new Schema({
 	
-	name: {
+	description: {
 		type: String,
 		default: '',
-		required: 'Please fill Account name',
+		required: 'Please fill in an account description',
 		trim: true
 	},
 	accountNo: {

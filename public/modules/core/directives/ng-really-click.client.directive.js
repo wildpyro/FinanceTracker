@@ -1,16 +1,16 @@
 'use strict';
 
 angular.module('core')
-  .directive('ngReallyClick', ['$modal',
-    function($modal) {
+  .directive('ngReallyClick', ['$uibModal',
+    function($uibModal) {
 
-      var ModalInstanceCtrl = function($scope, $modalInstance) {
+      var ModalInstanceCtrl = function($scope, $uibModalInstance) {
         $scope.ok = function() {
-          $modalInstance.close();
+          $uibModalInstance.close();
         };
 
         $scope.cancel = function() {
-          $modalInstance.dismiss('cancel');
+          $uibModalInstance.dismiss('cancel');
         };
       };
 
@@ -27,7 +27,7 @@ angular.module('core')
             var modalHtml = '<div class="modal-body">' + message + '</div>';
             modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>';
 
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
               template: modalHtml,
               controller: ModalInstanceCtrl
             });

@@ -2,7 +2,7 @@
 
 angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeService', function(AccountTypeService) {
 
-      var getFormFields = function(disabled) {
+      var getFormFields = function(disabled, isAdd) {
 
         var fields = [
           {
@@ -11,7 +11,7 @@ angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeServ
             templateOptions: {
               label: 'Account Type:',
               options: AccountTypeService.getEnums(),
-              disabled: disabled
+              disabled: !isAdd
             }
           },
           { 

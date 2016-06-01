@@ -19,8 +19,7 @@ var validateLocalStrategyProperty = function(property) {
 var QuoteSchema = new Schema({
 	
 	lastUpdated: {
-		type: Date,
-		default: Date.now
+		type: Date
 	},
 	created: {
 		type: Date,
@@ -59,12 +58,22 @@ var QuoteSchema = new Schema({
 	YahooSymbol: {
 		type: String
 	},
-	LastPrice: {
+	PreviousClose: {
 		type: Number
 	},
-	OpenPrice: {
+	Open: {
 		type: Number
+	},
+	PercentChangeFromYearLow: {
+		type: String
+	},
+	MarketCapitalization: {
+		type: String
+	},
+	PercentChange: {
+		type: String
 	}
+
 });
 
 mongoose.model('Quote', QuoteSchema);

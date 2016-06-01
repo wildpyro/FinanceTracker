@@ -57,7 +57,8 @@ module.exports = function(grunt) {
 			all: {
 				src: watchFiles.clientJS.concat(watchFiles.serverJS),
 				options: {
-					jshintrc: true
+					jshintrc: true,
+					force: true
 				}
 			}
 		},
@@ -87,10 +88,20 @@ module.exports = function(grunt) {
 			}
 		},
 		nodemon: {
+			default: {
+				script: 'server.js',
+				stdout: true,
+				options: {
+					nodeArgs: ['--debug'],
+					ext: 'js,html',
+					watch: watchFiles.serverViews.concat(watchFiles.serverJS),
+					ignore: ignoreFiles.node_modules 
+				}
+			},			
 			dev: {
 				script: 'server.js',
 				options: {
-					nodeArgs: ['--debug'],
+					nodeArgs: ['--debug'], //or use --debug--brk
 					ext: 'js,html',
 					watch: watchFiles.serverViews.concat(watchFiles.serverJS),
 					ignore: ignoreFiles.node_modules 
@@ -119,7 +130,7 @@ module.exports = function(grunt) {
 		},
 		concurrent: {
 			default: ['nodemon', 'watch'],
-			debug: ['nodemon', 'watch', 'node-inspector'],
+			debug: ['nodemon:dev', 'watch', 'node-inspector'],
 			options: {
 				logConcurrentOutput: true,
 				limit: 10

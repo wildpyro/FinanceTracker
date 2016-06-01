@@ -9,8 +9,8 @@
     </div>
 
     <div class="account-panel" ng-repeat="value in ctrl.accountsSearch.results">
-        <h2 class="account-header">{{formatTitle(value.name,value.accountNo, value.accountType)}}</h2>
-        <div class="animate-show" ng-show="show(value.marketValue)">
+        <h2 class="account-header">{{ctrl.formatTitle(value.description,value.accountNo, value.accountType)}}</h2>
+        <div class="animate-show" ng-show="ctrl.show(True)">
             <div class= "table-reponsive" data-ng-controller="StockpositionsController as stockCtrl">
                 {{stockCtrl.getData(value)}}
                 <table class="table smart-table table-hover" st-table="stockCtrl.rowsCollection" st-safe-src="rows">

@@ -18,12 +18,12 @@ var validateLocalStrategyProperty = function(property) {
  */
 var FundamentalsSchema = new Schema({
 	
-	name: {
-		type: String,
-		default: '',
-		required: 'Please fill Account name',
-		trim: true
+	Symbol: {
+		type: String
 	},
+	YahooSymbol: {
+		type: String
+	},	
 	lastUpdated: {
 		type: Date,
 		default: Date.now
@@ -36,7 +36,35 @@ var FundamentalsSchema = new Schema({
 		type: Schema.ObjectId,
 		ref: 'User'
 	},
-	stockPositions: [{type: Schema.Types.ObjectId, ref: 'Stockposition'}]
+	EarningsShare: {
+		type: Number
+	},
+	EPSEstimateCurrentYear: {
+		type: Number
+	},
+	EPSEstimateNextQuarter: {
+		type: Number
+	},
+	EPSEstimateNextYear: {
+		type: Number
+	},
+	PriceSales: {
+		type: Number
+	},
+	PriceBook: {
+		type: Number
+	},
+	ExDividendDate: {
+		type: String
+	},
+	DividendPayDate: {
+		type: String
+	},	
+	PERatio: {
+		type: Number
+	}
+
+	
 });
 
 mongoose.model('Fundamentals', FundamentalsSchema);

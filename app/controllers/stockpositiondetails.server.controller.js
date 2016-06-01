@@ -5,7 +5,6 @@
  */
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
-	//Quote = require('./quote.server.controller'),
 	Quote = require('./quote.server.controller'),
 	Core = require('./core.server.controller'),
 	QuoteModel = mongoose.model('Quote'),
@@ -31,12 +30,16 @@ exports.list = function(req, res) {
 			var isConnected = true;
 		    if (isConnected) {
 		    	Quote.yahooQuote(req.query.symbol,res);
-		    	//Performance.yahooQuote(req.query.symbol,res);
-		    	//Fundamentals.yahooQuote(req.query.symbol,res);
 		    } else {
-		    	Quote.localSearch(req.query.symbol, res);
-		    	//Performance.localSearch(req.query.symbol, res);
-		    	//Fundamentals.localSearch(req.query.symbol, res);
+		    	if (req.query.searchFor === 'performance') {
+		    		Performance.localSearch(req.query.symbol, res);
+		    	}
+		    	else if (req.query.searchFor === 'fundamentals') {
+		    		Fundamentals.localSearch(req.query.symbol, res);
+		    	}
+		    	else {
+		    		Quote.localSearch(req.query.symbol, res);
+		    	}
 		    }
 		//});
 	}

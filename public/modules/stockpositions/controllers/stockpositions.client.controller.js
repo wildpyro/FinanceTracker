@@ -12,10 +12,6 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		this.rows = [];
 		this.rowsCollection = [];
 
-		//$scope.$watch(() => this.rows, function (newVal) {
-		//  console.log(self.rows);
-		//});		
-
 		/*
 		* This only works for non-async calls. Calling this from outside the table create as I don't want this promise based. 
 		*/
@@ -65,8 +61,8 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		};
 
 //Single Record functions//
-		$scope.setFormFields = function(disabled) {
-			$scope.formFields = StockpositionsForm.getFormFields(disabled);
+		this.setFormFields = function(disabled, isAdd) {
+			$scope.formFields = StockpositionsForm.getFormFields(disabled, isAdd);
 		};
 
 		// Create new Stockposition
@@ -110,14 +106,16 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 			});
 		};
 
-		$scope.toViewStockposition = function() {
+		this.toViewStockposition = function() {
 			$scope.stockposition = Stockpositions.get( {stockpositionId: $stateParams.stockpositionId} );
-			$scope.setFormFields(true);
+			console.log('got here');
+			this.setFormFields(true, true);
 		};
 
-		$scope.toEditStockposition = function() {
+		this.toEditStockposition = function() {
 			$scope.stockposition = Stockpositions.get( {stockpositionId: $stateParams.stockpositionId} );
-			$scope.setFormFields(false);
+			console.log($scope.stockposition);
+			this.setFormFields(false, false);
 		};
 
 //Listing functions 
@@ -128,10 +126,6 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 
 		this.resolveAccountType = function(enumValue) {
 			return AccountTypeService.getText(enumValue);
-		};
-
-		this.getAccountType = function(enumText) {
-			return 0;
 		};
 
 		this.getInstance = function(accountType) {

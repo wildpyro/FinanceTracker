@@ -1,1 +1,28 @@
-this is the details panel
+<div class="col-md-12 ticker-panel">
+	<div ng-if="ctrl.colour(ctrl.quote.Change)" class="stockup"><span>Daily Change: {{ctrl.quote.Change}}</span><span class="glyphicon glyphicon-arrow-up"></span></div> 
+	<div ng-if="!ctrl.colour(ctrl.quote.Change)" class="stockdown"><span>Daily Change: {{ctrl.quote.Change}}</span><span class="glyphicon glyphicon-arrow-down"></span></div> 
+
+	<div ng-if="ctrl.colour(ctrl.quote.PercentChange)" class="stockup"><span>Daily Change Pct: {{ctrl.quote.PercentChange}}</span><span class="glyphicon glyphicon-arrow-up"></span></div>
+	<div ng-if="!ctrl.colour(ctrl.quote.PercentChange)" class="stockdown"><span>Daily Change Pct: {{ctrl.quote.PercentChange}}</span><span class="glyphicon glyphicon-arrow-down"></span></div>
+
+	<div ng-if="ctrl.colour(ctrl.quote.PercentChangeFromYearLow)" class="stockup"><span>Yearly Change Pct: {{ctrl.quote.PercentChangeFromYearLow}}</span><span class="glyphicon glyphicon-arrow-up"></span></div>
+	<div ng-if="!ctrl.colour(ctrl.quote.PercentChangeFromYearLow)" class="stockdown"><span>Yearly Change Pct: {{ctrl.quote.PercentChangeFromYearLow}}</span><span class="glyphicon glyphicon-arrow-down"></span></div>
+</div>
+
+<div class="form col-md-6">
+	Quote Details 
+	<form novalidate>
+		<formly-form model="ctrl.quote" fields="quote1">
+		</formly-form>
+	</form>
+	<hr/>
+</div>
+
+<div class="form col-md-6">
+	Price Movement
+	<form novalidate>
+		<formly-form model="ctrl.quote" fields="quote2">
+		</formly-form>
+	</form>
+	<hr/>
+</div>

@@ -15,6 +15,9 @@ var mongoose = require('mongoose'),
 **/
 var updateReferences = function(action, stockposition) {
 
+//	console.log('what are we looking for?');
+//	console.log(stockposition.accountType[0]);
+
 	Account.findOne({'accountType': stockposition.accountType[0]}, function(err, account) {
 		if (err) {return err;}	
 		else {
@@ -163,58 +166,6 @@ exports.list = function(req, res) {
 				res.jsonp(stockpositions);
 			}
 		});
-};
-
-/**
- * List of Stockpositions
- */
-exports.listByAccountType = function(req, res) {
-
-	var sort;
-	var sortObject = {};
-	var count = req.query.count || 5;
-	var page = req.query.page || 1;
-
-	var filter = {
-		filters : {
-			mandatory : {
-				contains: req.query.filter
-			}
-		}
-	};
-
-	var pagination = {
-		start: (page - 1) * count,
-		count: count
-	};
-
-	if (req.query.sorting) {
-		var sortKey = Object.keys(req.query.sorting)[0];
-		var sortValue = req.query.sorting[sortKey];
-		sortObject[sortValue] = sortKey;
-	}
-	else {
-		sortObject.desc = '_id';
-	}
-
-	sort = {
-		sort: sortObject
-	};
-
-	console.log(req.params.accountType);
-
-	Stockposition
-		.where('accountType').in([req.params.accountType])
-		.order(sort)
-		.page(pagination, function(err, stockpositions){
-			if (err) {
-				return res.status(400).send({
-					message: errorHandler.getErrorMessage(err)
-				});
-			} else {
-				res.jsonp(stockpositions);
-			}
-		});		
 };
 
 /**

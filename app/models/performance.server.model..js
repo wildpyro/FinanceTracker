@@ -18,15 +18,14 @@ var validateLocalStrategyProperty = function(property) {
  */
 var PerformanceSchema = new Schema({
 	
-	name: {
-		type: String,
-		default: '',
-		required: 'Please fill Account name',
-		trim: true
+	Symbol: {
+		type: String
+	},
+	YahooSymbol: {
+		type: String
 	},
 	lastUpdated: {
-		type: Date,
-		default: Date.now
+		type: Date
 	},
 	created: {
 		type: Date,
@@ -36,7 +35,18 @@ var PerformanceSchema = new Schema({
 		type: Schema.ObjectId,
 		ref: 'User'
 	},
-	stockPositions: [{type: Schema.Types.ObjectId, ref: 'Stockposition'}]
+	FiftydayMovingAverage: {
+		type: Number
+	},
+	TwoHundreddayMovingAverage: {
+		type: Number
+	},
+	PercentChangeFromTwoHundreddayMovingAverage: {
+		type: String
+	},
+	PercentChangeFromFiftydayMovingAverage: {
+		type: String
+	}
 });
 
 mongoose.model('Performance', PerformanceSchema);

@@ -1,35 +1,49 @@
 'use strict';
 
 // Stockpositiondetails controller
-angular.module('stockpositiondetails').controller('StockpositiondetailsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Stockpositiondetails', 'StockpositiondetailsForm', '$state',
+angular.module('stockpositiondetails').controller('StockpositiondetailsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Stockpositiondetails', 'StockpositiondetailsForm', '$state', 
 	function($scope, $stateParams, $location, Authentication, Stockpositiondetails, StockpositiondetailsForm, $state) {
-		var self = this;
+		var self = this,
+			searchFor = '';
+
+		this.quote = new Stockpositiondetails(); 
 		$scope.authentication = Authentication;
-		$scope.stockpositiondetail = {};
-
+		
 		//Set the symbol for navigation 
-		this.symbol = $stateParams.symbol;
-
-		var searchFor = '';
+		self.symbol = $stateParams.symbol;
 
 		if ($state.is('spd.home')) {
 			searchFor = 'quote';
+			this.quote = Stockpositiondetails.get({symbol: $stateParams.symbol, searchFor: searchFor});
+			$scope.quote1 = StockpositiondetailsForm.getFormFieldsQuote1(true);
+			$scope.quote2 = StockpositiondetailsForm.getFormFieldsQuote2(true);
+
+			//Emit these out to the master frame? TODO
+			//$scope.DailyChange = this.quote.Change;
+			//$scope.PercentChange = this.quote.PercentChange;
+			//$scope.PercentChangeFromYearLow = this.quote.PercentChangeFromYearLow;			
 		}
 		else if ($state.is('spd.performance')) {
 			searchFor = 'performance';
+			this.performance = Stockpositiondetails.get({symbol: $stateParams.symbol, searchFor: searchFor});
+			$scope.perf1 = StockpositiondetailsForm.getFormFieldsPerf1(true);
 		}
 		else if ($state.is('spd.fundamentals')) {
 			searchFor = 'fundamentals';
+			this.fundamentals = Stockpositiondetails.get({symbol: $stateParams.symbol, searchFor: searchFor});
+			$scope.fund1 = StockpositiondetailsForm.getFormFieldsFund1(true);
+			$scope.fund2 = StockpositiondetailsForm.getFormFieldsFund2(true);
 		}
-			
-		this.stockpositiondetail = Stockpositiondetails.get({symbol: this.symbol, searchFor: searchFor});
 
-		$scope.setFormFields = function(disabled) {
-			$scope.formFields = StockpositiondetailsForm.getFormFields(disabled);
+		this.colour = function(value) {
+			if (!angular.isUndefined(value)) {	
+				if (value.substr(0,1) === '+') {
+					return true; 
+				}
+				
+				return false;
+			}
 		};
-
-
-
 	}
 
 ]);

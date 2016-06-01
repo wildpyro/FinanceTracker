@@ -2,7 +2,7 @@
 
 angular.module('accounts').factory('AccountsForm', ['AccountTypeService', function(AccountTypeService) {
 
-      var getFormFields = function(disabled) {
+      var getFormFields = function(disabled, isAdd) {
 
         var fields = [
         	{
@@ -27,7 +27,7 @@ angular.module('accounts').factory('AccountsForm', ['AccountTypeService', functi
             templateOptions: {
               label: 'Account Type:',
               options: AccountTypeService.getEnums(),
-              disabled: disabled
+              disabled: isAdd
             }
           }
         ];

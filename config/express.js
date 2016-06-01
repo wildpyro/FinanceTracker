@@ -15,9 +15,7 @@ var fs = require('fs'),
 	cookieParser = require('cookie-parser'),
 	helmet = require('helmet'),
 	passport = require('passport'),
-	MongoStore = require('connect-mongo')({
-		session: session
-	}),
+	MongoStore = require('connect-mongo')({session: session}),
 	flash = require('connect-flash'),
 	config = require('./config'),
 	consolidate = require('consolidate'),
@@ -85,15 +83,15 @@ module.exports = function(db) {
 	// CookieParser should be above session
 	app.use(cookieParser());
 
+	//console.log(db.connection.db.options);
+
 	// Express MongoDB session storage
 	app.use(session({
 		saveUninitialized: true,
 		resave: true,
 		secret: config.sessionSecret,
-		store: new MongoStore({
-			db: db.connection.db,
-			collection: config.sessionCollection
-		})
+		store: new MongoStore({url: 'mongodb://localhost/finance-tracker-dev', collection: config.sessionCollection})
+	//	store: new MongoStore({db: db.connection.db, collection: config.sessionCollection})
 	}));
 
 	// use passport session
@@ -103,12 +101,13 @@ module.exports = function(db) {
 	// connect flash for flash messages
 	app.use(flash());
 
-	// Use helmet to secure Express headers
-	app.use(helmet.xframe());
-	app.use(helmet.xssFilter());
-	app.use(helmet.nosniff());
-	app.use(helmet.ienoopen());
-	app.disable('x-powered-by');
+	// Use helmet to secure Express headers this now does 7 out of the 10 packages 
+	app.use(helmet());
+	//app.use(helmet.xframe());
+	//app.use(helmet.xssFilter());
+	//app.use(helmet.nosniff());
+	//app.use(helmet.ienoopen());
+	//app.disable('x-powered-by');
 
 	// Setting the app router and static folder
 	app.use(express.static(path.resolve('./public')));

@@ -1,0 +1,61 @@
+<section data-ng-controller="TxnsController as txnCtrl">
+    <div class="page-header">
+        <h1 class="page-title">Trades and Transactions</h1>
+    </div>
+    <div>
+
+<!--<st-date-range predicate="birthDate" before="query.before" after="query.after"></st-date-range>!-->
+        <uib-accordion>
+            <uib-accordion-group is-open="status.open">
+                <uib-accordion-heading>
+                    Add A Trade <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                </uib-accordion-heading>
+                    <div class="addPanel">
+                        <form novalidate>
+                            <formly-form model="txns" fields="formFields">
+                            </formly-form>
+                        </form>
+                    </div>          
+            </uib-accordion-group>
+        </uib-accordion>
+
+        <table class="table smart-table table-hover" st-table="txnCtrl.rowsCollection" st-safe-src="rows" st-pipe="txnCtrl.fetch">    
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th st-sort-default="true">Symbol</th>
+                    <th>Type</th>                    
+                    <th>Price</th>
+                    <th>Shares</th>
+                    <th>Commission</th>                    
+                    <th st-skip-natural="true">Total Cost</th>
+                    <th>Avg Cost</th>
+                    <th><!--Action !--></th> 
+                </tr>
+                <tr>
+                    <th colspan="6">
+                        <input st-search="symbol" class="input-sm form-control" type="search"/>
+                    </th>                
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in txnCtrl.rowsCollection[0].data">
+                    <td>{{row.date | date}}</td>
+                    <td>{{row.symbol | uppercase}}</td>
+                    <td>{{row.type}}</td>
+                    <td>{{row.price | currency}}</td>
+                    <td>{{row.shares | number}}</td>
+                    <td>{{row.commission | currency}}</td>
+                    <td>{{txnCtrl.totalCost(row.price,row.commission,row.shares) | currency}}</td>
+                    <td>{{txnCtrl.avgCost(row.price,row.commission,row.shares) | currency}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td class="text-center" st-pagination="" st-items-by-page="10" colspan="4">
+                </td>
+            </tr>
+            </tfoot>            
+        </table>
+    </div>
+</section>

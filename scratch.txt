@@ -1,171 +1,71 @@
-ng-init="getAccounts()
-
-		this.getData = function(data) {
-			if ($location.$$url === '/accounts') {
-				console.log('got here');
-				if (angular.isDefined(data.stockPositions) && data.stockPositions !== null && data.stockPositions.length > 0) {
-
-					function doesMatch(dataToTest) {
-						if (angular.isDefined(data.stockPositions.accountType) && 
-							data.stockPositions.accountType !== null &&  
-							dataToTest.accountType !== data.stockPositions.accountType[0] &&
-							dataToTest.data.symbol !== data.stockPositions.symbol) {
-							return false;
-						}
-						else {
-							return true;
-						}
-					}
-
-					var test2 = this.test.filter(doesMatch);
-
-					if (test2.length === 0) {		
-						this.test.push({accountType: data.accountType[0], data: data.stockPositions});
-						this.tableParams.settings({data: data.stockPositions});
-						//console.log('AccountType:' + data.accountType[0] + ', ' + data.stockPositions.length);
-					}
-				}
-			}
-			else {
-				this.tableParams = TableSettings.getParams(Stockpositions);
-			}			
-		};
-
-
---Stock positions 
-<tr ng-repeat="stockposition in $data">
-    <td data-title="'Symbol'" sortable="'symbol'" filter="{ 'symbol': 'text' }">{{stockposition.symbol}}</td>
-    <td data-title="'Description'" sortable="'description'" filter="{ 'description': 'text' }">{{stockposition.description}}</td>
-    <td data-title="'Price'" sortable="'price'" sort="{ 'price': 'number' }">{{stockposition.price | currency}}</td>
-    <td data-title="'Shares'" sortable="'shares'" sort="{ 'shares': 'number' }">{{stockposition.shares | currency}}</td>
-    <td data-title="'Market Value'" sortable="'market'" sort="{ 'market': 'number' }">{{stockCtrl.calcMV(stockposition.price,stockposition.shares) | currency}}</td>
-    <td>
-        <div class="table-actions">
-    <td>
-       <div class="table-actions">
-            <a class="btn btn-default" title="View" href="/#!/stockpositions/{{stockposition._id}}">
-                <span class="glyphicon glyphicon-eye-open"></span>
-            </a>
-            <a class="btn btn-default" title="Edit" href="/#!/stockpositions/{{stockposition._id}}/edit">
-                <span class="glyphicon glyphicon-edit"></span>
-            </a>
-            <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove(stockposition)" item="stockposition">
-                    <span class="glyphicon glyphicon-remove-circle"></span>
-                </a>
-        </div>
-    </td>
-</tr>
-
-<td data-title="'Symbol'" sortable="'symbol'" filter="{ 'symbol': 'text' }">{{stockposition.symbol}}</td>
-<td data-title="'Description'" sortable="'description'" filter="{ 'description': 'text' }">{{stockposition.description}}</td>
-<td data-title="'Price'" sortable="'price'" sort="{ 'price': 'number' }">{{stockposition.price | currency}}</td>
-<td data-title="'Shares'" sortable="'shares'" sort="{ 'shares': 'number' }">{{stockposition.shares | number:0}}</td>
-<td data-title="'Market Value'" sortable="'market'" sort="{ 'market': 'number' }">{{stockCtrl.calcMV(stockposition.price,stockposition.shares) | currency}}</td>
-
-
-number.html
-<input type="number" name="{{name}}" ng-disabled="$filterRow.disabled" ng-model="params.filter()[name]" class="input-filter form-control"
-       placeholder="{{getFilterPlaceholderValue(filter, name)}}"/>
-
-
-<tr ng-repeat="stockposition in $data" ng-form="rowForm">
-                    <td ng-repeat="col in $columns">{{stockposition[col.field]}}</td>
-                    <div class="table-actions">
-                    <td>
-                       <div class="table-actions">
-                            <a class="btn btn-default" title="View" href="/#!/stockpositions/{{stockposition._id}}">
-                                <span class="glyphicon glyphicon-eye-open"></span>
-                            </a>
-                            <a class="btn btn-default" title="Edit" href="/#!/stockpositions/{{stockposition._id}}/edit">
-                                <span class="glyphicon glyphicon-edit"></span>
-                            </a>
-                            <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove(stockposition)" item="stockposition">
-                                    <span class="glyphicon glyphicon-remove-circle"></span>
-                                </a>
-                        </div>
-                    </td>
-                </tr>
-
-
-            <span ng-if="col.dataType !== 'command' && !demo.isEditing" class="editable-text">{{row[col.field]}}</span>
-            <div ng-if="col.dataType !== 'command' && demo.isEditing" class="controls" ng-class="rowForm[col.field].$invalid && rowForm[col.field].$dirty ? 'has-error' : ''" ng-switch="col.dataType">
-              <input ng-switch-default type="text" name="{{col.field}}" ng-model="row[col.field]" class="editable-input form-control input-sm" required />
-              <input ng-switch-when="number" type="number" name="{{col.field}}" ng-model="row[col.field]" class="editable-input form-control input-sm" required />
-            </div>
-
-
-		this.getData = function(data) {
-			
-			if ($location.$$url === '/accounts') {
-				if (angular.isDefined(data.stockPositions) && data.stockPositions !== null && data.stockPositions.length > 0) {
-
-					function doesMatch(dataToTest) {
-						if (angular.isDefined(data.stockPositions.accountType) && 
-							data.stockPositions.accountType !== null &&  
-							dataToTest.accountType !== data.stockPositions.accountType[0] &&
-							dataToTest.data.symbol !== data.stockPositions.symbol) {
-							return false;
-						}
-						else {
-							return true;
-						}
-					}
-
-					var test2 = this.test.filter(doesMatch);
-					if (test2.length === 0) {		
-						var newInstance = TableSettings.getInstance();
-						var dataName = 'data'.concat(data.accountType[0]);
-						newInstance.settings({[dataName] : data.stockPositions});
-						newInstance.settings({data : data.stockPositions});
-						tableParamsArray.push({accountType: data.accountType[0], inst: newInstance});
-						this.test.push(data);
-					}
-				}
-			}
-			else {
-				this.tableParams = TableSettings(Stockpositions);
-			}			
-		};
-
-
-
-        <!-- <h2>{{formatTitle(value.name,value.accountNo, value.accountType)}}</h2> -->
-        <div >
-            <!-- {{stockCtrl.getData(value, value.accountType)}} -->
-            <table ng-table-dynamic="stockCtrl.tableParams with stockCtrl.cols" disable-filter="true">
-                <colgroup>
-                  <col width="20%" />
-                  <col width="30%" />
-                  <col width="15%" />
-                  <col width="15%" />
-                  <col width="20%" />    
-                </colgroup>            
-        <tr class="ng-table-group" ng-repeat-start="group in $groups">
-          <td colspan="{{$groups.visibleColumnCount}}">
-            <a href="" ng-click="group.$hideRows = !group.$hideRows">
-              <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': group.$hideRows, 'glyphicon-chevron-down': !group.$hideRows }"></span>
-              <strong>{{ group.value }}</strong>
-            </a>
-          </td>
-        </tr>
-        <tr ng-repeat="user in group.data" ng-repeat-end>
-          <td ng-repeat="col in $columns">{{user[col.field]}}</td>
-        </tr>                
-             <!--    <tr ng-repeat="row in $data" ng-form="rowForm">
-                    <td ng-repeat="col in $columns" ng-form="{{col.field}}">
-                        <span ng-if="col.dataType !== 'command'" class="editable-text">{{row[col.field]}}</span>
-                        <div ng-if="col.dataType === 'command'" class="table-actions">
-                            <a class="btn btn-default" title="View" href="/#!/stockpositions/{{row._id}}">
-                                <span class="glyphicon glyphicon-eye-open"></span>
-                            </a>
-                            <a class="btn btn-default" title="Edit" href="/#!/stockpositions/{{row._id}}/edit">
-                                <span class="glyphicon glyphicon-edit"></span>
-                            </a>
-                            <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove(row)" item="row">
-                                <span class="glyphicon glyphicon-remove-circle"></span>
-                            </a>
-                        </div>                        
-                    </td>
-                </tr>               -->
-            </table>    
-        </div>
+{
+  "name": "financetracker",
+  "description": "Full-Stack JavaScript with MongoDB, Express, AngularJS, and Node.js",
+  "version": "0.0.1",
+  "author": "Ben",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wildpyro/FinanceTracker.git"
+  },
+  "engines": {
+    "node": "5.11",
+    "npm": "3.8.8"
+  },
+  "scripts": {
+    "start": "grunt",
+    "test": "grunt test",
+    "postinstall": "bower install --config.interactive=false"
+  },
+  "dependencies": {
+    "async": "~2.0.0-rc.5",
+    "body-parser": "~1.15.1",
+    "bower": "^1.3.12",
+    "chalk": "~1.1",
+    "compression": "~1.6.2",
+    "connect-flash": "~0.1.1",
+    "connect-mongo": "~0.4.1",
+    "consolidate": "~0.14.1",
+    "cookie-parser": "~1.4.1",
+    "express": "~4.13.4",
+    "express-session": "~1.13.0",
+    "forever": "~0.15.1",
+    "glob": "~7.0.3",
+    "grunt-cli": "~1.2.0",
+    "helmet": "~2.0.0",
+    "lodash": "~4.12.0",
+    "method-override": "~2.3.0",
+    "mongoose": "~4.4.17",
+    "mongoose-middleware": "~0.2.19",
+    "morgan": "~1.7.0",
+    "nodemailer": "~2.4.1",
+    "passport": "~0.3.2",
+    "passport-google-oauth": "~1.0.0",
+    "passport-local": "~1.0.0",
+    "passport-yahoo": "~0.3.0",
+    "passport-yahoo-oauth": "^0.1.2",
+    "swig": "~1.4.1",
+    "yql-node": "^0.2.1"
+  },
+  "devDependencies": {
+    "supertest": "~1.2.0",
+    "should": "~8.3.1",
+    "grunt-env": "*",
+    "grunt-node-inspector": "^0.4.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-csslint": "^1.0.0",
+    "grunt-ng-annotate": "~2.0.2",
+    "grunt-contrib-uglify": "~1.0.1",
+    "grunt-contrib-cssmin": "~1.0.1",
+    "grunt-nodemon": "^0.4.2",
+    "grunt-concurrent": "*",
+    "grunt-mocha-test": "~0.12.1",
+    "grunt-karma": "~1.0.0",
+    "load-grunt-tasks": "~3.5.0",
+    "karma": "~0.13.22",
+    "karma-jasmine": "~1.0.2",
+    "karma-coverage": "~1.0.0",
+    "karma-chrome-launcher": "~1.0.1",
+    "karma-phantomjs-launcher": "~1.0.0"
+  }
+}

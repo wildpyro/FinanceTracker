@@ -13,6 +13,8 @@ var mongoose = require('mongoose'),
  */
 exports.create = function(req, res) {
 	var account = new Account(req.body);
+
+	console.log(account);
 	account.user = req.user;
 
 	account.save(function(err) {
@@ -104,8 +106,6 @@ exports.list = function(req, res) {
 	sort = {
 		sort: sortObject
 	};
-
-	//console.log('got here server');
 
 	Account
 		.find()

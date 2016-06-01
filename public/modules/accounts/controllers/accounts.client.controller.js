@@ -3,22 +3,23 @@
 // Accounts controller
 angular.module('accounts').controller('AccountsController', ['$scope', '$stateParams', '$location', 'Authentication', 'AccountService', 'AccountsForm', 
 	function($scope, $stateParams, $location, Authentication, AccountService, AccountsForm) {
+		var self = this; 
 		this.authentication = Authentication;
 		this.account = {};
-		this.accountsSearch = AccountService.get();
+		self.accountsSearch = AccountService.get();
 		
 //Single Record Functions 
-		$scope.setFormFields = function(disabled) {
-			$scope.formFields = AccountsForm.getFormFields(disabled);
+		this.setFormFields = function(disabled, isAdd) {
+
+			this.formFields = AccountsForm.getFormFields(disabled, isAdd);
 		};
 
 		// Create new Account from create-account.client.view.html
-		$scope.create = function() {
+		this.create = function() {
 			var account = new AccountService(this.account);
 
 			// Redirect after save
-			account.$save(function(response) {
-				$location.path('accounts/' + response._id);
+			account.$save(function(response) {$location.path('accounts/' + response._id);
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -37,7 +38,6 @@ angular.module('accounts').controller('AccountsController', ['$scope', '$statePa
 					$location.path('accounts');
 				});
 			}
-
 		};		
 
 		// Update existing Account
@@ -51,24 +51,23 @@ angular.module('accounts').controller('AccountsController', ['$scope', '$statePa
 			});
 		};
 
-		$scope.toViewAccount = function() {
+		this.toViewAccount = function() {
 			this.account = AccountService.get( {accountId: $stateParams.accountId} );
-			this.setFormFields(true);
+			this.setFormFields(true, true);
 		};
 
-		$scope.toEditAccount = function() {
+		this.toEditAccount = function() {
 			this.account = AccountService.get( {accountId: $stateParams.accountId} );
-			this.setFormFields(false);
+			this.setFormFields(false, false);
 		};
-
 
 //Listing Functions 
-		$scope.formatTitle = function(accountName, accountNo, accountType) {
+		this.formatTitle = function(accountName, accountNo, accountType) {
 			var account =  accountName.concat(' ~ ',accountNo);			
 			return account;
 		};
 
-		$scope.show = function(marketValue) {
+		this.show = function(marketValue) {
 			if (marketValue === 0) {
 				return false;
 			}
