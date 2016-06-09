@@ -17,13 +17,13 @@ exports.create = function(req, res) {
 
 	txn.save(function(err) {
 		if (err) {
+
+			console.log(err);
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} 
 		else {
-			if (err) {return res.status(400).send({message: errorHandler.getErrorMessage(err)});}
-
 			res.jsonp(txn);
 		}	
 	});

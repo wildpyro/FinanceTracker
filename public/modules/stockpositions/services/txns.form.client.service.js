@@ -1,65 +1,64 @@
-(function() {
-    'use strict';
+'use strict';
 
-    angular.module('stockpositions').factory('TxnsForm', factory);
+angular.module('stockpositions').factory('TxnsForm', ['TxnTypesService', function(txnTypes) {
 
-    function factory() {
+  var getFormFields = function() {
+    
+    var fields = [
+      { 
+        key: 'date',
+        type: 'datepicker',
+        templateOptions: {
+          label: 'Date',
+          type: 'text',
+          datepickerPopup: 'dd-MMMM-yyyy'
+        }
+      },          
+      { 
+				key: 'symbol',
+				type: 'input',
+				templateOptions: {
+		      label: 'Symbol:'
+		    }
+      },
+      {
+        key: 'type',
+        type: 'select',
+        templateOptions: {
+          label: 'Txn Type:',
+           options: txnTypes.getEnums()
+        }
+      },
+      {  
+        key: 'price',
+        type: 'input',
+        templateOptions: {
+          label: 'Price:'
+        }  
+      },
+      {
+        key: 'shares',
+        type: 'input',
+        templateOptions: {
+          label: 'Shares:'
+        }  
+      },
+      {
+        key: 'commission',
+        type: 'input',
+        templateOptions: {
+          label: 'Commission:'
+        }  
+      }            
+		];
 
-      var getFormFields = function(disabled, isAdd) {
-        
-        var fields = [
-          { 
-            key: 'date',
-            type: 'input',
-            templateOptions: {
-              label: 'Date:'
-            }
-          },          
-          { 
-  					key: 'symbol',
-  					type: 'input',
-  					templateOptions: {
-  			      label: 'Symbol:'
-  			    }
-          },
-          {
-            key: 'type',
-            type: 'input',
-            templateOptions: {
-              label: 'Txn Type:'
-            }
-          },
-          {  
-            key: 'price',
-            type: 'input',
-            templateOptions: {
-              label: 'Price:'
-            }  
-          },
-          {
-            key: 'shares',
-            type: 'input',
-            templateOptions: {
-              label: 'Shares:'
-            }  
-          },
-          {
-            key: 'commission',
-            type: 'input',
-            templateOptions: {
-              label: 'Commission:'
-            }  
-          }            
-  			];
+    return fields;
 
-        return fields;
+  };
 
-      };
+  var service = {
+    getFormFields: getFormFields
+  };
 
-      var service = {
-        getFormFields: getFormFields
-      };
-
-      return service;
-  }
-})();
+    return service;
+}]);

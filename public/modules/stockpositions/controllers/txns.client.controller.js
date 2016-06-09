@@ -4,12 +4,16 @@
 angular.module('stockpositions').controller('TxnsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Txns', 
 																		 'SmartTableFactory', '$filter', 'TxnsForm', 
 	function($scope, $stateParams, $location, Authentication, Txns, SmartTableFactory, $filter, TxnsForm) {
-		var self = this;
-		self.isLoading = false;
+		var vm = this;
+		vm.isLoading = false;
 		$scope.authentication = Authentication;
 		this.txns = {};
 		this.rows = [];
 		this.rowsCollection = [];
+		this.formFields = TxnsForm.getFormFields();
+	    
+	    vm.model = {};		
+	    vm.options = {formState: {}};		
 
 		this.fetch = function fetch(tableState) {
 		    $scope.isLoading = true;
@@ -20,16 +24,29 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 
 		    SmartTableFactory.getPage(start, number, tableState, Txns).then(function (result) {
 
-		    	self.rows.push(result);
-        		self.rowsCollection = [].concat(self.rows);
+		    	vm.rows.push(result);
+        		vm.rowsCollection = [].concat(vm.rows);
 				tableState.pagination.numberOfPages = result.numberOfPages;//set the number of pages so the pagination can update
-				self.isLoading = false;
+				vm.isLoading = false;
 		    });
+		};
+
+		this.add = function addTxn() {
+			var txn = new Txns(this.model);
+
+			console.log(this.model);
+
+			// Redirect after save
+			txn.$save(function(response) {
+				console.log('success');
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
 		};
 
 		// Update existing Txn
 		//Probably need a full table update 
-		$scope.update = function(txn) {
+		this.update = function(txn) {
 			
 			/*stockposition.$update(function() {
 				$location.path('stockpositions/' + stockposition._id);

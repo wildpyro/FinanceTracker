@@ -24,7 +24,7 @@ var TxnSchema = new Schema({
 	type: {
 		type: [{
 			type: String,
-			enum: [0,1,2,3]
+			enum: ['Buy','Sell','Dividend','Drip']
 		}],
 		required: 'Please select a transaction type',
 		trim: true

@@ -4,8 +4,8 @@
 angular.module('networths').run(['Menus',
 	function(Menus) {
 		// Set top bar menu items
-		Menus.addMenuItem('topbar', 'Networths', 'networths', 'dropdown', '/networths(/create)?');
-		Menus.addSubMenuItem('topbar', 'networths', 'List Networths', 'networths');
+		Menus.addMenuItem('topbar', 'Networth', 'networths', 'dropdown', '/networths(/create)?');
+		Menus.addSubMenuItem('topbar', 'networths', 'List Networth', 'networths');
 		Menus.addSubMenuItem('topbar', 'networths', 'New Networth', 'networths/create');
 	}
 ]);
