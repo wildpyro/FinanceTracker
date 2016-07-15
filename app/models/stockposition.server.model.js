@@ -19,6 +19,9 @@ var StockpositionSchema = new Schema({
 		required: 'Please select an account type',
 		trim: true
 	},
+	isCash: {
+		type: Boolean
+	},
 	symbol: {
 		type: String,
 		default: '',
@@ -40,6 +43,11 @@ var StockpositionSchema = new Schema({
 		type: Number,
 		default: 0,
 		required: 'Please fill in a market value'
+	},
+	book: {
+		type: Number,
+		default: 0,
+		required: 'Please fill in the book cost'
 	},
 	description: {
 		type: String,

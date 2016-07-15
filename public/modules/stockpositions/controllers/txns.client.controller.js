@@ -2,8 +2,8 @@
 
 // Stockpositions controller
 angular.module('stockpositions').controller('TxnsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Txns', 
-																		 'SmartTableFactory', '$filter', 'TxnsForm', 
-	function($scope, $stateParams, $location, Authentication, Txns, SmartTableFactory, $filter, TxnsForm) {
+																		 'SmartTableFactory', '$filter', 'TxnsForm', 'TxnTypesService',
+	function($scope, $stateParams, $location, Authentication, Txns, SmartTableFactory, $filter, TxnsForm, TxnTypesService) {
 		var vm = this;
 		vm.isLoading = false;
 		$scope.authentication = Authentication;
@@ -11,10 +11,14 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 		this.rows = [];
 		this.rowsCollection = [];
 		this.formFields = TxnsForm.getFormFields();
+		vm.resetTable = true;
+		$scope.txn = {};
 	    
 	    vm.model = {};		
 	    vm.options = {formState: {}};		
 
+//Table operations 
+		//Fetch data from server 
 		this.fetch = function fetch(tableState) {
 		    $scope.isLoading = true;
 
@@ -24,38 +28,96 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 
 		    SmartTableFactory.getPage(start, number, tableState, Txns).then(function (result) {
 
-		    	vm.rows.push(result);
-        		vm.rowsCollection = [].concat(vm.rows);
+		    	if (vm.rowsCollection.size !== 1) {
+		    		vm.rows = result;
+		    		vm.rowsCollection = vm.rowsCollection.concat(result);
+		    	} 
+
 				tableState.pagination.numberOfPages = result.numberOfPages;//set the number of pages so the pagination can update
 				vm.isLoading = false;
 		    });
 		};
 
+//Form operations 
 		this.add = function addTxn() {
 			var txn = new Txns(this.model);
+			tableAddItem(txn);
 
-			console.log(this.model);
+			if (vm.resetTable) {
+				vm.options.resetModel();
+			}
+		};
 
-			// Redirect after save
-			txn.$save(function(response) {
-				console.log('success');
+//Table Operations 
+		function serverDelete(row) {
+			var txn = new Txns(row);
+			//This wasn't triggering the correct route without the txnid assignment. 
+			//DELETE /txns/57629c8e35289083097d2b52 it was looking like /txns?TxnId=57629c8e35289083097d2b52
+			txn.$remove({txnId:txn._id}, function(response) {
+				vm.sucess = 'record deleted';
 			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
+				vm.error = errorResponse.data.message;
 			});
-		};
+		}
 
-		// Update existing Txn
-		//Probably need a full table update 
-		this.update = function(txn) {
-			
-			/*stockposition.$update(function() {
-				$location.path('stockpositions/' + stockposition._id);
+		function serverSave(row) {
+			var txn = new Txns(row);
+			txn.$save(function(response) {
+				vm.sucess = 'record saved';
 			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});*/
-		};
+				vm.error = errorResponse.data.message;
+			});
+		}
 
-//Listing functions 
+	    //add to viewed collection 
+	    function tableAddItem(txn) {
+	        vm.rowsCollection[0].data.push(txn);
+	    }
+
+		//Attempt a delete to server 
+		this.tableDelete = function() {
+			for (var i = vm.rowsCollection[0].data.length - 1; i >= 0; i--) {
+				var row = vm.rowsCollection[0].data[i];
+				
+				if (!angular.isDefined(row._id)) {
+					serverDelete(row);	
+				}
+			}
+		};		
+
+		//Attempt to save to server 
+		this.tableSave = function() {
+			for (var i = vm.rowsCollection[0].data.length - 1; i >= 0; i--) {
+				var row = vm.rowsCollection[0].data[i];
+					
+				if (!angular.isDefined(row._id)) {
+					serverSave(row);	
+				}
+			}
+		};		
+
+		//Reset to original source
+		this.tableReset = function() {
+			vm.rowsCollection[0] = vm.rows;
+		};		
+
+		//Remove the row from either the view or the view & server 
+	    this.tableRemoveItem = function tableRemoveItem(row) {
+	        var index = vm.rowsCollection[0].data.indexOf(row);
+
+	        if (index !== -1) {
+
+	        	if (angular.isDefined(row._id)) {
+	        		serverDelete(row);
+	        		vm.rowsCollection[0].data.splice(index, 1);
+	        	}
+	        	else {
+	            	vm.rowsCollection[0].data.splice(index, 1);
+	        	}
+	        }
+	    };
+	    
+//Listing Operations  
 		this.totalCost = function(price,commission,shares) {
 
 			if (!angular.isDefined(commission)) {
@@ -74,6 +136,11 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 
 			var avg = (Number(price) * Number(shares) + Number(commission)) / Number(shares);
 			return avg;
+		};
+
+		this.resolveTxnType = function(enumValue) {
+			console.log(enumValue[0]);
+			return TxnTypesService.getText(enumValue);
 		};
 	}
 ]);

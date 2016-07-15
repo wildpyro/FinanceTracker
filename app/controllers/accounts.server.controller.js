@@ -98,20 +98,20 @@ exports.list = function(req, res) {
 		var sortKey = Object.keys(req.query.sorting)[0];
 		var sortValue = req.query.sorting[sortKey];
 		sortObject[sortValue] = sortKey;
+
+		sort = {
+			sort: sortObject
+		};
 	}
 	else {
-		sortObject.desc = '_id';
+		sort = {accountType: 'asc'};
 	}
-
-	sort = {
-		sort: sortObject
-	};
 
 	Account
 		.find()
 		.filter(filter)
-		.populate({path: 'stockPositions', model: 'Stockposition'})
-		.order(sort)
+		.populate({path: 'stockPositions', model: 'Stockposition', options: {sort: {isCash: 'desc', symbol: 'asc'}}})
+		.sort(sort)
 		.page(pagination, function(err, accounts){
 			if (err) {
 				return res.status(400).send({

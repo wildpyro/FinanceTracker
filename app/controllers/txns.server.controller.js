@@ -9,7 +9,7 @@ var mongoose = require('mongoose'),
 	_ = require('lodash');
 
 /**
- * Create a Stockposition
+ * Create a Txn
  */
 exports.create = function(req, res) {
 	var txn = new Txn(req.body);
@@ -17,8 +17,6 @@ exports.create = function(req, res) {
 
 	txn.save(function(err) {
 		if (err) {
-
-			console.log(err);
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
@@ -30,14 +28,14 @@ exports.create = function(req, res) {
 };
 
 /**
- * Show the current Stockposition
+ * Show the current Txn
  */
 exports.read = function(req, res) {
 	res.jsonp(req.txn);
 };
 
 /**
- * Update a Stockposition
+ * Update a Txn
  */
 exports.update = function(req, res) {
 	var txn = req.txn ;
@@ -56,10 +54,10 @@ exports.update = function(req, res) {
 };
 
 /**
- * Delete an Stockposition
+ * Delete an Txn
  */
 exports.delete = function(req, res) {
-	var txn = req.txn ;
+	var txn = req.txn;
 
 	txn.remove(function(err) {
 		if (err) {
@@ -75,13 +73,13 @@ exports.delete = function(req, res) {
 };
 
 /**
- * List of Stockpositions
+ * List of Txn
  */
 exports.list = function(req, res) {
 
 	var sort;
 	var sortObject = {};
-	var count = req.query.count || 5;
+	var count = req.query.count || 20;
 	var page = req.query.page || 1;
 
 	var filter = {
@@ -126,7 +124,7 @@ exports.list = function(req, res) {
 };
 
 /**
- * Stockposition middleware
+ * Txn middleware
  */
 exports.txnByID = function(req, res, next, id) {
 	Txn.findById(id).populate('user', 'displayName').exec(function(err, txn) {
@@ -138,10 +136,10 @@ exports.txnByID = function(req, res, next, id) {
 };
 
 /**
- * Stockposition authorization middleware
+ * Txn authorization middleware
  */
 exports.hasAuthorization = function(req, res, next) {
-	if (req.txn.user.id !== req.user.id) {
+	if (req.user.id !== req.user.id) {
 		return res.status(403).send('User is not authorized');
 	}
 	next();

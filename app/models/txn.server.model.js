@@ -14,6 +14,14 @@ var TxnSchema = new Schema({
 		type: Date,
 		required: 'Please fill in a date'
 	},
+	accountType: {
+		type: [{
+			type: Number,
+			enum: [0,1,2,3]
+		}],
+		required: 'Please select an account type',
+		trim: true
+	},	
 	symbol: {
 		type: String,
 		default: '',

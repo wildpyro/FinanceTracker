@@ -5,10 +5,12 @@ angular.module('core').factory('SmartTableFactory', ['$http', '$q', '$filter', '
 
         var deferred = $q.defer();
 
+        console.log(params);
+
         Entity.get(params.pagination, function(response) {
             deferred.resolve({
                 data: response.results,
-                numberOfPages: Math.ceil(response.results.length / number)
+                resultsPages: Math.ceil(response.results.length / number)
             });
         });
 

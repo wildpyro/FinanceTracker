@@ -2,14 +2,12 @@
     <div class="page-header">
         <div class="page-title">Accounts</div>
         <div class="centered">
-          <a type="button" class="btn btn-success centered" href="/#!/accounts/create">
-            <i class="glyphicon glyphicon-open"></i> New Account
-          </a>
+          <a type="button" class="btn btn-success" href="/#!/accounts/create"><i class="glyphicon glyphicon-open"></i> New Account</a>
         </div>        
     </div>
 
     <div class="account-panel" ng-repeat="value in ctrl.accountsSearch.results">
-        <h2 class="account-header">{{ctrl.formatTitle(value.description,value.accountNo, value.accountType)}}</h2>
+        <h2 class="account-header">{{ctrl.formatTitle(value.description,value.accountNo)}}</h2>
         <div class="animate-show" ng-show="ctrl.show(True)">
             <div class= "table-reponsive" data-ng-controller="StockpositionsController as stockCtrl">
                 {{stockCtrl.getData(value)}}
@@ -20,37 +18,51 @@
                             <th>Description</th>
                             <th>Price</th>
                             <th>Shares</th>
-                            <th st-skip-natural="true">MarketValue</th>
+                            <th st-skip-natural="true">Market Value</th>
+                            <th st-skip-natural="true">Book Cost</th>
+                            <th>Current Gain/Loss</th>
                             <th></th> <!--Action !-->
                         </tr>
                         <tr>
-                            <th colspan="5">
+                            <th colspan="7">
                                 <input st-search="symbol" class="input-sm form-control" type="search"/>
                             </th>                
                         </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="row in stockCtrl.getInstance(value.accountType)">
-                        <td>{{row.symbol | uppercase}}</td>
-                        <td>{{row.description}}</td>
-                        <td class="money">{{row.price | currency}}</td>
-                        <td>{{row.shares | number}}</td>
-                        <td class="money">{{stockCtrl.calcMV(row.price,row.shares) | currency}}</td>
-                        <td>
-                           <div class="table-actions">
-                                <a class="btn btn-default" title="View" ui-sref="spd({symbol: row.symbol})"><!--ui-sref="toDetailsFromStockPosition({stockpostionId: row._id})" !-->
-                                   <span class="glyphicon glyphicon-eye-open"></span>
-                                </a>
-                                <a class="btn btn-default" title="Edit" href="/#!/stockpositions/{{row._id}}/edit">
-                                    <span class="glyphicon glyphicon-edit"></span>
-                                </a>
-                                <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove(row)" item="stockposition">
-                                        <span class="glyphicon glyphicon-remove-circle"></span>
+                        <tr ng-repeat="row in stockCtrl.getInstance(value.accountType)">
+                            <td>{{row.symbol | uppercase}}</td>
+                            <td>{{row.description}}</td>
+                            <td class="money">{{row.price | currency}}</td>
+                            <td>{{row.shares | number}}</td>
+                            <td class="money">{{stockCtrl.calcMV(row.price,row.shares) | currency}}</td>
+                            <td class="money">{{row.book | currency}}</td>
+                            
+                            <td ng-show="stockCtrl.stockUp(row.price, row.shares, row.book)" class="money stockup"><span>{{stockCtrl.calcGainLoss(row.price, row.shares, row.book) | currency}}</span><span class="glyphicon glyphicon-arrow-up"></span></td> 
+                            
+                            <td ng-show="!stockCtrl.stockUp(row.price, row.shares, row.book)" class="money stockdown"><span>{{stockCtrl.calcGainLoss(row.price, row.shares, row.book) | currency}}</span><span class="glyphicon glyphicon-arrow-down"></span></td>                             
+                            
+                            <td>
+                               <div class="table-actions">
+                                    <a class="btn btn-default" title="View" ui-sref="spd({symbol: row.symbol})"><!--ui-sref="toDetailsFromStockPosition({stockpostionId: row._id})" !-->
+                                       <span class="glyphicon glyphicon-eye-open"></span>
                                     </a>
-                            </div>
-                        </td>
-                    </tr>
+                                    <a class="btn btn-default" title="Edit" href="/#!/stockpositions/{{row._id}}/edit">
+                                        <span class="glyphicon glyphicon-edit"></span>
+                                    </a>
+                                    <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove(row)" item="stockposition">
+                                            <span class="glyphicon glyphicon-remove-circle"></span>
+                                        </a>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="text-center" st-pagination="" st-items-by-page="10" colspan="4">
+                            </td>
+                        </tr>
+                    </tfoot> 
                 </table>
                 <div class="pull-right">
                     <p>Balance: {{value.marketValue}}</p>

@@ -62,7 +62,7 @@ angular.module('accounts').controller('AccountsController', ['$scope', '$statePa
 		};
 
 //Listing Functions 
-		this.formatTitle = function(accountName, accountNo, accountType) {
+		this.formatTitle = function(accountName, accountNo) {
 			var account =  accountName.concat(' ~ ',accountNo);			
 			return account;
 		};

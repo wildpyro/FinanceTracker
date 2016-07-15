@@ -1,49 +1,49 @@
 'use strict';
+(function() {
 
-angular.module('core')
-  .directive('ngReallyClick', ['$uibModal',
-    function($uibModal) {
+  var ngReallyClick = ['$uibModal', function($uibModal) {
 
-      var ModalInstanceCtrl = function($scope, $uibModalInstance) {
-        $scope.ok = function() {
-          $uibModalInstance.close();
-        };
-
-        $scope.cancel = function() {
-          $uibModalInstance.dismiss('cancel');
-        };
+    var ModalInstanceCtrl = function($scope, $uibModalInstance) {
+      $scope.ok = function() {
+        $uibModalInstance.close();
       };
 
-      return {
-        restrict: 'A',
-        scope: {
-          ngReallyClick: '&'
-        },
-        link: function(scope, element, attrs) {
+      $scope.cancel = function() {
+        $uibModalInstance.dismiss('cancel');
+      };
+    };
 
-          element.bind('click', function() {
-            var message = attrs.ngReallyMessage || 'Are you sure ?';
+    return {
+      restrict: 'A',
+      scope: {
+        ngReallyClick: '&'
+      },
+      link: function(scope, element, attrs) {
 
-            var modalHtml = '<div class="modal-body">' + message + '</div>';
-            modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>';
+        element.bind('click', function() {
+          var message = attrs.ngReallyMessage || 'Are you sure ?';
 
-            var modalInstance = $uibModal.open({
-              template: modalHtml,
-              controller: ModalInstanceCtrl
-            });
+          var modalHtml = '<div class="modal-body">' + message + '</div>';
+          modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>';
 
-            modalInstance.result.then(function() {
-              scope.ngReallyClick();
-            }, function() {
-              //Modal dismissed
-            });
-
+          var modalInstance = $uibModal.open({
+            template: modalHtml,
+            controller: ModalInstanceCtrl
           });
 
-        }
+          modalInstance.result.then(function() {
+            scope.ngReallyClick();
+          }, function() {
+            //Modal dismissed
+          });
 
-      };
+        });
 
-    }
+      }
 
-  ]);
+    };
+  }];
+
+  angular.module('core').directive('ngReallyClick', ngReallyClick);
+
+}());

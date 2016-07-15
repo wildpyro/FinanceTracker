@@ -8,6 +8,7 @@ module.exports = function(app) {
 	app.route('/txns')
 		.get(txns.list)
 		.post(users.requiresLogin, txns.create);
+		//.delete(users.requiresLogin, txns.hasAuthorization, txns.delete); The code is coming from here, not the correct URL?
 
 	app.route('/txns/:txnId')
 		.get(txns.read)

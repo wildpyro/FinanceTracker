@@ -3,25 +3,20 @@
 // Stockpositiondetails controller
 angular.module('stockpositiondetails').controller('StockpositiondetailsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Stockpositiondetails', 'StockpositiondetailsForm', '$state', 
 	function($scope, $stateParams, $location, Authentication, Stockpositiondetails, StockpositiondetailsForm, $state) {
-		var self = this,
+		var vm = this,
 			searchFor = '';
 
 		this.quote = new Stockpositiondetails(); 
 		$scope.authentication = Authentication;
 		
 		//Set the symbol for navigation 
-		self.symbol = $stateParams.symbol;
+		vm.symbol = $stateParams.symbol;
 
 		if ($state.is('spd.home')) {
 			searchFor = 'quote';
 			this.quote = Stockpositiondetails.get({symbol: $stateParams.symbol, searchFor: searchFor});
 			$scope.quote1 = StockpositiondetailsForm.getFormFieldsQuote1(true);
 			$scope.quote2 = StockpositiondetailsForm.getFormFieldsQuote2(true);
-
-			//Emit these out to the master frame? TODO
-			//$scope.DailyChange = this.quote.Change;
-			//$scope.PercentChange = this.quote.PercentChange;
-			//$scope.PercentChangeFromYearLow = this.quote.PercentChangeFromYearLow;			
 		}
 		else if ($state.is('spd.performance')) {
 			searchFor = 'performance';

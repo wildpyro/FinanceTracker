@@ -47,11 +47,27 @@ angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeServ
             }  
           },
           {
+            key: 'book',
+            type: 'input',
+            templateOptions: {
+              label: 'Book Cost:',
+              disabled: disabled
+            }  
+          },          
+          {
             key: 'market',
             type: 'input',
             templateOptions: {
               label: 'Market Value:',
               disabled: true
+            }
+          },
+          {
+            key: 'isCash',
+            type: 'checkbox',
+            templateOptions: {
+              label: 'Is cash?:',
+              disabled: disabled
             }
           }            
   			];

@@ -1,18 +1,34 @@
 'use strict';
+(function() {
+ 
+ 	var stSummary = function() {
+ 		
+ 		var controller = function() {
 
-angular.module('core').directive('stSummary', [function() {
+ 			var vm = this;
 
-	return {
-		restrict: 'E',
-		controller: 'StockpositionsController',
-		template: '<div>total:{{balance}}</div>',
-		scope: {},
-		link: function (scope, element, attr, ctrl) {
-			scope.$watch(ctrl.rows, function(val) {
-				console.log(ctrl.rows);
-				console.log(val);
-				scope.balance = 10; //(val || []).length;
-			});
-		}
-	};
-}]);
+			init();
+
+ 			function init() {
+ 				vm.datacollection = angular.copy(vm.datacollection);
+ 			}
+
+ 		};
+
+		return {
+			scope: {
+				datacollection: '=',
+				cash: '=',
+				fixed: '=',
+				equity: '='
+			}, 
+			controller: controller,
+			controllerAs: 'vm',
+			bindToController: true,
+			templateUrl: 'modules/core/views/stsummary.client.view.html'
+		};
+ 	};
+
+	angular.module('core').directive('stSummary', stSummary);
+
+}());

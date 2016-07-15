@@ -14,10 +14,6 @@ var mongoose = require('mongoose'),
 * Update references either add or delete
 **/
 var updateReferences = function(action, stockposition) {
-
-//	console.log('what are we looking for?');
-//	console.log(stockposition.accountType[0]);
-
 	Account.findOne({'accountType': stockposition.accountType[0]}, function(err, account) {
 		if (err) {return err;}	
 		else {
@@ -124,8 +120,9 @@ exports.list = function(req, res) {
 
 	var sort;
 	var sortObject = {};
-	var count = req.query.count || 5;
+	var count = req.query.count || 50; //Default to this for max for now. 
 	var page = req.query.page || 1;
+
 
 	var filter = {
 		filters : {
@@ -140,13 +137,15 @@ exports.list = function(req, res) {
 		count: count
 	};
 
+	console.log(pagination);
+	
 	if (req.query.sorting) {
 		var sortKey = Object.keys(req.query.sorting)[0];
 		var sortValue = req.query.sorting[sortKey];
 		sortObject[sortValue] = sortKey;
 	}
 	else {
-		sortObject.desc = '_id';
+		sortObject = [{isCash: 'asc', symbol: 'asc'}];
 	}
 
 	sort = {
@@ -156,7 +155,8 @@ exports.list = function(req, res) {
 	Stockposition
 		.find()
 		.filter(filter)
-		.order(sort)
+		//.sort({accountType: 'asc', symbol: 'asc'})
+		.sort({symbol: 'asc', description: 'asc'})
 		.page(pagination, function(err, stockpositions){
 			if (err) {
 				return res.status(400).send({

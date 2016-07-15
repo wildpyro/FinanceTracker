@@ -1,7 +1,11 @@
 <section data-ng-controller="StockpositionsController as stockCtrl">
     <div class="page-header">
         <h1 class="page-title">Stockpositions</h1>
+        <div class="centered">
+            <a type="button" class="btn btn-success" href="/#!/stockpositions/create"><i class="glyphicon glyphicon-open"></i> New Stockposition</a>
+        </div>
     </div>
+    <div><st-summary datacollection="stockCtrl.rowsCollection[0].data" cash="stockCtrl.cash" fixed="stockCtrl.fixed" equity="stockCtrl.equity"></st-summary></div>
     <div>
         <table class="table smart-table table-hover" st-table="stockCtrl.rowsCollection" st-safe-src="rows" st-pipe="stockCtrl.fetch">    
             <thead>
@@ -37,26 +41,17 @@
                                 <span class="glyphicon glyphicon-edit"></span>
                             </a>
                             <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove(row)" item="stockposition">
-                                    <span class="glyphicon glyphicon-remove-circle"></span>
-                                </a>
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                            </a>
                         </div>
                     </td>
                 </tr>
             </tbody>
             <tfoot>
-            <tr>
-                <td class="text-center" st-pagination="" st-items-by-page="10" colspan="4">
-                </td>
-            </tr>
-            </tfoot>            
+                <tr>
+                    <td class="text-center" st-pagination="" st-items-by-page="10" colspan="4"></td>
+                </tr>
+            </tfoot>
         </table>
-        <div class="pull-right">
-            <p><st-summary></st-summary></p>
-        </div>
-    <div class="pull-left">
-    </div>
-      <a type="button" class="btn btn-success" href="/#!/stockpositions/create">
-        <i class="glyphicon glyphicon-open"></i> New Stockposition
-      </a>
     </div>
 </section>

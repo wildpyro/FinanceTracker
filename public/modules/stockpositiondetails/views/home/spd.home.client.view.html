@@ -1,6 +1,6 @@
 <div class="col-md-12 ticker-panel">
-	<div ng-if="ctrl.colour(ctrl.quote.Change)" class="stockup"><span>Daily Change: {{ctrl.quote.Change}}</span><span class="glyphicon glyphicon-arrow-up"></span></div> 
-	<div ng-if="!ctrl.colour(ctrl.quote.Change)" class="stockdown"><span>Daily Change: {{ctrl.quote.Change}}</span><span class="glyphicon glyphicon-arrow-down"></span></div> 
+	<div ng-if="ctrl.colour(ctrl.quote.Change)" class="stockup"><span>Daily Change: ${{ctrl.quote.Change}}</span><span class="glyphicon glyphicon-arrow-up"></span></div> 
+	<div ng-if="!ctrl.colour(ctrl.quote.Change)" class="stockdown"><span>Daily Change: ${{ctrl.quote.Change}}</span><span class="glyphicon glyphicon-arrow-down"></span></div> 
 
 	<div ng-if="ctrl.colour(ctrl.quote.PercentChange)" class="stockup"><span>Daily Change Pct: {{ctrl.quote.PercentChange}}</span><span class="glyphicon glyphicon-arrow-up"></span></div>
 	<div ng-if="!ctrl.colour(ctrl.quote.PercentChange)" class="stockdown"><span>Daily Change Pct: {{ctrl.quote.PercentChange}}</span><span class="glyphicon glyphicon-arrow-down"></span></div>

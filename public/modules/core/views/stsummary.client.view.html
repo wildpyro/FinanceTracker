@@ -1,0 +1,16 @@
+
+<div class="st-summary">
+	<p class="centered">Total Positions: {{vm.datacollection.length}} (including cash)</p> 
+
+	<div class="progress">
+	  <div class="progress-bar progress-bar-success" style="width: {{vm.cash}}">
+	  	Cash: {{vm.cash}}
+	  </div>
+	  <div class="progress-bar progress-bar-warning" style="width: {{vm.fixed}}">
+	  	Fxied: {{vm.fixed}}
+	  </div>
+	  <div class="progress-bar" style="width: {{vm.equity}}">
+		Equity: {{vm.equity}}
+	  </div>
+	</div>
+</div>

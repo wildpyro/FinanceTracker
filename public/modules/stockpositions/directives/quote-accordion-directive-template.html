@@ -1,0 +1,12 @@
+<!-- Template for the table row accordion !--> 
+<div>
+    <uib-accordion>
+        <uib-accordion-group is-open="status.open">
+            <div class="addPanel">
+                <form novalidate>
+                    <formly-form model="ctrl.model" fields="ctrl.formFields" options="ctrl.options"></formly-form>  
+                </form>
+            </div>        
+        </uib-accordion-group>
+    </uib-accordion>
+</div>

@@ -4,59 +4,59 @@
 angular.module('stockpositions').controller('StockpositionsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Stockpositions', 
 																		 'SmartTableFactory', 'StockpositionsForm', 'AccountTypeService', '$filter',
 	function($scope, $stateParams, $location, Authentication, Stockpositions, SmartTableFactory, StockpositionsForm, AccountTypeService, $filter) {
-		var self = this;
-		self.isLoading = false;
+		var vm = this;
+		vm.isLoading = false;
 		$scope.authentication = Authentication;
 		$scope.stockposition = {};
-		this.test = [];
 		this.rows = [];
 		this.rowsCollection = [];
 
+		function doesMatch(dataToTest) {
+			if (angular.isDefined(vm.rowsCollection.accountType) && 
+				dataToTest.accountType !== null &&  
+				dataToTest.accountType !== vm.rowsCollection.accountType &&
+				dataToTest.symbol !== vm.rowsCollection.symbol) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+
 		/*
-		* This only works for non-async calls. Calling this from outside the table create as I don't want this promise based. 
+		* Use prefetched data for this piece. Note that each account has it's own instance here. 
 		*/
 		this.getData = function(data) {
 			if ($location.$$url === '/accounts') {
 				if (angular.isDefined(data.stockPositions) && data.stockPositions !== null && data.stockPositions.length > 0) {
-
-					function doesMatch(dataToTest) {
-						if (angular.isDefined(data.stockPositions.accountType) && 
-							data.stockPositions.accountType !== null &&  
-							dataToTest.accountType !== data.stockPositions.accountType[0] &&
-							dataToTest.data.symbol !== data.stockPositions.symbol) {
-							return false;
-						}
-						else {
-							return true;
-						}
+					if (this.rowsCollection.length === 0) {
+						this.rowsCollection = data.stockPositions;
 					}
+					else {
+						var test = data.stockPositions.filter(doesMatch);
 
-					var test2 = this.test.filter(doesMatch);
-					if (test2.length === 0) {		
-						var marketValue = 0;
-						//marketValue =+ data.stockPositions.market;
-						//console.log(data.stockPositions);
-						this.rows.push({accountType: data.accountType[0], data: data.stockPositions});
-		        		this.rowsCollection = [].concat(this.rows);						
-		        		this.test.push(data.stockPositions);
+						if (test.length !== 0) {		
+							var marketValue = 0;
+							//marketValue =+ data.stockPositions.market;
+							this.rows.push({accountType: data.accountType[0], data: data.stockPositions});
+			        		this.rowsCollection = [].concat(this.rows);						
+						}
 					}
 				}
 			}
 		};
 
 		this.fetch = function fetch(tableState) {
-		    $scope.isLoading = true;
-
 		    var pagination = tableState.pagination;
 		    var start = pagination.start || 0;     // This is NOT the page number, but the index of item in the list that you want to use to display the table.
-		    var number = pagination.number || 10;  // Number of entries showed per page.
+		    var number = pagination.number || 100;  // Number of entries showed per page.
 
 		    SmartTableFactory.getPage(start, number, tableState, Stockpositions).then(function (result) {
 
-		    	self.rows.push(result);
-        		self.rowsCollection = [].concat(self.rows);
+		    	vm.rows.push(result);
+        		vm.rowsCollection = [].concat(vm.rows);
 				tableState.pagination.numberOfPages = result.numberOfPages;//set the number of pages so the pagination can update
-				self.isLoading = false;
+				vm.isLoading = false;
 		    });
 		};
 
@@ -70,10 +70,9 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 			var stockposition = new Stockpositions($scope.stockposition);
 
 			stockposition.market = stockposition.price * stockposition.shares;
-
 			// Redirect after save
 			stockposition.$save(function(response) {
-				$location.path('stockpositions/' + response._id);
+				$location.path('stockpositions');
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -81,11 +80,13 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 
 		// Remove existing Stockposition
 		$scope.remove = function(stockposition) {
-
-			if ( stockposition ) {
+			if (stockposition) {
 				stockposition = Stockpositions.get({stockpositionId:stockposition._id}, function() {
-					stockposition.$remove();
-					//this.tableParams.reload();
+					stockposition.$remove(function() {
+						for (var i = vm.rowsCollection[0].data.length - 1; i >= 0; i--) {
+							var row = vm.rowsCollection[0].data[i];	
+						}
+					});
 				});
 			} 
 			else {
@@ -99,6 +100,8 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		$scope.update = function() {
 			var stockposition = $scope.stockposition;
 
+			stockposition.market = stockposition.price * stockposition.shares;
+
 			stockposition.$update(function() {
 				$location.path('stockpositions/' + stockposition._id);
 			}, function(errorResponse) {
@@ -108,19 +111,23 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 
 		this.toViewStockposition = function() {
 			$scope.stockposition = Stockpositions.get( {stockpositionId: $stateParams.stockpositionId} );
-			console.log('got here');
 			this.setFormFields(true, true);
 		};
 
 		this.toEditStockposition = function() {
 			$scope.stockposition = Stockpositions.get( {stockpositionId: $stateParams.stockpositionId} );
-			console.log($scope.stockposition);
 			this.setFormFields(false, false);
 		};
 
 //Listing functions 
 		this.calcMV = function(price,shares) {
 			var mv = price * shares;
+
+			vm.cash = '10%';
+			vm.fixed = '20%';
+			vm.equity = '70%';
+			vm.totalmv += mv;
+
 			return mv;
 		};
 
@@ -129,8 +136,8 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		};
 
 		this.getInstance = function(accountType) {
-			for (var i = self.rowsCollection.length - 1; i >= 0; i--) {
-				var row = self.rowsCollection[i];
+			for (var i = vm.rowsCollection.length - 1; i >= 0; i--) {
+				var row = vm.rowsCollection[i];
 				if (row.accountType === accountType[0]) {
 					
 					this.balance += row.data[0].market;
@@ -140,6 +147,22 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 					this.balance = 0;	
 				}
 			}
+		};
+
+		this.calcGainLoss = function(price, shares, book) {			
+			var value = ((price * shares) - book).toFixed(2);
+			return value;
+		};
+
+		this.stockUp = function(price, shares, book) {
+
+			var value = ((price * shares) - book).toFixed(2);
+
+			if (value >= 0) {
+				return true;
+			}
+
+			return false;
 		};
 	}
 

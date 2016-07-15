@@ -1,6 +1,7 @@
+//This is not currently used. Not don't need it as I have the stockposition detail form 2
 'use strict';
-
-angular.module('stockpositions').factory('TxnsForm', ['TxnTypesService', 'AccountTypeService', function(txnTypes, accountTypes) {
+/*
+angular.module('stockpositions').factory('AccordionQuoteForm' {
 
   var getFormFields = function() {
     
@@ -69,4 +70,4 @@ angular.module('stockpositions').factory('TxnsForm', ['TxnTypesService', 'Accoun
   };
 
     return service;
-}]);
+});*/
