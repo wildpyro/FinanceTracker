@@ -5,9 +5,9 @@
             <a type="button" class="btn btn-success" href="/#!/stockpositions/create"><i class="glyphicon glyphicon-open"></i> New Stockposition</a>
         </div>
     </div>
-    <div><st-summary datacollection="stockCtrl.rowsCollection[0].data" cash="stockCtrl.cash" fixed="stockCtrl.fixed" equity="stockCtrl.equity"></st-summary></div>
+    <div><st-summary datacollection="stockCtrl.rowsCollection[0].data"></st-summary></div>
     <div>
-        <table class="table smart-table table-hover" st-table="stockCtrl.rowsCollection" st-safe-src="rows" st-pipe="stockCtrl.fetch">    
+        <table class="table smart-table table-hover" st-table="stockCtrl.rowsCollection" st-safe-src="rows" st-pipe="stockCtrl.fetch">
             <thead>
                 <tr>
                     <th>Account Type</th>
@@ -31,7 +31,7 @@
                     <td>{{row.description}}</td>
                     <td>{{row.price | currency}}</td>
                     <td>{{row.shares | number}}</td>
-                    <td>{{stockCtrl.calcMV(row.price,row.shares) | currency}}</td>                    
+                    <td>{{stockCtrl.calcMV(row.type, row.price,row.shares) | currency}}</td>                    
                     <td>
                        <div class="table-actions">
                             <a class="btn btn-default" title="View" href="/#!/stockpositions/{{row._id}}">
@@ -54,4 +54,5 @@
             </tfoot>
         </table>
     </div>
+    <hr/>
 </section>

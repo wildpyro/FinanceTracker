@@ -14,7 +14,8 @@ module.exports = function(app) {
 
 	app.route('/accounts/:accountId')
 		.get(accounts.read)
-		.put(users.requiresLogin, accounts.hasAuthorization, accounts.update)
+		//.put(users.requiresLogin, accounts.hasAuthorization, accounts.update)
+		.put(users.requiresLogin, accounts.update)
 		.delete(users.requiresLogin, accounts.hasAuthorization, accounts.delete);
 
 	// Finish by binding the Account middleware

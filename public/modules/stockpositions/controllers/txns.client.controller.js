@@ -10,7 +10,7 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 		this.txns = {};
 		this.rows = [];
 		this.rowsCollection = [];
-		this.formFields = TxnsForm.getFormFields();
+		this.formFields = TxnsForm.getFormFields1();
 		vm.resetTable = true;
 		$scope.txn = {};
 	    
@@ -41,6 +41,7 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 //Form operations 
 		this.add = function addTxn() {
 			var txn = new Txns(this.model);
+
 			tableAddItem(txn);
 
 			if (vm.resetTable) {
@@ -139,7 +140,6 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 		};
 
 		this.resolveTxnType = function(enumValue) {
-			console.log(enumValue[0]);
 			return TxnTypesService.getText(enumValue);
 		};
 	}

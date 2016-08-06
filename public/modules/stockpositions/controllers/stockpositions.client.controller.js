@@ -2,12 +2,12 @@
 
 // Stockpositions controller
 angular.module('stockpositions').controller('StockpositionsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Stockpositions', 
-																		 'SmartTableFactory', 'StockpositionsForm', 'AccountTypeService', '$filter',
-	function($scope, $stateParams, $location, Authentication, Stockpositions, SmartTableFactory, StockpositionsForm, AccountTypeService, $filter) {
+																		 'SmartTableFactory', 'StockpositionsForm', 'AccountTypeService', '$filter', 'PositionsTypesService', 
+	function($scope, $stateParams, $location, Authentication, Stockpositions, SmartTableFactory, StockpositionsForm, AccountTypeService, $filter, PositionsTypesService) {
 		var vm = this;
 		vm.isLoading = false;
 		$scope.authentication = Authentication;
-		$scope.stockposition = {};
+		vm.stockposition = {};
 		this.rows = [];
 		this.rowsCollection = [];
 
@@ -37,8 +37,7 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 
 						if (test.length !== 0) {		
 							var marketValue = 0;
-							//marketValue =+ data.stockPositions.market;
-							this.rows.push({accountType: data.accountType[0], data: data.stockPositions});
+							this.rows.push({accountType: data.accountType, data: data.stockPositions});
 			        		this.rowsCollection = [].concat(this.rows);						
 						}
 					}
@@ -57,77 +56,92 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
         		vm.rowsCollection = [].concat(vm.rows);
 				tableState.pagination.numberOfPages = result.numberOfPages;//set the number of pages so the pagination can update
 				vm.isLoading = false;
+
+				//Set the data collection for the directive 
+				$scope.data = vm.rowsCollection[0].data;
 		    });
+		};
+
+		this.getRows = function() {
+			return vm.rowsCollection[0].data;
 		};
 
 //Single Record functions//
 		this.setFormFields = function(disabled, isAdd) {
-			$scope.formFields = StockpositionsForm.getFormFields(disabled, isAdd);
+			vm.formFields = StockpositionsForm.getFormFields(disabled, isAdd);
 		};
 
 		// Create new Stockposition
-		$scope.create = function() {
-			var stockposition = new Stockpositions($scope.stockposition);
+		this.create = function() {
+			var stockposition = new Stockpositions(vm.stockposition);
 
 			stockposition.market = stockposition.price * stockposition.shares;
 			// Redirect after save
-			stockposition.$save(function(response) {
-				$location.path('stockpositions');
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
+			stockposition.$save(
+				function(response) {
+					$location.path('stockpositions');
+				}, 
+				function(errorResponse) {
+					vm.error = errorResponse.data.message;
+				}
+			);
 		};
 
 		// Remove existing Stockposition
-		$scope.remove = function(stockposition) {
+		this.remove = function(stockposition) {
 			if (stockposition) {
 				stockposition = Stockpositions.get({stockpositionId:stockposition._id}, function() {
-					stockposition.$remove(function() {
-						for (var i = vm.rowsCollection[0].data.length - 1; i >= 0; i--) {
-							var row = vm.rowsCollection[0].data[i];	
+					stockposition.$remove(
+						function(response) {
+							for (var i = vm.rowsCollection[0].data.length - 1; i >= 0; i--) {
+								var row = vm.rowsCollection[0].data[i];	
+							}
+						},
+						function(errorResponse) {
+							console.log('delete failed');
+							vm.error = errorResponse.data.message;
+							console.log(vm.error);
 						}
-					});
+					);
 				});
 			} 
 			else {
-				$scope.stockposition.$remove(function() {
+				vm.stockposition.$remove(function() {
 					$location.path('stockpositions');
 				});
 			}
 		};
 
 		// Update existing Stockposition
-		$scope.update = function() {
-			var stockposition = $scope.stockposition;
-
+		this.update = function() {
+			var stockposition = vm.stockposition;
 			stockposition.market = stockposition.price * stockposition.shares;
 
 			stockposition.$update(function() {
-				$location.path('stockpositions/' + stockposition._id);
+				//$location.path('stockpositions/' + stockposition._id);
+				$location.path('stockpositions');
 			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
+				vm.error = errorResponse.data.message;
 			});
 		};
 
-		this.toViewStockposition = function() {
-			$scope.stockposition = Stockpositions.get( {stockpositionId: $stateParams.stockpositionId} );
-			this.setFormFields(true, true);
+		this.toViewStockposition = function() {	
+			Stockpositions.get({stockpositionId: $stateParams.stockpositionId}, function(stockposition) {
+				vm.stockposition = stockposition;
+				vm.setFormFields(true, true);
+			});
 		};
 
 		this.toEditStockposition = function() {
-			$scope.stockposition = Stockpositions.get( {stockpositionId: $stateParams.stockpositionId} );
-			this.setFormFields(false, false);
+			Stockpositions.get({stockpositionId: $stateParams.stockpositionId}, function(stockposition) {
+				vm.stockposition = stockposition;
+				vm.setFormFields(false, false);
+			});			
 		};
 
 //Listing functions 
-		this.calcMV = function(price,shares) {
+		this.calcMV = function(positionType, price, shares) {
 			var mv = price * shares;
-
-			vm.cash = '10%';
-			vm.fixed = '20%';
-			vm.equity = '70%';
-			vm.totalmv += mv;
-
 			return mv;
 		};
 
@@ -136,15 +150,19 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		};
 
 		this.getInstance = function(accountType) {
+
 			for (var i = vm.rowsCollection.length - 1; i >= 0; i--) {
 				var row = vm.rowsCollection[i];
-				if (row.accountType === accountType[0]) {
-					
-					this.balance += row.data[0].market;
+
+
+				if (row.accountType === accountType && angular.isDefined(row.data)) {
+					//TODO the rowCollection contains way too many rows 
+					//console.log(row, accountType);
+					vm.balance += row.market;
 					return row.data;
 				}
 				else {
-					this.balance = 0;	
+					vm.balance = 0;	
 				}
 			}
 		};
@@ -164,6 +182,7 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 
 			return false;
 		};
+
 	}
 
 ]);

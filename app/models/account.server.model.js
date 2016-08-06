@@ -32,10 +32,7 @@ var AccountSchema = new Schema({
 		trim: true
 	},
 	accountType: {
-		type: [{
-			type: Number,
-			enum: [0,1,2,3]
-		}],
+		type: String, enum: ['open','rsp','tfsa','resp','joint'],
 		required: 'Please select an account type',
 		trim: true
 	},

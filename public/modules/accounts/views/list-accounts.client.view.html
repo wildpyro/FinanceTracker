@@ -7,9 +7,12 @@
     </div>
 
     <div class="account-panel" ng-repeat="value in ctrl.accountsSearch.results">
-        <h2 class="account-header">{{ctrl.formatTitle(value.description,value.accountNo)}}</h2>
+        <a href="/#!/accounts/{{value._id}}/edit"><h2 class="account-header">{{ctrl.formatTitle(value.description,value.accountNo)}}</h2></a>
         <div class="animate-show" ng-show="ctrl.show(True)">
             <div class= "table-reponsive" data-ng-controller="StockpositionsController as stockCtrl">
+                <div data-ng-show="stockCtrl.error" class="alert alert-danger">
+                    <strong data-ng-bind="stockCtrl.error"></strong>
+                </div>
                 {{stockCtrl.getData(value)}}
                 <table class="table smart-table table-hover" st-table="stockCtrl.rowsCollection" st-safe-src="rows">
                     <thead>
@@ -37,14 +40,11 @@
                             <td>{{row.shares | number}}</td>
                             <td class="money">{{stockCtrl.calcMV(row.price,row.shares) | currency}}</td>
                             <td class="money">{{row.book | currency}}</td>
-                            
                             <td ng-show="stockCtrl.stockUp(row.price, row.shares, row.book)" class="money stockup"><span>{{stockCtrl.calcGainLoss(row.price, row.shares, row.book) | currency}}</span><span class="glyphicon glyphicon-arrow-up"></span></td> 
-                            
                             <td ng-show="!stockCtrl.stockUp(row.price, row.shares, row.book)" class="money stockdown"><span>{{stockCtrl.calcGainLoss(row.price, row.shares, row.book) | currency}}</span><span class="glyphicon glyphicon-arrow-down"></span></td>                             
-                            
                             <td>
                                <div class="table-actions">
-                                    <a class="btn btn-default" title="View" ui-sref="spd({symbol: row.symbol})"><!--ui-sref="toDetailsFromStockPosition({stockpostionId: row._id})" !-->
+                                    <a class="btn btn-default" title="View" ui-sref="spd({symbol: row.symbol})">
                                        <span class="glyphicon glyphicon-eye-open"></span>
                                     </a>
                                     <a class="btn btn-default" title="Edit" href="/#!/stockpositions/{{row._id}}/edit">

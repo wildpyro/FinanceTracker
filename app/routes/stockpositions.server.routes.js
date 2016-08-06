@@ -11,9 +11,12 @@ module.exports = function(app) {
 
 	app.route('/stockpositions/:stockpositionId')
 		.get(stockpositions.read)
-		.put(users.requiresLogin, stockpositions.hasAuthorization, stockpositions.update)
-		.delete(users.requiresLogin, stockpositions.hasAuthorization, stockpositions.delete);
+		.put(users.requiresLogin, stockpositions.update)
+		.delete(users.requiresLogin, stockpositions.delete);
+		//.put(users.requiresLogin, stockpositions.hasAuthorization, stockpositions.update)
+		//.delete(users.requiresLogin, stockpositions.hasAuthorization, stockpositions.delete);
 
 	// Finish by binding the Stockposition middleware
 	app.param('stockpositionId', stockpositions.stockpositionByID);
+
 };

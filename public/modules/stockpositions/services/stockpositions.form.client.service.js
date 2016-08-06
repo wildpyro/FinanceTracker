@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeService', function(AccountTypeService) {
+angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeService', 'PositionsTypesService', function(accountTypes, positionsTypes) {
 
       var getFormFields = function(disabled, isAdd) {
 
@@ -10,8 +10,8 @@ angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeServ
             type: 'select',
             templateOptions: {
               label: 'Account Type:',
-              options: AccountTypeService.getEnums(),
-              disabled: !isAdd
+              options: accountTypes.getEnums(),
+              disabled: isAdd
             }
           },
           { 
@@ -69,7 +69,16 @@ angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeServ
               label: 'Is cash?:',
               disabled: disabled
             }
-          }            
+          },
+          {
+            key: 'type',
+            type: 'select',
+            templateOptions: {
+              label: 'Postion Type',
+              options: positionsTypes.getEnums(),
+              disabled: disabled
+            }
+          }                      
   			];
 
         return fields;

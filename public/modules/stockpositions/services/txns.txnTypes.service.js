@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('accounts').factory('TxnTypesService', function() { 
+angular.module('stockpositions').factory('TxnTypesService', function() { 
 
     var enums = [
             {
@@ -26,7 +26,6 @@ angular.module('accounts').factory('TxnTypesService', function() {
     }
 
     function getText(enumValue){
-        console.log(enums[enumValue]);
         return enums[enumValue].name;
     }
 

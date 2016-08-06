@@ -3,25 +3,60 @@
  
  	var stSummary = function() {
  		
- 		var controller = function() {
+ 		var controller = function($scope) {
 
  			var vm = this;
 
-			init();
+			$scope.$watch( function () { 
+					return  $scope.$parent.data; 
+			    }, 
+			    function () { 
+					if (angular.isDefined($scope.$parent.data)) {
 
- 			function init() {
- 				vm.datacollection = angular.copy(vm.datacollection);
- 			}
+			 			var equity = 0,
+			 				cash = 0,
+			 				fixed = 0,
+			 				totalmv = 0; 
+
+						vm.dataCollection = angular.copy($scope.$parent.data);
+						vm.length = vm.dataCollection.length;
+
+						for (var i = vm.dataCollection.length - 1; i >= 0; i--) {
+							var data = vm.dataCollection[i];
+
+							if (!angular.isDefined(data.type[0])) {
+								console.log(data.symbol);
+							}
+
+							if (data.type === 'cash') {
+								//vm.cash += data.market;	
+								cash += data.market;	
+							}
+							else if (data.type === 'fixed') {
+								//vm.fixed += data.market;
+								fixed += data.market;	
+							}
+							else if (data.type === 'equity') {
+								//vm.equity += data.market;
+								equity += data.market;	
+							}
+
+							totalmv += data.market;
+						}
+
+						vm.cash = Number(cash/totalmv * 100).toFixed(2);
+						vm.equity = Number(equity/totalmv * 100).toFixed(2);
+						vm.fixed = Number(fixed/totalmv * 100).toFixed(2);						
+						vm.totalmv = Number(totalmv).toFixed(2);
+					}
+			    } 
+			); 			
 
  		};
 
 		return {
-			scope: {
-				datacollection: '=',
-				cash: '=',
-				fixed: '=',
-				equity: '='
-			}, 
+			restrict: 'EA', 
+			scope: true,
 			controller: controller,
 			controllerAs: 'vm',
 			bindToController: true,

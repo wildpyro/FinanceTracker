@@ -5,23 +5,23 @@ angular.module('accounts').factory('AccountTypeService', function() {
     var enums = [
             {
                 'name': 'Open',
-                'value': 0
+                'value': 'open'
             },
             {
                 'name': 'RSP',
-                'value': 1
+                'value': 'rsp'
             },
             {
                 'name': 'RESP',
-                'value': 2
+                'value': 'resp'
             },
             {
                 'name': 'TFSA',
-                'value': 3
+                'value': 'tfsa'
             },
             {
                 'name': 'Joint',
-                'value': 4
+                'value': 'joint'
             }
         ];
 
@@ -30,11 +30,31 @@ angular.module('accounts').factory('AccountTypeService', function() {
     }
 
     function getText(enumValue){
-        return enums[enumValue].name;
+
+        var test = enums.filter(function(enumToEval) { 
+            return enumToEval.value == enumValue
+        })[0]
+
+        if (angular.isDefined(test)) {
+            return test.name; 
+        }
+        else {
+            return null;
+        }
+     
     }
 
-    function getValue(enumValue){
-        return enums[enumValue].value;
+    function getValue(enumName){
+        var test = enums.filter(function(enumToEval) { 
+            return enumToEval.name == enumName
+        })[0]
+
+        if (angular.isDefined(test)) {
+            return test.value; 
+        }
+        else {
+            return null;
+        }
     }
 
   var service = {

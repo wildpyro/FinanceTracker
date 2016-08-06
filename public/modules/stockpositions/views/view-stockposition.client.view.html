@@ -1,13 +1,12 @@
 <section data-ng-controller="StockpositionsController as ctrl" data-ng-init="ctrl.toViewStockposition()">
 	<div class="page-header">
-		<h1 data-ng-bind="stockposition.name"></h1>
+		<h1>View: {{ctrl.stockposition.symbol}} ~ {{ctrl.stockposition.description}}</h1>
 	</div>
 
 	<div class="col-md-12">
 
 		<form novalidate>
-			<formly-form model="stockposition" fields="formFields">
-			</formly-form>
+			<formly-form model="ctrl.stockposition" fields="ctrl.formFields"></formly-form>
 		</form>
 
 		<hr/>
@@ -15,7 +14,7 @@
 			<a class="btn btn-success" href="/#!/stockpositions/{{stockposition._id}}/edit">
 				<i class="glyphicon glyphicon-edit"></i> Edit
 			</a>
-			<a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove()" item="stockposition">
+			<a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="ctrl.remove()" item="ctrl.stockposition">
 				<i class="glyphicon glyphicon-remove-circle"></i> Delete
 			</a>
 			<a class="btn btn-primary" href="/#!/stockpositions">

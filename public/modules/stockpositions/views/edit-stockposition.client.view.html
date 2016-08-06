@@ -1,27 +1,25 @@
 <section data-ng-controller="StockpositionsController as ctrl" data-ng-init="ctrl.toEditStockposition()">
-    <div class="page-header">
-        <h1>Edit Stockposition</h1>
-    </div>
-    <div class="col-md-12">
-        <form class="form-horizontal" data-ng-submit="update()" novalidate>
+  <div class="page-header">
+    <h1>Edit: {{ctrl.stockposition.symbol}} ~ {{ctrl.stockposition.description}}</h1>
+  </div>
+  <div class="col-md-12">
+      <form class="form-horizontal" data-ng-submit="ctrl.update()" novalidate>
 
-          <formly-form model="stockposition" fields="formFields">
-    			</formly-form>
+        <formly-form model="ctrl.stockposition" fields="ctrl.formFields"></formly-form>
+        <hr/>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">
+              <i class="glyphicon glyphicon-ok"></i> Save
+            </button>
+            <a class="btn btn-danger" href="/#!/stockpositions">
+              <i class="glyphicon glyphicon-remove"></i> Cancel
+            </a>
+        </div>
 
-          <hr/>
-          <div class="form-group">
-              <button type="submit" class="btn btn-success">
-                <i class="glyphicon glyphicon-ok"></i> Save
-              </button>
-              <a class="btn btn-danger" href="/#!/stockpositions">
-                <i class="glyphicon glyphicon-remove"></i> Cancel
-              </a>
-          </div>
+        <div data-ng-show="error" class="alert alert-danger form-group">
+          <strong data-ng-bind="error"></strong>
+        </div>
 
-          <div data-ng-show="error" class="alert alert-danger form-group">
-            <strong data-ng-bind="error"></strong>
-          </div>
-
-        </form>
-    </div>
+      </form>
+  </div>
 </section>

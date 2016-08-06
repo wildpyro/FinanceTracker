@@ -28,6 +28,10 @@ angular.module('stockpositions').config(['$stateProvider',
 		state('listTxns', {
 			url: '/txns',
 			templateUrl: 'modules/stockpositions/views/list-txns.client.view.html'
-		});
+		}).
+		state('maintenance', {
+			url: '/maintenance',
+			templateUrl: 'modules/stockpositions/views/maintenance.client.view.html'
+		});		
 	}
 ]);

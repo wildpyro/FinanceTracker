@@ -3,9 +3,9 @@
         <h1 class="page-title">Trades and Transactions</h1>
     </div>
     <div data-ng-show="txnCtrl.success" class="alert alert-sucess form-group sucessPanel">
-        <strong data-ng-bind="txnCtrl.error"></strong>
+        <strong data-ng-bind="txnCtrl.success"></strong>
     </div>    
-    <div>
+    <div class="addAccordion">
         <uib-accordion>
             <uib-accordion-group is-open="status.open">
                 <uib-accordion-heading>
@@ -14,82 +14,65 @@
                     <div class="addPanel">
                         <form ng-submit="txnCtrl.add()" novalidate>
                             <formly-form model="txnCtrl.model" fields="txnCtrl.formFields" options="txnCtrl.options">
-                                <button type="submit" class="btn btn-primary submit-button" ng-disabled="txnCtrl.form.$invalid">Add</button>
-                                <button type="button" class="btn btn-default" ng-click="txnCtrl.options.resetModel()">Reset</button>
-                                <label><input type="checkbox" ng-model="txnCtrl.resetTable">Reset table?</label>
+                                <div class="centered">
+                                    <button type="submit" class="btn btn-primary submit-button" ng-disabled="txnCtrl.form.$invalid">Add</button>
+                                    <button type="button" class="btn btn-default" ng-click="txnCtrl.options.resetModel()">Reset</button>
+                                    <label><input type="checkbox" ng-model="txnCtrl.resetTable">Reset table?</label>
+                                </div>
                             </formly-form>  
                         </form>
                     </div>
                     <div data-ng-show="txnCtrl.error" class="alert alert-danger form-group errorPanel">
                         <strong data-ng-bind="txnCtrl.error"></strong>
-                    </div>                            
+                    </div>
             </uib-accordion-group>
         </uib-accordion>
-
-        <div class="table">
-            <table class="table smart-table table-hover" st-table="txnCtrl.rowsCollection" st-safe-src="txnCtrl.rows" st-pipe="txnCtrl.fetch">    
-                <thead>
-                    <tr>
-                        <th st-sort="date" st-sort-default="true">Date</th>
-                        <th st-sort="account">Account</th>
-                        <th st-sort="symbol">Symbol</th>
-                        <th st-sort="type">Type</th>                    
-                        <th>Price</th>
-                        <th>Shares</th>
-                        <th>Commission</th>                    
-                        <th st-skip-natural="true">Total Cost</th>
-                        <th>Avg Cost</th>
-                        <th><!--Action !--></th> 
-                    </tr>
-                    <tr class="table-search">
-                        <th><input st-search="date"/></th>
-                        <th><input st-search="symbol"/></th>
-                        <th><input st-search="type"/></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="row in txnCtrl.rowsCollection[0].data">
-                        <td>{{row.date | date}}</td>
-                        <td>{{row.account | uppercase}}</td>
-                        <td>{{row.symbol | uppercase}}</td>
-                        <td>{{row.type[0]}}</td>
-                        <td>{{row.price | currency}}</td>
-                        <td>{{row.shares | number}}</td>
-                        <td>{{row.commission | currency}}</td>
-                        <td>{{txnCtrl.totalCost(row.price,row.commission,row.shares) | currency}}</td>
-                        <td>{{txnCtrl.avgCost(row.price,row.commission,row.shares) | currency}}</td>                        
-                        <td><a class="btn btn-danger" title="Delete Row" ng-really-message="Are you sure ?" ng-really-click="txnCtrl.tableRemoveItem(row)" item="txn"><span class="glyphicon glyphicon-remove-circle"></span></a>
-                        </td>                        
-                    </tr>
-                </tbody>
-                <tfoot>
+    </div>
+    <div>
+        <table class="table smart-table table-hover" st-table="txnCtrl.rowsCollection" st-safe-src="txnCtrl.rows" st-pipe="txnCtrl.fetch">
+            <thead>
+                <tr>
+                    <th st-sort="date" st-sort-default="true">Date</th>
+                    <th st-sort="account">Account</th>
+                    <th st-sort="symbol">Symbol</th>
+                    <th st-sort="type">Type</th>                    
+                    <th>Price</th>
+                    <th>Shares</th>
+                    <th>Commission</th>                    
+                    <th st-skip-natural="true">Total Cost</th>
+                    <th>Avg Cost</th>
+                    <th><!--Action !--></th> 
+                </tr>
+                <tr class="table-search">
+                    <th><input st-search="date"/></th>
+                    <th><input st-search="symbol"/></th>
+                    <th><input st-search="type"/></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in txnCtrl.rowsCollection[0].data">
+                    <td>{{row.date | date}}</td>
+                    <td>{{row.account[0] | uppercase}}</td>
+                    <td>{{row.symbol | uppercase}}</td>
+                    <td>{{row.type[0]}}</td>
+                    <td>{{row.price | currency}}</td>
+                    <td>{{row.shares | number}}</td>
+                    <td>{{row.commission | currency}}</td>
+                    <td>{{txnCtrl.totalCost(row.price,row.commission,row.shares) | currency}}</td>
+                    <td>{{txnCtrl.avgCost(row.price,row.commission,row.shares) | currency}}</td>                        
+                    <td><a class="btn btn-danger" title="Delete Row" ng-really-message="Are you sure ?" ng-really-click="txnCtrl.tableRemoveItem(row)" item="txn"><span class="glyphicon glyphicon-remove-circle"></span></a>
+                    </td>                        
+                </tr>
+            </tbody>
+            <tfoot>
                 <tr>
                     <td class="text-center" st-pagination="" st-items-by-page="10" colspan="4">
                     </td>
                 </tr>
-                </tfoot>            
-            </table>
-            <button type="button" ng-click="txnCtrl.tableSave()" class="btn btn-primary">Save</button>
-            <button type="button" ng-click="txnCtrl.tableReset()" class="btn btn-primary">Reset</button>
-        </div>
+            </tfoot>            
+        </table>
+        <button type="button" ng-click="txnCtrl.tableSave()" class="btn btn-primary">Save</button>
+        <button type="button" ng-click="txnCtrl.tableReset()" class="btn btn-primary">Reset</button>
     </div>
 </section>
-
-    <!-- Put custom templates here TODO - Figure out a better place for this -->
-    <script type="text/ng-template" id="datepicker.html">
-      <p class="input-group">
-        <input  type="text"
-                id="{{::id}}"
-                name="{{::id}}"
-                ng-model="model[options.key]"
-                class="form-control"
-                ng-click="datepicker.open($event)"
-                uib-datepicker-popup="{{to.datepickerOptions.format}}"
-                is-open="datepicker.opened"
-                datepicker-options="to.datepickerOptions" />
-        <span class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="datepicker.open($event)" ng-disabled="to.disabled"><i class="glyphicon glyphicon-calendar"></i></button>
-        </span>
-      </p>
-    </script>

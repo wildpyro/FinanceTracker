@@ -3,10 +3,10 @@
 // Accounts controller
 angular.module('accounts').controller('AccountsController', ['$scope', '$stateParams', '$location', 'Authentication', 'AccountService', 'AccountsForm', 
 	function($scope, $stateParams, $location, Authentication, AccountService, AccountsForm) {
-		var self = this; 
+		var vm = this; 
 		this.authentication = Authentication;
 		this.account = {};
-		self.accountsSearch = AccountService.get();
+		vm.accountsSearch = AccountService.get();
 		
 //Single Record Functions 
 		this.setFormFields = function(disabled, isAdd) {
@@ -19,21 +19,21 @@ angular.module('accounts').controller('AccountsController', ['$scope', '$statePa
 			var account = new AccountService(this.account);
 
 			// Redirect after save
-			account.$save(function(response) {$location.path('accounts/' + response._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
+			account.$save(function(response) {
+				$location.path('accounts/' + response._id);},  function(errorResponse) {
+				vm.error = errorResponse.data.message;
 			});
 		};
 
 		// Remove existing Account
-		$scope.remove = function(account) {
+		this.remove = function(account) {
 			if ( account ) {
 				account = AccountService.get({accountId:account._id}, function() {
 					account.$remove();
 					this.tableParams.reload();
 				});
-
-			} else {
+			} 
+			else {
 				this.account.$remove(function() {
 					$location.path('accounts');
 				});
@@ -41,14 +41,12 @@ angular.module('accounts').controller('AccountsController', ['$scope', '$statePa
 		};		
 
 		// Update existing Account
-		$scope.update = function() {
-			var account = $scope.account;
+		this.update = function() {
+			var account = vm.account;
 
-			account.$update(function() {
-				$location.path('accounts/' + account._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
+			account.$update(
+				function() {$location.path('accounts/' + account._id);}, 
+				function(errorResponse) {vm.error = errorResponse.data.message;});
 		};
 
 		this.toViewAccount = function() {

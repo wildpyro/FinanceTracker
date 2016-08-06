@@ -11,11 +11,7 @@ var mongoose = require('mongoose'),
  */
 var StockpositionSchema = new Schema({
 	accountType: {
-		type: [{
-			type: Number,
-			enum: [0,1,2,3]
-		}],
-		default: '0',
+		type: String, enum: ['open','rsp','tfsa','resp','joint'],
 		required: 'Please select an account type',
 		trim: true
 	},
@@ -62,6 +58,11 @@ var StockpositionSchema = new Schema({
 		type: Schema.ObjectId,
 		ref: 'User'
 	},
+	type: {
+		type: String, enum: ['cash','fixed','equity'], 
+		required: 'Please select a position type',
+		trim: true
+	},	
 	quoteData: {}
 });
 
