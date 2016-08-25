@@ -1,7 +1,4 @@
 'use strict';
-
-var months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
-
 /**
  * Module dependencies.
  */
@@ -10,7 +7,8 @@ var mongoose = require('mongoose'),
 	Stockposition_Archive = mongoose.model('Stockposition_Archive'),
 	StockpositionModel = mongoose.model('Stockposition'),
 	Stockposition = require('./stockpositions.server.controller'),
-	_ = require('lodash');
+	_ = require('lodash'),
+	months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 
 function createArchive(stockpositions_archive, res) {
 	stockpositions_archive.save(function(err) {

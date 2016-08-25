@@ -1,37 +1,37 @@
-<section data-ng-controller="StockpositionsController as stockCtrl">
+<section data-ng-controller="StockpositionsController as ctrl">
     <div class="page-header">
         <h1 class="page-title">Stockpositions</h1>
         <div class="centered">
             <a type="button" class="btn btn-success" href="/#!/stockpositions/create"><i class="glyphicon glyphicon-open"></i> New Stockposition</a>
         </div>
     </div>
-    <div><st-summary datacollection="stockCtrl.rowsCollection[0].data"></st-summary></div>
+    <div class="st-summary"><st-summary datacollection="ctrl.displayRowsCollection"></st-summary></div>
     <div>
-        <table class="table smart-table table-hover" st-table="stockCtrl.rowsCollection" st-safe-src="rows" st-pipe="stockCtrl.fetch">
+        <table class="table smart-table table-hover" st-table="ctrl.displayRowsCollection" st-safe-src="ctrl.safeRows" st-pipe="ctrl.fetch">
             <thead>
                 <tr>
                     <th>Account Type</th>
-                    <th st-sort-default="true">Symbol</th>
+                    <th st-sort="ctrl.displayRowsCollection.symbol">Symbol</th>
                     <th>Description</th>
-                    <th>Price</th>
-                    <th>Shares</th>
-                    <th st-skip-natural="true">MarketValue</th>
+                    <th st-sort="description">Price</th>
+                    <th st-sort="shares">Shares</th>
+                    <th>MarketValue</th>
                     <th><!--Action !--></th> 
                 </tr>
                 <tr>
-                    <th colspan="6">
-                        <input st-search="symbol" class="input-sm form-control" type="search"/>
-                    </th>                
+                    <td colspan="2">
+                        Select a symbol for filtering <input st-search="symbol" class="input-sm form-control" type="search"/>
+                    </td>                
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="row in stockCtrl.rowsCollection[0].data">
-                    <td>{{stockCtrl.resolveAccountType(row.accountType)}}</td>
+                <tr ng-repeat="row in ctrl.displayRowsCollection">
+                    <td>{{ctrl.resolveAccountType(row.accountType)}}</td>
                     <td>{{row.symbol | uppercase}}</td>
                     <td>{{row.description}}</td>
                     <td>{{row.price | currency}}</td>
                     <td>{{row.shares | number}}</td>
-                    <td>{{stockCtrl.calcMV(row.type, row.price,row.shares) | currency}}</td>                    
+                    <td>{{ctrl.calcMV(row.type, row.price,row.shares) | currency}}</td>                    
                     <td>
                        <div class="table-actions">
                             <a class="btn btn-default" title="View" href="/#!/stockpositions/{{row._id}}">
@@ -40,7 +40,7 @@
                             <a class="btn btn-default" title="Edit" href="/#!/stockpositions/{{row._id}}/edit">
                                 <span class="glyphicon glyphicon-edit"></span>
                             </a>
-                            <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove(row)" item="stockposition">
+                            <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="ctrl.remove(row)" item="ctrl.stockposition">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
                             </a>
                         </div>

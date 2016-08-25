@@ -5,9 +5,9 @@ angular.module('core').factory('SmartTableFactory', ['$http', '$q', '$filter', '
 
         var deferred = $q.defer();
 
-        console.log(params);
+        console.log(params.search.predicateObject);
 
-        Entity.get(params.pagination, function(response) {
+        Entity.get({pagination: params.pagination, filter: params.search.predicateObject}, function(response) {
             deferred.resolve({
                 data: response.results,
                 resultsPages: Math.ceil(response.results.length / number)

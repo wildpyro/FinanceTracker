@@ -9,7 +9,6 @@ var mongoose = require('mongoose'),
 	Account = mongoose.model('Account'),
 	_ = require('lodash');
 
-
 /**
 * Update references either add or delete
 **/
@@ -17,26 +16,28 @@ var updateReferences = function(action, stockposition) {
 	Account.findOne({'accountType': stockposition.accountType[0]}, function(err, account) {
 		if (err) {return err;}	
 		else {
-			if (action === 'add') {
-				if (account.stockPositions === undefined || account.stockPositions === null) {
-					account.stockpositions = [];
+			if (account !== undefined) {
+				if (action === 'add') {
+					if (account.stockPositions === undefined || account.stockPositions === null) {
+						account.stockpositions = [];
+					}
+
+					account.stockPositions.push(stockposition);
+				}
+				else if (action === 'remove')
+				{
+					if (account.stockPositions !== undefined && account.stockPositions !== null) {
+						account.stockPositions.pop(stockposition);	
+					}
 				}
 
-				account.stockPositions.push(stockposition);
+				account.save(function(err) {
+					if (err) {return err;}
+					else {
+						return null;
+					}
+				});
 			}
-			else if (action === 'remove')
-			{
-				if (account.stockPositions !== undefined && account.stockPositions !== null) {
-					account.stockPositions.pop(stockposition);	
-				}
-			}
-
-			account.save(function(err) {
-				if (err) {return err;}
-				else {
-					return null;
-				}
-			});
 		}
 	});
 }; 
@@ -122,23 +123,19 @@ exports.list = function(req, res) {
 	var sortObject = {};
 	var count = req.query.count || 50; //Default to this for max for now. 
 	var page = req.query.page || 1;
-
-
-	var filter = {
-		filters : {
-			mandatory : {
-				contains: req.query.filter
-			}
+	var filter = (function() {
+		if (req.query.filter === undefined) {
+			return null;
 		}
-	};
+
+		return req.query.filter;
+	}());
 
 	var pagination = {
 		start: (page - 1) * count,
 		count: count
 	};
 
-	console.log(pagination);
-	
 	if (req.query.sorting) {
 		var sortKey = Object.keys(req.query.sorting)[0];
 		var sortValue = req.query.sorting[sortKey];
@@ -153,9 +150,7 @@ exports.list = function(req, res) {
 	};
 
 	Stockposition
-		.find()
-		.filter(filter)
-		//.sort({accountType: 'asc', symbol: 'asc'})
+		.find(JSON.parse(filter))
 		.sort({symbol: 'asc', description: 'asc'})
 		.page(pagination, function(err, stockpositions){
 			if (err) {
@@ -163,6 +158,7 @@ exports.list = function(req, res) {
 					message: errorHandler.getErrorMessage(err)
 				});
 			} else {
+				//console.log(stockpositions);
 				res.jsonp(stockpositions);
 			}
 		});

@@ -32,8 +32,8 @@ angular.module('accounts').factory('AccountTypeService', function() {
     function getText(enumValue){
 
         var test = enums.filter(function(enumToEval) { 
-            return enumToEval.value == enumValue
-        })[0]
+            return enumToEval.value === enumValue;
+        })[0];
 
         if (angular.isDefined(test)) {
             return test.name; 
@@ -46,8 +46,8 @@ angular.module('accounts').factory('AccountTypeService', function() {
 
     function getValue(enumName){
         var test = enums.filter(function(enumToEval) { 
-            return enumToEval.name == enumName
-        })[0]
+            return enumToEval.name === enumName;
+        })[0];
 
         if (angular.isDefined(test)) {
             return test.value; 

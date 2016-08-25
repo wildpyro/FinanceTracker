@@ -25,7 +25,7 @@
                 </div> 
             </form>		
         </div>
-        <div class="row">
+        <div class="row" style="margin-bottom: 40px">
         	<div class="col-sm-6">
         		<h3>Export stock positions</h3>
         		<p>Exports your current stock positions into csv format</p>
@@ -38,5 +38,18 @@
                 </div> 
             </form>
         </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <h3>Import stock positions</h3>
+                <p>Import stock positions from an external source</p>
+            </div> 
+            <form data-ng-submit="ctrl.importData()" class="col-sm-4" autocomplete="on">
+                <formly-form model="ctrl.importDataForm" fields="ctrl.importDataFormFields" options="ctrl.options"></formly-form>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-open"></i>Submit</button>
+                </div> 
+            </form>
+        </div>        
     </div>
 </section>

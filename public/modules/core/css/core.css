@@ -13,42 +13,34 @@
 .ng-valid.ng-dirty {
 	border-color: #78FA89;
 }
-
 /*Page Headers */
 .page-title {
   height: 80px;
   font-size: 60px;
   text-align: center;
 }
-
 .page-header {
   height: 150px;
 }
-
 /* smart-table */
 .smart-table {
   width: 100%;
   padding-bottom: 50px;
 }
-
 .smart-table > thead > tr > th {
   text-align: left;
   border-bottom: 1px solid #c8c8c8;
 }
-
 .smart-table > tbody > tr > th, .smart-table > tfoot > tr > th, .smart-table > thead > tr > td, .smart-table > tbody > tr > td, .smart-table > tfoot > tr > td {
   height: 60px;
   border-bottom: 2px solid #e8e8e8;
 }
-
 .smart-table-filters {
   height: 60px;
 }
-
 .smart-table-filters .filter {
   vertical-align: top;
 }
-
 .smart-table > thead > tr > th {
   padding-bottom: 0;
   padding-top: 0;
@@ -90,6 +82,19 @@
   font-size: 20px;
 }
 
-.progress {
+.st-summary .progress {
   height: 30px;
+}
+
+.st-summary-small {
+  padding-bottom: 20px;
+  padding-top: 10px;  
+}
+
+.st-summary-small .progress {
+  height: 15px; 
+}
+
+.table-search-row {
+  width: 75px;
 }

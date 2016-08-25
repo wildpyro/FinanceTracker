@@ -14,22 +14,18 @@
                     <strong data-ng-bind="stockCtrl.error"></strong>
                 </div>
                 {{stockCtrl.getData(value)}}
-                <table class="table smart-table table-hover" st-table="stockCtrl.rowsCollection" st-safe-src="rows">
+                <div class="st-summary-small"><st-summary datacollection="stockCtrl.getInstance(value.accountType)"></st-summary></div>
+                <table class="table smart-table table-hover" st-table="stockCtrl.displayRowsCollection" st-safe-src="stockCtrl.rows"> <!--encountering error of two many digest loops.-->
                     <thead>
                         <tr>
-                            <th st-sort-default="true">Symbol</th>
+                            <th>Symbol</th>
                             <th>Description</th>
                             <th>Price</th>
                             <th>Shares</th>
-                            <th st-skip-natural="true">Market Value</th>
-                            <th st-skip-natural="true">Book Cost</th>
+                            <th>Market Value</th>
+                            <th>Book Cost</th>
                             <th>Current Gain/Loss</th>
                             <th></th> <!--Action !-->
-                        </tr>
-                        <tr>
-                            <th colspan="7">
-                                <input st-search="symbol" class="input-sm form-control" type="search"/>
-                            </th>                
                         </tr>
                     </thead>
                     <tbody>
@@ -50,7 +46,7 @@
                                     <a class="btn btn-default" title="Edit" href="/#!/stockpositions/{{row._id}}/edit">
                                         <span class="glyphicon glyphicon-edit"></span>
                                     </a>
-                                    <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove(row)" item="stockposition">
+                                    <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="stockCtrl.remove(row)" item="stockCtrl.stockposition">
                                             <span class="glyphicon glyphicon-remove-circle"></span>
                                         </a>
                                 </div>
@@ -58,15 +54,14 @@
                         </tr>
                     </tbody>
                     <tfoot>
-                        <tr>
+                        <!--<tr>
                             <td class="text-center" st-pagination="" st-items-by-page="10" colspan="4">
                             </td>
-                        </tr>
+                        </tr>-->
                     </tfoot> 
                 </table>
                 <div class="pull-right">
                     <p>Balance: {{value.marketValue}}</p>
-                    <!-- Comment this out for now <p><st-summary></st-summary></p>!-->
                 </div>        
             </div>
         </div>

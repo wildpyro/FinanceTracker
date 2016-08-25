@@ -10,7 +10,8 @@
 			$scope.$watch( function () { 
 					return  $scope.$parent.data; 
 			    }, 
-			    function () { 
+			    function () {
+
 					if (angular.isDefined($scope.$parent.data)) {
 
 			 			var equity = 0,
@@ -25,7 +26,7 @@
 							var data = vm.dataCollection[i];
 
 							if (!angular.isDefined(data.type[0])) {
-								console.log(data.symbol);
+								console.log('This is bad', data.symbol);
 							}
 
 							if (data.type === 'cash') {
@@ -48,6 +49,12 @@
 						vm.equity = Number(equity/totalmv * 100).toFixed(2);
 						vm.fixed = Number(fixed/totalmv * 100).toFixed(2);						
 						vm.totalmv = Number(totalmv).toFixed(2);
+
+						// If the amount goes over 100 than the progress bar fails. Allocate the rounding to equity which is always the largest.
+						if (Number(vm.cash) + Number(vm.equity) + Number(vm.fixed) >= 100) {
+							
+							vm.equity = 100 - vm.cash - vm.fixed; 
+						}
 					}
 			    } 
 			); 			

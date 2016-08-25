@@ -1,10 +1,12 @@
+<p class="centered">Total Positions: {{vm.length}} (including cash)</p> 
 
-<div class="st-summary">
-	<p class="centered">Total Positions: {{vm.length}} (including cash)</p> 
-
-	<div class="progress">
-	<div class="progress-bar progress-bar-success" style="width: {{vm.cash}}%">Cash: {{vm.cash}}%</div>
-	  <div class="progress-bar progress-bar-warning" style="width: {{vm.fixed}}%">Fixed: {{vm.fixed}}%</div>
-	  <div class="progress-bar" style="width: {{vm.equity}}%">Equity: {{vm.equity}}%</div>
-	</div>
+<div class="progress">
+	<div class="progress-bar progress-bar-success" style="width: {{vm.cash}}%"></div>
+	<div class="progress-bar progress-bar-warning" style="width: {{vm.fixed}}%"></div>
+	<div class="progress-bar" style="width: {{vm.equity}}%"></div>
 </div>
+<div class="centered">
+	<span class="text-success">Cash: {{vm.cash | number:2}}%  </span>
+	<span class="text-warning">Fixed: {{vm.fixed | number:2}}%  </span>
+	<span class="text-primary">Equity: {{vm.equity | number:2}}%  </span>
+</div>	

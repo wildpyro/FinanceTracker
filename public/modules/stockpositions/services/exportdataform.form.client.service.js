@@ -8,22 +8,23 @@ angular.module('stockpositions').factory('ExportDataForm', [function() {
     var getFormFields = function() {
 
         var fields = [
-          {
-            key: 'directory',
-            type: 'input',
-            templateOptions: {
-              label: 'Directory for output:',
-              addonRight: {
-                class: 'glyphicon glyphicon-floppy-open'
-              }
-            }
-          },
           { 
             key: 'year',
             type: 'input',
             templateOptions: {
               label: 'Year:',
               default: 'defaultDate.getFullYear'
+            }
+          },          
+          {
+            key: 'directory',
+            type: 'input',
+            templateOptions: {
+              label: 'Directory for output:',
+              default: defaultDirectory,
+              addonRight: {
+                class: 'glyphicon glyphicon-hdd'
+              }
             }
           }
         ];

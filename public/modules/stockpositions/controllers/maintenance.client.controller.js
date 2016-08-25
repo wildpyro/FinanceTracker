@@ -1,19 +1,18 @@
 'use strict';
 
 // Stockpositions controller
-angular.module('stockpositions').controller('MaintenanceController', ['$scope', '$stateParams', '$location', 'Authentication', '$http', 'MonthlyArchiveForm', 'ExportDataForm',
-	function($scope, $stateParams, $location, Authentication, $http, MonthlyArchiveForm, ExportDataForm) {
+angular.module('stockpositions').controller('MaintenanceController', ['$scope', '$stateParams', '$location', 'Authentication', '$http', 'MonthlyArchiveForm', 'ExportDataForm', 'ImportDataForm',
+	function($scope, $stateParams, $location, Authentication, $http, MonthlyArchiveForm, ExportDataForm, ImportDataForm) {
 		var vm = this;
 		$scope.authentication = Authentication;
 
 		this.title = 'Position Maintenance';
 
 	    vm.model = {};		
-	    vm.options = {formState: {}};		
-//	    vm.status = null;
-
+	    vm.options = {formState: {}};
 		initMonthlyArchiving();
 		initExportData();
+		initImportData();
 
 		function initMonthlyArchiving() {
 			vm.archive = {};
@@ -23,6 +22,11 @@ angular.module('stockpositions').controller('MaintenanceController', ['$scope', 
 		function initExportData() {
 			vm.exportData = {};
 			vm.exportDataFormFields = ExportDataForm.getFormFields();
+		}
+
+		function initImportData() {
+			vm.importDataForm = {};
+			vm.importDataFormFields = ImportDataForm.getFormFields();
 		}
 
 		this.monthlyArchive = function() {
@@ -48,5 +52,28 @@ angular.module('stockpositions').controller('MaintenanceController', ['$scope', 
 				vm.error = response.message;
 			});			
 		}; 
+
+		this.importData = function() {			
+			//Not sure if formly supports this 
+			//var test = document.getElementById('fileToUpload');
+			var file = document.getElementById('fileToUpload').files[0];
+
+			var formData = new FormData();
+			formData.append('file', file, file.name);
+
+			var fileReader = new FileReader();
+			fileReader.onload = function(result) {
+				$http.post('/maintenance/importStockPositions', {type: vm.importDataForm.layout, file: result.target.result})
+				.success(function(response) {
+					vm.success = response.message;
+					vm.options.resetModel();
+				})
+				.error(function(response) {
+					vm.error = response.message;
+				});			
+			};
+
+			fileReader.readAsText(file);
+		}; 		
 	}
 ]);

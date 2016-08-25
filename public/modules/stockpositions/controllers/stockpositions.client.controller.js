@@ -8,14 +8,15 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		vm.isLoading = false;
 		$scope.authentication = Authentication;
 		vm.stockposition = {};
-		this.rows = [];
-		this.rowsCollection = [];
+		this.safeRows = [];
+		this.displayRowsCollection = [];
+		//this.masterRowsCollection= [];
 
 		function doesMatch(dataToTest) {
-			if (angular.isDefined(vm.rowsCollection.accountType) && 
+			if (angular.isDefined(vm.displayRowsCollection.accountType) && 
 				dataToTest.accountType !== null &&  
-				dataToTest.accountType !== vm.rowsCollection.accountType &&
-				dataToTest.symbol !== vm.rowsCollection.symbol) {
+				dataToTest.accountType !== vm.displayRowsCollection.accountType &&
+				dataToTest.symbol !== vm.displayRowsCollection.symbol) {
 				return false;
 			}
 			else {
@@ -29,16 +30,17 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		this.getData = function(data) {
 			if ($location.$$url === '/accounts') {
 				if (angular.isDefined(data.stockPositions) && data.stockPositions !== null && data.stockPositions.length > 0) {
-					if (this.rowsCollection.length === 0) {
-						this.rowsCollection = data.stockPositions;
+					if (this.displayRowsCollection.length === 0) {
+						console.log('here');
+						this.displayRowsCollection = data.stockPositions;
 					}
 					else {
 						var test = data.stockPositions.filter(doesMatch);
-
-						if (test.length !== 0) {		
-							var marketValue = 0;
-							this.rows.push({accountType: data.accountType, data: data.stockPositions});
-			        		this.rowsCollection = [].concat(this.rows);						
+						
+						if (test.length !== 0) {
+							//vm.masterRowsCollection.push({accountType: data.accountType, data: data.stockPositions}); 		
+							this.safeRows.push({accountType: data.accountType, data: data.stockPositions});
+			        		this.displayRowsCollection = [].concat(this.safeRows);						
 						}
 					}
 				}
@@ -51,19 +53,23 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		    var number = pagination.number || 100;  // Number of entries showed per page.
 
 		    SmartTableFactory.getPage(start, number, tableState, Stockpositions).then(function (result) {
+				//resest the rows collection
+				vm.safeRows = [];
+				vm.displayRowsCollection = []; 
+		    	vm.safeRows= result.data;
 
-		    	vm.rows.push(result);
-        		vm.rowsCollection = [].concat(vm.rows);
+				console.log(vm.safeRows);
+        		vm.displayRowsCollection = vm.displayRowsCollection.concat(vm.safeRows);
 				tableState.pagination.numberOfPages = result.numberOfPages;//set the number of pages so the pagination can update
 				vm.isLoading = false;
 
 				//Set the data collection for the directive 
-				$scope.data = vm.rowsCollection[0].data;
+				$scope.data = vm.displayRowsCollection;
 		    });
 		};
 
 		this.getRows = function() {
-			return vm.rowsCollection[0].data;
+			return vm.displayRowsCollection;
 		};
 
 //Single Record functions//
@@ -75,7 +81,8 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		this.create = function() {
 			var stockposition = new Stockpositions(vm.stockposition);
 
-			stockposition.market = stockposition.price * stockposition.shares;
+			stockposition.market = Number(stockposition.price * stockposition.shares).toFixed(2);
+
 			// Redirect after save
 			stockposition.$save(
 				function(response) {
@@ -93,8 +100,8 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 				stockposition = Stockpositions.get({stockpositionId:stockposition._id}, function() {
 					stockposition.$remove(
 						function(response) {
-							for (var i = vm.rowsCollection[0].data.length - 1; i >= 0; i--) {
-								var row = vm.rowsCollection[0].data[i];	
+							for (var i = vm.displayRowsCollection.length - 1; i >= 0; i--) {
+								var row = vm.displayRowsCollection[i];	
 							}
 						},
 						function(errorResponse) {
@@ -115,7 +122,7 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		// Update existing Stockposition
 		this.update = function() {
 			var stockposition = vm.stockposition;
-			stockposition.market = stockposition.price * stockposition.shares;
+			stockposition.market = Number(stockposition.price * stockposition.shares).toFixed(2);
 
 			stockposition.$update(function() {
 				//$location.path('stockpositions/' + stockposition._id);
@@ -150,15 +157,15 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		};
 
 		this.getInstance = function(accountType) {
-
-			for (var i = vm.rowsCollection.length - 1; i >= 0; i--) {
-				var row = vm.rowsCollection[i];
-
+			for (var i = vm.displayRowsCollection.length - 1; i >= 0; i--) {
+				var row = vm.displayRowsCollection[i];
+				//console.log('got here1');
 
 				if (row.accountType === accountType && angular.isDefined(row.data)) {
 					//TODO the rowCollection contains way too many rows 
-					//console.log(row, accountType);
+					console.log(row, accountType);
 					vm.balance += row.market;
+					$scope.data = row.data;
 					return row.data;
 				}
 				else {
