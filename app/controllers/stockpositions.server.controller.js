@@ -10,10 +10,10 @@ var mongoose = require('mongoose'),
 	_ = require('lodash');
 
 /**
-* Update references either add or delete
+* Update references either add, delete or check 
 **/
 var updateReferences = function(action, stockposition) {
-	Account.findOne({'accountType': stockposition.accountType[0]}, function(err, account) {
+	Account.findOne({'accountType': stockposition.accountType}, function(err, account) {
 		if (err) {return err;}	
 		else {
 			if (account !== undefined) {
@@ -24,11 +24,28 @@ var updateReferences = function(action, stockposition) {
 
 					account.stockPositions.push(stockposition);
 				}
-				else if (action === 'remove')
-				{
+				else if (action === 'remove') {
 					if (account.stockPositions !== undefined && account.stockPositions !== null) {
 						account.stockPositions.pop(stockposition);	
 					}
+				}
+				else if (action === 'check') {
+					if (account.stockPositions !== undefined && account.stockPositions !== null) {
+						if (!account.stockPositions.includes(stockposition._id)) {
+							account.stockPositions.push(stockposition);
+						}
+						//Look through and make sure all the references are correct. 
+						else {
+							Account.find({}, function(err, accounts) {
+								accounts.forEach(function(account) {
+									account.stockpositions.forEach(function(stockposition) {
+										console.log(stockposition);
+									}, this);
+								}, this);
+							}); 
+						}
+					}
+
 				}
 
 				account.save(function(err) {
@@ -41,6 +58,27 @@ var updateReferences = function(action, stockposition) {
 		}
 	});
 }; 
+
+/** 
+ * Check to ensure we aren't adding duplicate symbols to the same accounttype'
+ */
+exports.checkDuplicates = function(req, res, next) {
+	var stockposition = new Stockposition(req.body);
+	Stockposition.findOne({'accountType': stockposition.accountType, 'symbol': stockposition.symbol}, function(err, duplicate) {
+		if (err) {
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
+		}
+		else {
+			if (duplicate !== null && duplicate !== undefined) {
+				return res.status(400).send({message: 'Stock already exists for the account'});
+			}
+		}	
+
+		next();	
+	});
+};
 
 /**
  * Create a Stockposition
@@ -76,20 +114,51 @@ exports.read = function(req, res) {
 /**
  * Update a Stockposition
  */
-exports.update = function(req, res) {
-	var stockposition = req.stockposition ;
+exports.update = function(req, res, next) {
+	var stockposition = req.stockposition;
 
 	stockposition = _.extend(stockposition , req.body);
 
 	stockposition.save(function(err) {
 		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
+			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
+		} 
+		else {
+			updateReferences('check', stockposition);
+
 			res.jsonp(stockposition);
 		}
+
+		next();
 	});
+};
+
+/**
+ * Helper to update all prices in one shot
+ */
+exports.updatePrice = function(req, res, next) {
+	var symbolToSearch = req.stockposition.symbol,
+		accountType = req.stockposition.accountType,
+		price = req.stockposition.price,
+		filter = ({symbol: symbolToSearch });
+		
+	Stockposition.find(filter, function(err, results) {
+		if (err) {
+			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
+		}
+		else {
+			results.forEach(function(result) {
+				result.price = price;
+				result.market = Number(price * result.shares).toFixed(2);
+				result.save(function(err) {
+					if (err) {
+						return res.status(400).send({message: errorHandler.getErrorMessage(err)});
+					}
+				});
+			}, this);
+		}
+	});
+
 };
 
 /**
@@ -120,48 +189,41 @@ exports.delete = function(req, res) {
 exports.list = function(req, res) {
 
 	var sort;
-	var sortObject = {};
 	var count = req.query.count || 50; //Default to this for max for now. 
-	var page = req.query.page || 1;
-	var filter = (function() {
-		if (req.query.filter === undefined) {
-			return null;
-		}
+	var page = req.query.page || 1,
+		query = Stockposition.find(),
+		pagination = {
+			start: (page - 1) * count,
+			count: count
+		};
 
-		return req.query.filter;
-	}());
+	//Filter
+	if (req.query.filter && !_.isEmpty(req.query.filter) && req.query.filter.length > 2) {
+		//var filter = JSON.parse(req.query.filter).symbol.toUpperCase().split(',');
+		query.where('symbol').in(JSON.parse(req.query.filter).symbol.toUpperCase().split(','));
+	}
 
-	var pagination = {
-		start: (page - 1) * count,
-		count: count
-	};
-
+	//Sort
 	if (req.query.sorting) {
+		//Put something here once sorting is fixed 
 		var sortKey = Object.keys(req.query.sorting)[0];
 		var sortValue = req.query.sorting[sortKey];
-		sortObject[sortValue] = sortKey;
+		//sortObject[sortValue] = sortKey;
 	}
 	else {
-		sortObject = [{isCash: 'asc', symbol: 'asc'}];
+		query.sort({isCash: 'asc', symbol: 'asc'});
 	}
 
-	sort = {
-		sort: sortObject
-	};
-
-	Stockposition
-		.find(JSON.parse(filter))
-		.sort({symbol: 'asc', description: 'asc'})
-		.page(pagination, function(err, stockpositions){
-			if (err) {
-				return res.status(400).send({
-					message: errorHandler.getErrorMessage(err)
-				});
-			} else {
-				//console.log(stockpositions);
-				res.jsonp(stockpositions);
-			}
-		});
+	query.page(pagination, function(err, stockpositions){
+		if (err) {
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
+		} else {
+			//console.log(stockpositions);
+			res.jsonp(stockpositions);
+		}
+	});
 };
 
 /**
@@ -171,7 +233,7 @@ exports.stockpositionByID = function(req, res, next, id) {
 	Stockposition.findById(id).populate('user', 'displayName').exec(function(err, stockposition) {
 		if (err) return next(err);
 		if (! stockposition) return next(new Error('Failed to load Stockposition ' + id));
-		req.stockposition = stockposition ;
+		req.stockposition = stockposition;
 		next();
 	});
 };

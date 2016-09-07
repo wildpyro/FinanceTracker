@@ -11,7 +11,7 @@ angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeServ
             templateOptions: {
               label: 'Account Type:',
               options: accountTypes.getEnums(),
-              disabled: isAdd
+              disabled: !isAdd
             }
           },
           { 

@@ -7,7 +7,7 @@
     </div>
 
     <div class="account-panel" ng-repeat="value in ctrl.accountsSearch.results">
-        <a href="/#!/accounts/{{value._id}}/edit"><h2 class="account-header">{{ctrl.formatTitle(value.description,value.accountNo)}}</h2></a>
+        <a class="undecorated-link teal" href="/#!/accounts/{{value._id}}/edit"><h2 class="account-header">{{ctrl.formatTitle(value.description,value.accountNo)}}</h2></a>
         <div class="animate-show" ng-show="ctrl.show(True)">
             <div class= "table-reponsive" data-ng-controller="StockpositionsController as stockCtrl">
                 <div data-ng-show="stockCtrl.error" class="alert alert-danger">
@@ -34,7 +34,7 @@
                             <td>{{row.description}}</td>
                             <td class="money">{{row.price | currency}}</td>
                             <td>{{row.shares | number}}</td>
-                            <td class="money">{{stockCtrl.calcMV(row.price,row.shares) | currency}}</td>
+                            <td class="money">{{stockCtrl.calcMV(row.type, row.price,row.shares) | currency}}</td>
                             <td class="money">{{row.book | currency}}</td>
                             <td ng-show="stockCtrl.stockUp(row.price, row.shares, row.book)" class="money stockup"><span>{{stockCtrl.calcGainLoss(row.price, row.shares, row.book) | currency}}</span><span class="glyphicon glyphicon-arrow-up"></span></td> 
                             <td ng-show="!stockCtrl.stockUp(row.price, row.shares, row.book)" class="money stockdown"><span>{{stockCtrl.calcGainLoss(row.price, row.shares, row.book) | currency}}</span><span class="glyphicon glyphicon-arrow-down"></span></td>                             
@@ -53,13 +53,14 @@
                             </td>
                         </tr>
                     </tbody>
-                    <tfoot>
-                        <!--<tr>
+                    <!--<tfoot>
+                        <tr>
                             <td class="text-center" st-pagination="" st-items-by-page="10" colspan="4">
                             </td>
-                        </tr>-->
-                    </tfoot> 
+                        </tr>
+                    </tfoot>--> 
                 </table>
+                <br/>
                 <div class="pull-right">
                     <p>Balance: {{value.marketValue}}</p>
                 </div>        

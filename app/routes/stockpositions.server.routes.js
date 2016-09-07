@@ -7,11 +7,11 @@ module.exports = function(app) {
 	// Stockpositions Routes
 	app.route('/stockpositions')
 		.get(stockpositions.list)
-		.post(users.requiresLogin, stockpositions.create);
+		.post(users.requiresLogin, stockpositions.checkDuplicates, stockpositions.create);
 
 	app.route('/stockpositions/:stockpositionId')
 		.get(stockpositions.read)
-		.put(users.requiresLogin, stockpositions.update)
+		.put(users.requiresLogin, stockpositions.update, stockpositions.updatePrice)
 		.delete(users.requiresLogin, stockpositions.delete);
 		//.put(users.requiresLogin, stockpositions.hasAuthorization, stockpositions.update)
 		//.delete(users.requiresLogin, stockpositions.hasAuthorization, stockpositions.delete);

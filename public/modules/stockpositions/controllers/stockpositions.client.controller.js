@@ -10,7 +10,6 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		vm.stockposition = {};
 		this.safeRows = [];
 		this.displayRowsCollection = [];
-		//this.masterRowsCollection= [];
 
 		function doesMatch(dataToTest) {
 			if (angular.isDefined(vm.displayRowsCollection.accountType) && 
@@ -58,7 +57,6 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 				vm.displayRowsCollection = []; 
 		    	vm.safeRows= result.data;
 
-				console.log(vm.safeRows);
         		vm.displayRowsCollection = vm.displayRowsCollection.concat(vm.safeRows);
 				tableState.pagination.numberOfPages = result.numberOfPages;//set the number of pages so the pagination can update
 				vm.isLoading = false;
@@ -89,6 +87,7 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 					$location.path('stockpositions');
 				}, 
 				function(errorResponse) {
+					console.log(errorResponse);
 					vm.error = errorResponse.data.message;
 				}
 			);
@@ -163,7 +162,7 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 
 				if (row.accountType === accountType && angular.isDefined(row.data)) {
 					//TODO the rowCollection contains way too many rows 
-					console.log(row, accountType);
+					//console.log(row, accountType);
 					vm.balance += row.market;
 					$scope.data = row.data;
 					return row.data;
