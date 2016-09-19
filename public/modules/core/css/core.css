@@ -48,8 +48,12 @@
   padding-right: 10px;
 }
 
+.main-header{
+  font-size: 35px;
+}
+
 .main-glyph{
-  font-size: 175%;
+  font-size: 85%;
 }
 
 .well-lg {

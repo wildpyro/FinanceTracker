@@ -77,50 +77,38 @@ exports.delete = function(req, res) {
  */
 exports.list = function(req, res) {
 
-	var sort;
-	var sortObject = {};
-	var count = req.query.count || 20;
-	var page = req.query.page || 1;
+	var query = Txn.find(),
+		pagination = {
+			start: ((req.query.page || 1) - 1) * (req.query.count || 50),
+			count: req.query.count || 50
+		};
 
-	var filter = {
-		filters : {
-			mandatory : {
-				contains: req.query.filter
-			}
-		}
-	};
+	//Filter
+	if (req.query.filter && !_.isEmpty(req.query.filter) && req.query.filter.length > 2) {
+		console.log(req.query.filter);
+		query.where('symbol').in(JSON.parse(req.query.filter).symbol.toUpperCase().split(','));
+	}
 
-	var pagination = {
-		start: (page - 1) * count,
-		count: count
-	};
-
-	if (req.query.sorting) {
-		var sortKey = Object.keys(req.query.sorting)[0];
-		var sortValue = req.query.sorting[sortKey];
-		sortObject[sortValue] = sortKey;
+	//Sort
+	if (req.query.sort && req.query.sort.length > 2) {
+		var sortKey = JSON.parse(req.query.sort).predicate,
+			direction = JSON.parse(req.query.sort).reverse ? 'desc' : 'asc';
+	
+		query.sort({[sortKey] : direction});
 	}
 	else {
-		sortObject.desc = '_id';
+		query.sort({date: 'asc'});
 	}
 
-	sort = {
-		sort: sortObject
-	};
-
-	Txn
-		.find()
-		.filter(filter)
-		.order(sort)
-		.page(pagination, function(err, txns){
-			if (err) {
-				return res.status(400).send({
-					message: errorHandler.getErrorMessage(err)
-				});
-			} else {
-				res.jsonp(txns);
-			}
-		});
+	query.page(pagination, function(err, txns){
+		if (err) {
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
+		} else {
+			res.jsonp(txns);
+		}
+	});
 };
 
 /**

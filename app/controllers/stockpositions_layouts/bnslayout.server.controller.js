@@ -11,7 +11,8 @@ var mongoose = require('mongoose'),
 	//BaseLayout = require('./baselayout.server.class'),
 	startPosition = 4,
 	endPosition = 10,
-	logicalRecordLength = 11;
+	logicalRecordLength = 11,
+	records = [{}];
 
 class BaseLayout {
     constructor(layoutName, startPosition, endPosition, logicalRecordLength) {
@@ -20,8 +21,6 @@ class BaseLayout {
         this.endPosition = endPosition;
         this.logicalRecordLength = logicalRecordLength;     
     }
-
-
 }
 
 class BNSLayout extends BaseLayout{
@@ -70,7 +69,9 @@ exports.importStockPosition = function(req, res) {
 			//Try and map to the bns layout model. 
 			var rec = new BNSLayout_Record(record);
 
-						
+			records.push(rec);			
 		}
 	}
+
+	console.log(records);
 };

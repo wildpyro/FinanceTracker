@@ -76,5 +76,14 @@ angular.module('users').controller('SettingsController', ['$scope', '$http', '$l
 				$scope.error = response.message;
 			});
 		};
+
+		$scope.dailyStocksEmail = function() {
+			$http.post('/users/generateDailyStocksEmail')
+			.success(function(response) {
+				$scope.error = response.message;
+			}).error(function(response) {
+				$scope.error = response.message;
+			});
+		};
 	}
 ]);

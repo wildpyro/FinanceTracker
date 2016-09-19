@@ -30,7 +30,7 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 			if ($location.$$url === '/accounts') {
 				if (angular.isDefined(data.stockPositions) && data.stockPositions !== null && data.stockPositions.length > 0) {
 					if (this.displayRowsCollection.length === 0) {
-						console.log('here');
+						//console.log('here');
 						this.displayRowsCollection = data.stockPositions;
 					}
 					else {
@@ -60,9 +60,6 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
         		vm.displayRowsCollection = vm.displayRowsCollection.concat(vm.safeRows);
 				tableState.pagination.numberOfPages = result.numberOfPages;//set the number of pages so the pagination can update
 				vm.isLoading = false;
-
-				//Set the data collection for the directive 
-				$scope.data = vm.displayRowsCollection;
 		    });
 		};
 
@@ -164,7 +161,8 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 					//TODO the rowCollection contains way too many rows 
 					//console.log(row, accountType);
 					vm.balance += row.market;
-					$scope.data = row.data;
+					//$scope.data = row.data;
+
 					return row.data;
 				}
 				else {

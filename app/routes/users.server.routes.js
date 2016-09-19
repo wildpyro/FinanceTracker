@@ -38,6 +38,8 @@ module.exports = function(app) {
 	app.route('/auth/yahoo').get(passport.authenticate('yahoo'));
 	app.route('/auth/yahoo/callback').get(users.oauthCallback('yahoo'));
 
+	app.route('/users/generateDailyStocksEmail').post(users.generateDailyStocksEmail);
+
 	// Finish by binding the user middleware
 	app.param('userId', users.userByID);
 };

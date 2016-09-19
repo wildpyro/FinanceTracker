@@ -10,16 +10,16 @@
         <table class="table smart-table table-hover" st-table="ctrl.displayRowsCollection" st-safe-src="ctrl.safeRows" st-pipe="ctrl.fetch">
             <thead>
                 <tr>
-                    <th>Account Type</th>
-                    <th st-sort="ctrl.displayRowsCollection.symbol">Symbol</th>
-                    <th>Description</th>
-                    <th st-sort="description">Price</th>
+                    <th st-sort="accountType">Account Type</th>
+                    <th st-sort="symbol">Symbol</th>
+                    <th st-sort="description">Description</th>
+                    <th st-sort="price">Price</th>
                     <th st-sort="shares">Shares</th>
-                    <th>MarketValue</th>
+                    <th st-sort="market">MarketValue</th>
                     <th><!--Action !--></th> 
                 </tr>
                 <tr class="smart-table-filters">
-                    <td colspan="3">
+                    <td colspan="5">
                         Select a symbol for filtering (separate symbols with commas)<input st-search="symbol" class="input-sm form-control" type="search"/>
                     </td>                
                 </tr>

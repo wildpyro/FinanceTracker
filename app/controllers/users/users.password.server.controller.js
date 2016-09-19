@@ -65,7 +65,7 @@ exports.forgot = function(req, res, next) {
 		},
 		// If valid email, send reset email using service
 		function(emailHTML, user, done) {
-			var smtpTransport = nodemailer.createTransport(config.mailer.options);
+			var smtpTransport = nodemailer.createTransport(config.mailer.transport);
 			var mailOptions = {
 				to: user.email,
 				from: config.mailer.from,

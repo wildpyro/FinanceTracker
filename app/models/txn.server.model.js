@@ -15,10 +15,7 @@ var TxnSchema = new Schema({
 		required: 'Please fill in a date'
 	},
 	accountType: {
-		type: [{
-			type: Number,
-			enum: [0,1,2,3]
-		}],
+		type: String, enum: ['open','rsp','tfsa','resp','joint'],
 		required: 'Please select an account type',
 		trim: true
 	},	
@@ -30,10 +27,7 @@ var TxnSchema = new Schema({
 		trim: true
 	},
 	type: {
-		type: [{
-			type: String,
-			enum: ['Buy','Sell','Dividend','Drip']
-		}],
+		type: String, enum: ['Buy','Sell','Dividend','Drip'],
 		required: 'Please select a transaction type',
 		trim: true
 	},
@@ -52,6 +46,19 @@ var TxnSchema = new Schema({
 		default: 0,
 		required: 'Please fill in the commission amount'
 	},	
+	settle: {
+		type: Number,
+		default: 0,
+		required: 'Please fill in the settle amount'
+	},		
+	book: {
+		type: Number,
+		default: 0,
+		required: 'Please fill in the book amount'
+	},		
+	tradeinfo: {
+		type: String
+	},		
 	created: {
 		type: Date,
 		default: Date.now

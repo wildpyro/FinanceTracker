@@ -26,7 +26,8 @@ module.exports = {
 		callbackURL: '/auth/yahoo/callback'
 	},
 	mailer: {
-		from: process.env.MAILER_FROM || 'MAILER_FROM',
+		from: 'bendzundel@gmail.com',
+		transport: 'smtps://user%40gmail.com:pass@smtp.gmail.com',
 		options: {
 			service: process.env.MAILER_SERVICE_PROVIDER || 'MAILER_SERVICE_PROVIDER',
 			auth: {

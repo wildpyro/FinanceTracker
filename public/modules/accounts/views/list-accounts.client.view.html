@@ -1,4 +1,4 @@
-<section data-ng-controller="AccountsController as ctrl">
+<section data-ng-controller="AccountsController as acctCtrl">
     <div class="page-header">
         <div class="page-title">Accounts</div>
         <div class="centered">
@@ -6,16 +6,16 @@
         </div>        
     </div>
 
-    <div class="account-panel" ng-repeat="value in ctrl.accountsSearch.results">
-        <a class="undecorated-link teal" href="/#!/accounts/{{value._id}}/edit"><h2 class="account-header">{{ctrl.formatTitle(value.description,value.accountNo)}}</h2></a>
-        <div class="animate-show" ng-show="ctrl.show(True)">
-            <div class= "table-reponsive" data-ng-controller="StockpositionsController as stockCtrl">
-                <div data-ng-show="stockCtrl.error" class="alert alert-danger">
-                    <strong data-ng-bind="stockCtrl.error"></strong>
+    <div class="account-panel" ng-repeat="value in acctCtrl.accountsSearch.results">
+        <a class="undecorated-link teal" href="/#!/accounts/{{value._id}}/edit"><h2 class="account-header">{{acctCtrl.formatTitle(value.description,value.accountNo)}}</h2></a>
+        <div class="animate-show" ng-show="acctCtrl.show(True)">
+            <div class= "table-reponsive" data-ng-controller="StockpositionsController as ctrl">
+                <div data-ng-show="ctrl.error" class="alert alert-danger">
+                    <strong data-ng-bind="ctrl.error"></strong>
                 </div>
-                {{stockCtrl.getData(value)}}
-                <div class="st-summary-small"><st-summary datacollection="stockCtrl.getInstance(value.accountType)"></st-summary></div>
-                <table class="table smart-table table-hover" st-table="stockCtrl.displayRowsCollection" st-safe-src="stockCtrl.rows"> <!--encountering error of two many digest loops.-->
+                {{ctrl.getData(value)}}
+                <div class="st-summary-small"><st-summary datacollection="ctrl.getInstance(value.accountType)"></st-summary></div>
+                <table class="table smart-table table-hover" st-table="ctrl.displayRowsCollection" st-safe-src="ctrl.rows"> <!--encountering error of two many digest loops.-->
                     <thead>
                         <tr>
                             <th>Symbol</th>
@@ -29,15 +29,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="row in stockCtrl.getInstance(value.accountType)">
+                        <tr ng-repeat="row in ctrl.getInstance(value.accountType)">
                             <td>{{row.symbol | uppercase}}</td>
                             <td>{{row.description}}</td>
                             <td class="money">{{row.price | currency}}</td>
                             <td>{{row.shares | number}}</td>
-                            <td class="money">{{stockCtrl.calcMV(row.type, row.price,row.shares) | currency}}</td>
+                            <td class="money">{{ctrl.calcMV(row.type, row.price,row.shares) | currency}}</td>
                             <td class="money">{{row.book | currency}}</td>
-                            <td ng-show="stockCtrl.stockUp(row.price, row.shares, row.book)" class="money stockup"><span>{{stockCtrl.calcGainLoss(row.price, row.shares, row.book) | currency}}</span><span class="glyphicon glyphicon-arrow-up"></span></td> 
-                            <td ng-show="!stockCtrl.stockUp(row.price, row.shares, row.book)" class="money stockdown"><span>{{stockCtrl.calcGainLoss(row.price, row.shares, row.book) | currency}}</span><span class="glyphicon glyphicon-arrow-down"></span></td>                             
+                            <td ng-show="ctrl.stockUp(row.price, row.shares, row.book)" class="money stockup"><span>{{ctrl.calcGainLoss(row.price, row.shares, row.book) | currency}}</span><span class="glyphicon glyphicon-arrow-up"></span></td> 
+                            <td ng-show="!ctrl.stockUp(row.price, row.shares, row.book)" class="money stockdown"><span>{{ctrl.calcGainLoss(row.price, row.shares, row.book) | currency}}</span><span class="glyphicon glyphicon-arrow-down"></span></td>                             
                             <td>
                                <div class="table-actions">
                                     <a class="btn btn-default" title="View" ui-sref="spd({symbol: row.symbol})">
@@ -46,7 +46,7 @@
                                     <a class="btn btn-default" title="Edit" href="/#!/stockpositions/{{row._id}}/edit">
                                         <span class="glyphicon glyphicon-edit"></span>
                                     </a>
-                                    <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="stockCtrl.remove(row)" item="stockCtrl.stockposition">
+                                    <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="ctrl.remove(row)" item="ctrl.stockposition">
                                             <span class="glyphicon glyphicon-remove-circle"></span>
                                         </a>
                                 </div>

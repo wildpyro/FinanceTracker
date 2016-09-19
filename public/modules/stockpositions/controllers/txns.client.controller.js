@@ -8,14 +8,16 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 		vm.isLoading = false;
 		$scope.authentication = Authentication;
 		this.txns = {};
-		this.rows = [];
-		this.rowsCollection = [];
+
+		this.safeRows = [];
+		this.displayRowsCollection = [];
+
 		this.formFields = TxnsForm.getFormFields1();
 		vm.resetTable = true;
 		$scope.txn = {};
 	    
-	    vm.model = {};		
-	    vm.options = {formState: {}};		
+	    vm.model = {};
+	    vm.options = {formState: {}}; 
 
 //Table operations 
 		//Fetch data from server 
@@ -27,12 +29,13 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 		    var number = pagination.number || 10;  // Number of entries showed per page.
 
 		    SmartTableFactory.getPage(start, number, tableState, Txns).then(function (result) {
-
-		    	if (vm.rowsCollection.size !== 1) {
-		    		vm.rows = result;
-		    		vm.rowsCollection = vm.rowsCollection.concat(result);
-		    	} 
-
+				vm.safeRows = [];
+				vm.displayRowsCollection = []; 
+		    	vm.safeRows= result.data;
+        		vm.displayRowsCollection = vm.displayRowsCollection.concat(vm.safeRows);
+				
+				console.log(vm.displayRowsCollection);
+				
 				tableState.pagination.numberOfPages = result.numberOfPages;//set the number of pages so the pagination can update
 				vm.isLoading = false;
 		    });
@@ -77,8 +80,8 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 
 		//Attempt a delete to server 
 		this.tableDelete = function() {
-			for (var i = vm.rowsCollection[0].data.length - 1; i >= 0; i--) {
-				var row = vm.rowsCollection[0].data[i];
+			for (var i = vm.displayRowsCollection.data.length - 1; i >= 0; i--) {
+				var row = vm.displayRowsCollection.data[i];
 				
 				if (!angular.isDefined(row._id)) {
 					serverDelete(row);	
@@ -88,8 +91,8 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 
 		//Attempt to save to server 
 		this.tableSave = function() {
-			for (var i = vm.rowsCollection[0].data.length - 1; i >= 0; i--) {
-				var row = vm.rowsCollection[0].data[i];
+			for (var i = vm.displayRowsCollection.data.length - 1; i >= 0; i--) {
+				var row = vm.displayRowsCollection.data[i];
 					
 				if (!angular.isDefined(row._id)) {
 					serverSave(row);	
@@ -99,46 +102,26 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 
 		//Reset to original source
 		this.tableReset = function() {
-			vm.rowsCollection[0] = vm.rows;
+			vm.displayRowsCollection = vm.rows;
 		};		
 
 		//Remove the row from either the view or the view & server 
 	    this.tableRemoveItem = function tableRemoveItem(row) {
-	        var index = vm.rowsCollection[0].data.indexOf(row);
+	        var index = vm.displayRowsCollection.data.indexOf(row);
 
 	        if (index !== -1) {
 
 	        	if (angular.isDefined(row._id)) {
 	        		serverDelete(row);
-	        		vm.rowsCollection[0].data.splice(index, 1);
+	        		vm.displayRowsCollection.data.splice(index, 1);
 	        	}
 	        	else {
-	            	vm.rowsCollection[0].data.splice(index, 1);
+	            	vm.displayRowsCollection.data.splice(index, 1);
 	        	}
 	        }
 	    };
 	    
 //Listing Operations  
-		this.totalCost = function(price,commission,shares) {
-
-			if (!angular.isDefined(commission)) {
-				commission = 0;
-			}	
-
-			var total = Number(price) * Number(shares) + Number(commission);
-			return total;
-		};
-
-		this.avgCost = function(price,commission,shares) {
-
-			if (!angular.isDefined(commission)) {
-				commission = 0;
-			}	
-
-			var avg = (Number(price) * Number(shares) + Number(commission)) / Number(shares);
-			return avg;
-		};
-
 		this.resolveTxnType = function(enumValue) {
 			return TxnTypesService.getText(enumValue);
 		};

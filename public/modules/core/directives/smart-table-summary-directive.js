@@ -8,24 +8,26 @@
  			var vm = this;
 
 			$scope.$watch( function () { 
-					return  $scope.$parent.data; 
+					//return  $scope.$parent.ctrl.displayRowsCollection;
+					return $scope.vm.datacollection; 
 			    }, 
 			    function () {
 
-					if (angular.isDefined($scope.$parent.data)) {
+					if (angular.isDefined(vm.datacollection)) {
 
 			 			var equity = 0,
 			 				cash = 0,
 			 				fixed = 0,
-			 				totalmv = 0; 
-
-						vm.dataCollection = angular.copy($scope.$parent.data);
+			 				totalmv = 0;
+							 
+						vm.dataCollection = angular.copy(vm.datacollection);
 						vm.length = vm.dataCollection.length;
 
 						for (var i = vm.dataCollection.length - 1; i >= 0; i--) {
 							var data = vm.dataCollection[i];
+							//console.log(data);						
 
-							if (!angular.isDefined(data.type[0])) {
+							if (!angular.isDefined(data.type)) {
 								console.log('This is bad', data.symbol);
 							}
 
@@ -63,7 +65,8 @@
 
 		return {
 			restrict: 'EA', 
-			scope: true,
+			//scope: true,
+			scope: {datacollection: '='},
 			controller: controller,
 			controllerAs: 'vm',
 			bindToController: true,

@@ -188,27 +188,23 @@ exports.delete = function(req, res) {
  */
 exports.list = function(req, res) {
 
-	var sort;
-	var count = req.query.count || 50; //Default to this for max for now. 
-	var page = req.query.page || 1,
-		query = Stockposition.find(),
+	var query = Stockposition.find(),
 		pagination = {
-			start: (page - 1) * count,
-			count: count
+			start: ((req.query.page || 1) - 1) * (req.query.count || 50),
+			count: req.query.count || 50
 		};
 
 	//Filter
 	if (req.query.filter && !_.isEmpty(req.query.filter) && req.query.filter.length > 2) {
-		//var filter = JSON.parse(req.query.filter).symbol.toUpperCase().split(',');
 		query.where('symbol').in(JSON.parse(req.query.filter).symbol.toUpperCase().split(','));
 	}
 
 	//Sort
-	if (req.query.sorting) {
-		//Put something here once sorting is fixed 
-		var sortKey = Object.keys(req.query.sorting)[0];
-		var sortValue = req.query.sorting[sortKey];
-		//sortObject[sortValue] = sortKey;
+	if (req.query.sort && req.query.sort.length > 2) {
+		var sortKey = JSON.parse(req.query.sort).predicate,
+			direction = JSON.parse(req.query.sort).reverse ? 'desc' : 'asc';
+	
+		query.sort({[sortKey] : direction});
 	}
 	else {
 		query.sort({isCash: 'asc', symbol: 'asc'});
@@ -222,6 +218,23 @@ exports.list = function(req, res) {
 		} else {
 			//console.log(stockpositions);
 			res.jsonp(stockpositions);
+		}
+	});
+};
+
+/**
+ * Find the stockpositions you currently hold
+ * Currently this doesn't use the User but it should
+ */
+exports.listDaily = function(user) {
+	var query = Stockposition.find();
+
+	query.exec(function(err, stockpositions) {
+		if (err) {
+			return err;
+		}
+		else {
+			return stockpositions;
 		}
 	});
 };

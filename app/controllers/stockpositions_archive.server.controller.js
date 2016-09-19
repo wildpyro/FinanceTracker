@@ -71,11 +71,17 @@ function archive(req, res, stockpositions) {
  };
 
 /** 
- * Restore the data back. This should be an order by and select the max month. For now I just have one. 
+ * Restore the data back.  
  */
 exports.restoreStockPositionsFromArchive = function(req, res) {
-	
-	Stockposition_Archive.find(function(err, archive) {
+
+	var query = Stockposition_Archive.find;
+
+	//Figure out what to do here. How to select the max 
+	query.sort({}); 
+	query.limit(1);
+
+	query.exec(function(err, archive) {
 		for (var i = archive.length - 1; i >= 0; i--) {
 			var collection = archive[i].stockpositions; 
 
