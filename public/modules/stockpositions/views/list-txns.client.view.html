@@ -32,23 +32,23 @@
         <table class="table smart-table table-hover" st-table="ctrl.displayRowsCollection" st-safe-src="ctrl.safeRows" st-pipe="ctrl.fetch">
             <thead>
                 <tr>
-                    <th st-sort="date" st-sort-default="true">Date</th>
-                    <th st-sort="account">Account</th>
-                    <th st-sort="symbol">Symbol</th>
-                    <th st-sort="type">Type</th>                    
-                    <th>Price</th>
-                    <th>Shares</th>
-                    <th>Commission</th>
-                    <th>Settle</th>
-                    <th>Book</th>
-                    <th>Trade Info</th>
+                    <th style="width: 10%" st-sort="date" st-sort-default="true">Date</th>
+                    <th style="width: 8%" st-sort="account">Account</th>
+                    <th style="width: 8%" st-sort="symbol">Symbol</th>
+                    <th style="width: 8%" st-sort="type">Type</th>                    
+                    <th style="width: 8%" st-sort="price">Price</th>
+                    <th style="width: 8%" st-sort="shares">Shares</th>
+                    <th style="width: 8%" st-sort="commission">Commission</th>
+                    <th style="width: 8%" st-sort="market">Settle</th>
+                    <th style="width: 8%" st-sort="book">Book</th>
+                    <th style="width: 20%" st-sort="tradeinfo">Trade Info</th>
                     <th><!--Action !--></th> 
                 </tr>
-                <tr class="table-search">
-                    <th><input st-search="date"/></th>
-                    <th><input st-search="account"/></th>
-                    <th><input st-search="symbol"/></th>
-                    <th><input st-search="type"/></th>
+                <tr class="smart-table-filters">
+                    <td><input st-search="date" class="input-sm form-control" type="search"/></td>
+                    <td><input st-search="account" class="input-sm form-control" type="search"/></td>
+                    <td><input st-search="symbol" class="input-sm form-control" type="search"/></td>
+                    <td><input st-search="type" class="input-sm form-control" type="search"/></td>
                 </tr>
             </thead>
             <tbody>
@@ -62,7 +62,8 @@
                     <td>{{row.commission | currency}}</td>
                     <td>{{row.settle | currency}}</td>
                     <td>{{row.book | currency}}</td>
-                    <td>{{row.tradeinfo}}</td>                        
+                    <td ng-if="ctrl.colour(row.tradeinfo)" class="stockup"><span class="glyphicon glyphicon-arrow-up"></span><span>{{row.tradeinfo}}</span></div>
+                    <td ng-if="!ctrl.colour(row.tradeinfo)" class="stockdown"><span class="glyphicon glyphicon-arrow-down"></span><span>{{row.tradeinfo}}</span></div> 
                     <td><a class="btn btn-danger" title="Delete Row" ng-really-message="Are you sure ?" ng-really-click="ctrl.tableRemoveItem(row)" item="txn"><span class="glyphicon glyphicon-remove-circle"></span></a>
                     </td>                        
                 </tr>

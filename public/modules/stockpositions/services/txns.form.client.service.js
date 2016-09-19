@@ -9,12 +9,23 @@ angular.module('stockpositions').factory('TxnsForm', ['TxnTypesService', 'Accoun
           diff = Number(settle - book).toFixed(2),
           pctDiff = Number(Math.abs(diff)/book) * 100;
 
-      if (book > settle) {
-        scope.model.tradeinfo = 'Loss of: $'.concat(diff).concat(' Pct: -').concat(pctDiff.toFixed(2)).concat('%');
+      if (scope.model.type === 'Sell') {
+        if (book > settle) {
+          scope.model.tradeinfo = 'Loss of: $'.concat(diff).concat(' Pct: -').concat(pctDiff.toFixed(2)).concat('%');
+        }
+        else {
+          scope.model.tradeinfo = 'Gain of: $'.concat(diff).concat(' Pct: ').concat(pctDiff.toFixed(2)).concat('%');
+        }
       }
-      else {
-        scope.model.tradeinfo = 'Gain of: $'.concat(diff).concat(' Pct: ').concat(pctDiff.toFixed(2)).concat('%');
+      else if (scope.model.type === 'Buy') {
+          scope.model.tradeinfo = 'Buy';        
       }
+      else if (scope.model.type === 'Drip') {
+          scope.model.tradeinfo = 'Drip';        
+      }
+      else if (scope.model.type === 'Dividend') {
+          scope.model.tradeinfo = 'Dividend';
+      }      
     }
   }
 

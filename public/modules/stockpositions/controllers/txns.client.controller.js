@@ -75,13 +75,15 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 
 	    //add to viewed collection 
 	    function tableAddItem(txn) {
-	        vm.rowsCollection[0].data.push(txn);
+	        vm.displayRowsCollection.push(txn);
 	    }
 
 		//Attempt a delete to server 
 		this.tableDelete = function() {
-			for (var i = vm.displayRowsCollection.data.length - 1; i >= 0; i--) {
-				var row = vm.displayRowsCollection.data[i];
+			for (var i = vm.displayRowsCollection.length - 1; i >= 0; i--) {
+				
+				//console.log(vm.displayRowsCollection);
+				var row = vm.displayRowsCollection[i];
 				
 				if (!angular.isDefined(row._id)) {
 					serverDelete(row);	
@@ -91,8 +93,9 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 
 		//Attempt to save to server 
 		this.tableSave = function() {
-			for (var i = vm.displayRowsCollection.data.length - 1; i >= 0; i--) {
-				var row = vm.displayRowsCollection.data[i];
+			for (var i = vm.displayRowsCollection.length - 1; i >= 0; i--) {
+
+				var row = vm.displayRowsCollection[i];
 					
 				if (!angular.isDefined(row._id)) {
 					serverSave(row);	
@@ -107,16 +110,16 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 
 		//Remove the row from either the view or the view & server 
 	    this.tableRemoveItem = function tableRemoveItem(row) {
-	        var index = vm.displayRowsCollection.data.indexOf(row);
+	        var index = vm.displayRowsCollection.indexOf(row);
 
 	        if (index !== -1) {
 
 	        	if (angular.isDefined(row._id)) {
 	        		serverDelete(row);
-	        		vm.displayRowsCollection.data.splice(index, 1);
+	        		vm.displayRowsCollection.splice(index, 1);
 	        	}
 	        	else {
-	            	vm.displayRowsCollection.data.splice(index, 1);
+	            	vm.displayRowsCollection.splice(index, 1);
 	        	}
 	        }
 	    };
@@ -125,5 +128,15 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 		this.resolveTxnType = function(enumValue) {
 			return TxnTypesService.getText(enumValue);
 		};
+
+		this.colour = function(value) {
+			if (!angular.isUndefined(value)) {	
+				if (value.substr(0,1) === 'G') {
+					return true; 
+				}
+				
+				return false;
+			}
+		};		
 	}
 ]);

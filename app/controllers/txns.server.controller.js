@@ -85,8 +85,24 @@ exports.list = function(req, res) {
 
 	//Filter
 	if (req.query.filter && !_.isEmpty(req.query.filter) && req.query.filter.length > 2) {
-		console.log(req.query.filter);
-		query.where('symbol').in(JSON.parse(req.query.filter).symbol.toUpperCase().split(','));
+
+		var filter = JSON.parse(req.query.filter);
+
+		if (filter.date) {
+			query.where('date').in(JSON.parse(req.query.filter).date);
+		}
+
+		if (filter.accountType) {
+			query.where('accountType').in(JSON.parse(req.query.filter).accountType);
+		}
+
+		if (filter.symbol) {
+			query.where('symbol').in(JSON.parse(req.query.filter).symbol.toUpperCase().split(','));
+		}
+		
+		if (filter.type) {
+			query.where('type').in(JSON.parse(req.query.filter).type.split(','));
+		}
 	}
 
 	//Sort
