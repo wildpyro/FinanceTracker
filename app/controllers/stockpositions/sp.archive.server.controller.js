@@ -3,23 +3,13 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-	errorHandler = require('./errors.server.controller'),
+	_ = require('lodash'),
+	errorHandler = require('../errors.server.controller'),
+	Stockposition = require('../stockpositions.server.controller'),
+	SpTotals = require('./sp.calcs.server.controller'),
 	Stockposition_Archive = mongoose.model('Stockposition_Archive'),
 	StockpositionModel = mongoose.model('Stockposition'),
-	Stockposition = require('./stockpositions.server.controller'),
-	_ = require('lodash'),
 	months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
-
-function createArchive(stockpositions_archive, res) {
-	stockpositions_archive.save(function(err) {
-		if (err) {
-			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
-		} 
-		else {
-			return;
-		}	
-	});
-}
 
 function archive(req, res, stockpositions) {
 
@@ -36,29 +26,79 @@ function archive(req, res, stockpositions) {
 
 	var stockpositions_archive = new Stockposition_Archive();
 	
+	var addDate = Date.parse(month + ' 1, ' + year);
+
 	stockpositions_archive.month = month;
 	stockpositions_archive.year = year;
+	stockpositions_archive.date = addDate; 
 	stockpositions_archive.user = req.user._id;
 	stockpositions_archive.stockpositions = stockpositions;
 
-	stockpositions_archive.save(function(err) {
-		if (err) {
-			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
-		} 
-		else {
-			return res.status(200).send({message: 'Backup successful for:' + month + ' ' + year});
-		}						
+	SpTotals.calcTotal(req.user, function(totals) {
+
+		stockpositions_archive.market = totals.market;
+		stockpositions_archive.book = totals.book;
+		stockpositions_archive.gainLoss = totals.gainLoss;
+		stockpositions_archive.gainLossPct = totals.gainLossPct; 
+		
+		stockpositions_archive.save(function(err) {
+			if (err) {
+				return res.status(400).send({message: errorHandler.getErrorMessage(err)});
+			} 
+			else {
+				return res.status(200).send({message: 'Backup successful for:' + month + ' ' + year});
+			}						
+		});
 	});
 }
 
 /** 
+ * Pull the totals from the monthly archives  
+ */
+exports.listArchive = function(req, res) {
+
+ 	var query = Stockposition_Archive.find();
+
+	query.select('-stockpositions'); //Exclude the stock positions as we only want the totals 
+	query.where({'user' : req.user._id});
+	query.sort({addDate: 'asc', archiveDate: 'asc'});
+	query.exec(function(err, archive) {
+		if (err) {
+			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
+		} 
+		else {
+ 			res.jsonp(archive);
+		}			
+	});
+};
+
+exports.listSymbolHistory = function(req, res) {
+
+ 	var query = Stockposition_Archive.find();
+
+	query.select('-stockpositions'); //Exclude the stock positions as we only want the totals 
+	query.where({'user' : req.user._id});
+	query.sort({addDate: 'asc', archiveDate: 'asc'});
+	query.exec(function(err, archive) {
+		if (err) {
+			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
+		} 
+		else {
+ 			res.jsonp(archive);
+		}			
+	});
+};
+
+
+/** 
  * Move the monthly reporting to its own table 
  */
- exports.monthlyReporting = function(req, res) {
- 	
- 	StockpositionModel.find().exec(function(err, stockpositions) {
+exports.monthlyReporting = function(req, res) {
 
- 		if (err) {
+ 	var query = StockpositionModel.find();
+	//Commented out until I fix the user links query.where({'user' : req.user._id});
+	query.exec(function(err, stockpositions) {
+		if (err) {
 			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
 		} 
 		else if (stockpositions === undefined || stockpositions === null) {

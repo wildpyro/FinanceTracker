@@ -7,3 +7,10 @@
 .successPanel {
 	margin-bottom: 15px;
 }
+
+/*Smart Txn summary */
+.st-txn-summary {
+  padding-bottom: 20px;
+  padding-top: 10px;  
+  font-size: 20px;
+}

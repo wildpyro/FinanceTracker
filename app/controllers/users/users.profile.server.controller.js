@@ -5,7 +5,7 @@
  */
 var _ = require('lodash'),
 	errorHandler = require('../errors.server.controller.js'),
-	stockpositions_mailer = require('../stockpositions_mailer.server.controller.js'),
+	mailer = require('../stockpositions.server.controller.js'),
 	mongoose = require('mongoose'),
 	passport = require('passport'),
 	User = mongoose.model('User');
@@ -60,8 +60,7 @@ exports.me = function(req, res) {
  * Manual process for sending the stock position daily email 
  */
 exports.generateDailyStocksEmail = function(req, res) {
-
-	stockpositions_mailer.dailyStockPositions(req.user, function(err) {
+	mailer.sendMail(req.user, function(err) {
 		if (err) {
 			res.status(400).send(err);
 		}

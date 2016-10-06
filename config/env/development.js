@@ -28,11 +28,11 @@ module.exports = {
 	mailer: {
 		from: 'bendzundel@gmail.com',
 		transport: 'smtps://user%40gmail.com:pass@smtp.gmail.com',
-		options: {
-			service: process.env.MAILER_SERVICE_PROVIDER || 'MAILER_SERVICE_PROVIDER',
+		transportoptions: {
+			service: 'Gmail',
 			auth: {
-				user: process.env.MAILER_EMAIL_ID || 'MAILER_EMAIL_ID',
-				pass: process.env.MAILER_PASSWORD || 'MAILER_PASSWORD'
+				user: 'bendzundel',
+				pass: 'theempaumjojphxi'
 			}
 		}
 	}

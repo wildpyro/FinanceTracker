@@ -18,7 +18,8 @@
 			 			var equity = 0,
 			 				cash = 0,
 			 				fixed = 0,
-			 				totalmv = 0;
+			 				totalmv = 0,
+							totalbook = 0;
 							 
 						vm.dataCollection = angular.copy(vm.datacollection);
 						vm.length = vm.dataCollection.length;
@@ -31,26 +32,27 @@
 								console.log('This is bad', data.symbol);
 							}
 
-							if (data.type === 'cash') {
-								//vm.cash += data.market;	
+							if (data.type === 'cash') {	
 								cash += data.market;	
 							}
 							else if (data.type === 'fixed') {
-								//vm.fixed += data.market;
 								fixed += data.market;	
 							}
 							else if (data.type === 'equity') {
-								//vm.equity += data.market;
 								equity += data.market;	
 							}
 
 							totalmv += data.market;
+							totalbook += data.book;
 						}
 
 						vm.cash = Number(cash/totalmv * 100).toFixed(2);
 						vm.equity = Number(equity/totalmv * 100).toFixed(2);
 						vm.fixed = Number(fixed/totalmv * 100).toFixed(2);						
 						vm.totalmv = Number(totalmv).toFixed(2);
+						vm.totalbook = Number(totalbook).toFixed(2);
+						vm.gainloss = vm.totalmv - vm.totalbook;
+						vm.gainlosspct = Number(vm.gainloss/totalbook * 100).toFixed(2);
 
 						// If the amount goes over 100 than the progress bar fails. Allocate the rounding to equity which is always the largest.
 						if (Number(vm.cash) + Number(vm.equity) + Number(vm.fixed) >= 100) {

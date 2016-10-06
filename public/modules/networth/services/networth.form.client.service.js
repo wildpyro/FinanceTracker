@@ -1,9 +1,7 @@
 (function() {
     'use strict';
 
-    angular
-        .module('networths')
-        .factory('NetworthsForm', factory);
+    angular.module('networth').factory('NetworthForm', factory);
 
     function factory() {
 

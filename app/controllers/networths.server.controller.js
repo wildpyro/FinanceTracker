@@ -79,7 +79,6 @@ exports.list = function(req, res) {
 	var count = req.query.count || 5;
 	var page = req.query.page || 1;
 
-
 	var filter = {
 		filters : {
 			mandatory : {
@@ -120,7 +119,6 @@ exports.list = function(req, res) {
 				res.jsonp(networths);
 			}
 		});
-
 };
 
 /**

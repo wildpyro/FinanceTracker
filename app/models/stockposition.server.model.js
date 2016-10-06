@@ -66,4 +66,24 @@ var StockpositionSchema = new Schema({
 	quoteData: {}
 });
 
+var StockpositionTotalsSchema = new Schema({
+	market: {
+		type: Number,
+		default: 0
+	},	
+	book: {
+		type: Number,
+		default: 0
+	},
+	gainLoss: {
+		type: Number,
+		default: 0
+	},
+	gainLossPct: {
+		type: Number,
+		default: 0
+	}
+});
+
 mongoose.model('Stockposition', StockpositionSchema);
+mongoose.model('spTotals', StockpositionTotalsSchema);

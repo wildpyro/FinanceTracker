@@ -21,13 +21,33 @@ var Stockposition_ArchiveSchema = new Schema({
 	month: {
 		type: 'String'
 	},
+	date: {
+		type: 'Date'
+	},	
 	user: {
 		type: Schema.ObjectId,
 		ref: 'User'
 	},
+	market: {
+		type: Number,
+		default: 0
+	},	
+	book: {
+		type: Number,
+		default: 0
+	},
+	gainLoss: {
+		type: Number,
+		default: 0
+	},
+	gainLossPct: {
+		type: Number,
+		default: 0
+	},	
 	stockpositions: {
 		type: []
 	}
 });
+
 
 mongoose.model('Stockposition_Archive', Stockposition_ArchiveSchema);

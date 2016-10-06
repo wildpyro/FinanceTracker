@@ -4,14 +4,13 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-	errorHandler = require('./errors.server.controller'),
-	Quote = require('./quote.server.controller'),
-	Core = require('./core.server.controller'),
+	_ = require('lodash'),
+	errorHandler = require('../errors.server.controller'),
+	Quote = require('../quote.server.controller'),
+	Performance = require('../performance.server.controller'),
+	Fundamentals = require('../fundamentals.server.controller'),
 	QuoteModel = mongoose.model('Quote'),
-	Fundamentals = require('./fundamentals.server.controller'),
-	Performance = require('./performance.server.controller'),
-	Stockpositiondetail = mongoose.model('Stockpositiondetail'),
-	_ = require('lodash');
+	Stockpositiondetail = mongoose.model('Stockpositiondetail');
 
 /**
  * Show the current Stockpositiondetail
@@ -26,22 +25,7 @@ exports.read = function(req, res) {
 exports.list = function(req, res) {
 
 	if (req.query.symbol !== null && req.query.symbol !== undefined && req.query.symbol !== '') {
-		//Core.checkInternet(function(isConnected) {
-			var isConnected = true;
-		    if (isConnected) {
-		    	Quote.yahooQuote(req.query.symbol,res);
-		    } else {
-		    	if (req.query.searchFor === 'performance') {
-		    		Performance.localSearch(req.query.symbol, res);
-		    	}
-		    	else if (req.query.searchFor === 'fundamentals') {
-		    		Fundamentals.localSearch(req.query.symbol, res);
-		    	}
-		    	else {
-		    		Quote.localSearch(req.query.symbol, res);
-		    	}
-		    }
-		//});
+		Quote.yahooQuote(req.query.symbol,res);
 	}
 	else {
 		return new Error('You must select a symbol');		

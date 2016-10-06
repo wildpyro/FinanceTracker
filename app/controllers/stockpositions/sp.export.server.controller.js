@@ -4,10 +4,9 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-	errorHandler = require('./errors.server.controller'),
-	//Stockposition_Archive = mongoose.model('Stockposition_Archive'),
-	Stockposition = require('./stockpositions.server.controller'),
-	_ = require('lodash');
+	_ = require('lodash'),
+	errorHandler = require('../errors.server.controller'),
+	Stockposition = require('./sp.base.server.controller');
 
 /** 
  * Export the data from stock positions to a csv

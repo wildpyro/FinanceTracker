@@ -176,6 +176,9 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 			return value;
 		};
 
+		/**
+		 * This is used on the account views 
+		 */
 		this.stockUp = function(price, shares, book) {
 
 			var value = ((price * shares) - book).toFixed(2);

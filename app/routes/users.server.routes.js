@@ -7,7 +7,8 @@ var passport = require('passport');
 
 module.exports = function(app) {
 	// User Routes
-	var users = require('../../app/controllers/users.server.controller');
+	var users = require('../../app/controllers/users.server.controller'),
+		stockpositions = require('../../app/controllers/stockpositions.server.controller');
 
 	// Setting up the users profile api
 	app.route('/users/me').get(users.me);
@@ -38,6 +39,7 @@ module.exports = function(app) {
 	app.route('/auth/yahoo').get(passport.authenticate('yahoo'));
 	app.route('/auth/yahoo/callback').get(users.oauthCallback('yahoo'));
 
+	//todo - figure out how to unpack the req to pull the user out. Ideally I want to call stockpositions.listdaily and chain the route. 
 	app.route('/users/generateDailyStocksEmail').post(users.generateDailyStocksEmail);
 
 	// Finish by binding the user middleware

@@ -1,0 +1,22 @@
+<section data-ng-controller="monthlyController as ctrl">
+    <div class="page-header">
+        <h1 class="page-title">{{ctrl.title}}</h1>
+    </div>
+    <div data-ng-show="ctrl.success" class="alert alert-sucess form-group sucessPanel">
+        <strong data-ng-bind="ctrl.success"></strong>
+    </div>
+
+    <div class="list-group centered">
+        <li ng-repeat="(key, rec) in ctrl.monthlystats" class="list-group-item">
+            <h4 class="list-group-item-heading">Reporting Month: {{rec.month.toUpperCase()}}</h4>
+            <p class="list-group-item-text">Total Market: {{rec.market | currency}}</p>
+            <p class="list-group-item-text">Total Book: {{rec.book | currency}}</p>
+
+            <p ng-if="rec.gainLoss >= 0" class="list-group-item-text stockup">Gain/Loss in: $ {{rec.gainLoss | currency}}</p>
+            <p ng-if="rec.gainLoss >= 0" class="list-group-item-text stockup">Gain/Loss Percentage: {{rec.gainLossPct}}%</p>
+
+            <p ng-if="rec.gainLoss < 0" class="list-group-item-text stockdown">Gain/Loss in: $ {{rec.gainLoss | currency}}</p>
+            <p ng-if="rec.gainLoss < 0" class="list-group-item-text stockdown">Gain/Loss Percentage: {{rec.gainLossPct}}%</p>            
+        </li>
+    </div>
+</section>    

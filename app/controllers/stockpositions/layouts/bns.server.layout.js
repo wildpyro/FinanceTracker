@@ -4,11 +4,10 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-	errorHandler = require('../errors.server.controller'),
 	StockpositionModel = mongoose.model('Stockposition'),
-	Stockposition = require('../stockpositions.server.controller'),
 	_ = require('lodash'),
-	//BaseLayout = require('./baselayout.server.class'),
+	errorHandler = require('../../errors.server.controller'),
+	Stockposition = require('../../stockpositions.server.controller'),
 	startPosition = 4,
 	endPosition = 10,
 	logicalRecordLength = 11,

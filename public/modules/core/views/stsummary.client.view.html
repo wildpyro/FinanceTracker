@@ -1,12 +1,25 @@
-<p class="centered">Total Positions: {{vm.length}} (including cash)</p> 
-
-<div class="progress">
-	<div class="progress-bar progress-bar-success" style="width: {{vm.cash}}%"></div>
-	<div class="progress-bar progress-bar-warning" style="width: {{vm.fixed}}%"></div>
-	<div class="progress-bar" style="width: {{vm.equity}}%"></div>
-</div>
 <div class="centered">
-	<span class="text-success">Cash: {{vm.cash | number:2}}%  </span>
-	<span class="text-warning">Fixed: {{vm.fixed | number:2}}%  </span>
-	<span class="text-primary">Equity: {{vm.equity | number:2}}%  </span>
-</div>	
+	<p>Total Positions: {{vm.length}}</p>
+
+	<div> 
+		<p>Total Market: {{vm.totalmv | currency}}</p>
+
+		<span ng-if="vm.gainloss >= 0" class="stockup">Gain: {{vm.gainloss | currency}}</span>
+		<span ng-if="vm.gainloss >= 0" class="stockup">Pct: {{vm.gainlosspct | number:2}}%</span>
+		
+		<span ng-if="vm.gainloss < 0" class="stockdown">Loss: {{vm.gainloss | currency}}</span>	
+		<span ng-if="vm.gainloss < 0" class="stockdown">Pct: {{vm.gainlosspct | number:2}}%</span>
+	</div> 
+
+	<div class="progress">
+		<div class="progress-bar progress-bar-success" style="width: {{vm.cash}}%"></div>
+		<div class="progress-bar progress-bar-warning" style="width: {{vm.fixed}}%"></div>
+		<div class="progress-bar" style="width: {{vm.equity}}%"></div>
+	</div>
+
+	<div>
+		<span class="text-success">Cash: {{vm.cash | number:2}}%  </span>
+		<span class="text-warning">Fixed: {{vm.fixed | number:2}}%  </span>
+		<span class="text-primary">Equity: {{vm.equity | number:2}}%  </span>
+	</div>	
+</div>

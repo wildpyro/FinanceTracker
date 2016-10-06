@@ -31,6 +31,18 @@ function create(req, res) {
 }
 
 /**
+ * Initialize the YQL commands 
+ */
+function init()
+{
+	yql.formatAsJSON().withOAuth(config.yahoo.clientID,config.yahoo.clientSecret);
+	//To have access to all the community tables 
+	yql.setQueryParameter({
+		env: 'store://datatables.org/alltableswithkeys'
+	});
+}
+
+/**
  * Update a Quote
  */
 function update(req, res) {
@@ -50,57 +62,68 @@ function update(req, res) {
 	});
 }
 
-exports.yahooQuote = function(symbol, res) {
+/**
+ * Update references to the other records associated with a quote 
+ */
+function updateReferences(response, symbol, yahooSymbol, res) {
+	var query = {'Symbol': symbol},
+		options = {'upsert': true, 'new': true, 'setDefaultOnInsert': true},
+		quoteResponse = JSON.parse(response).query.results.quote;
 
-	// TSX is TO in YQL. Make this dynamic once I support other exchanges 
-	var exchange = 'TO';
-	var yahooSymbol = symbol.concat('.', exchange);
-	//Try out the quotes table, it has a ton more info. 
-	var query = 'select * from yahoo.finance.quotes where symbol in ("'.concat(yahooSymbol).concat('");');
+	quoteResponse.YahooSymbol = yahooSymbol;
+	quoteResponse.Symbol = symbol;
+	quoteResponse.lastUpdate = Date.now;
 
-	yql.formatAsJSON().withOAuth(config.yahoo.clientID,config.yahoo.clientSecret);
-	//To have access to all the community tables 
-	yql.setQueryParameter({
-		env: 'store://datatables.org/alltableswithkeys'
-	});
-
-	yql.execute(query, function(err,response) {
+	Quote.findOneAndUpdate(query, quoteResponse, options, function (err, quote) {
 		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-
-			var query = {'Symbol': symbol},
-				options = {'upsert': true, 'new': true, 'setDefaultOnInsert': true},
-				quoteResponse = JSON.parse(response).query.results.quote;
-
-			quoteResponse.YahooSymbol = yahooSymbol;
-			quoteResponse.Symbol = symbol;
-			quoteResponse.lastUpdate = Date.now;
-
-			Quote.findOneAndUpdate(query, quoteResponse, options, function (err, quote) {
+			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
+		}
+		else {
+			Fundamentals.findOneAndUpdate(query, quoteResponse, options, function (err, quote) {
 				if (err) {
-  					return res.status(400).send({message: errorHandler.getErrorMessage(err)});
-  				}
-  				else {
-  					Fundamentals.findOneAndUpdate(query, quoteResponse, options, function (err, quote) {
+					return res.status(400).send({message: errorHandler.getErrorMessage(err)});
+				}
+				else {
+					Performance.findOneAndUpdate(query, quoteResponse, options, function (err, quote) {
 						if (err) {
-		  					return res.status(400).send({message: errorHandler.getErrorMessage(err)});
-		  				}
-		  				else {
-		  					Performance.findOneAndUpdate(query, quoteResponse, options, function (err, quote) {
-								if (err) {
-				  					return res.status(400).send({message: errorHandler.getErrorMessage(err)});
-				  				}
-				  				else {
-									res.jsonp(quoteResponse);
-				  				}
-				  			});
-		  				}
+							return res.status(400).send({message: errorHandler.getErrorMessage(err)});
+						}
+						else {
+							res.jsonp(quoteResponse);
+						}
 					});
 				}
 			});
+		}
+	});
+}
+
+exports.yahooQuote = function(symbol, res) {
+	init();
+	var exchange = 'TO'; // TSX is TO in YQL. Make this dynamic once I support other exchanges 
+	var yahooSymbol = symbol.concat('.', exchange); 
+	var query = 'select * from yahoo.finance.quotes where symbol in ("'.concat(yahooSymbol).concat('");');
+
+	yql.execute(query, function(err,results) {
+		if (err) {
+			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
+		} else {
+			return updateReferences(results, symbol, yahooSymbol, res);
+		}
+	});
+};
+
+exports.yahooQuotes = function(symbols, res) {
+	init();
+
+	var symbols1 = symbols.join('","');
+	var query = 'select * from yahoo.finance.quotes where symbol in ("'.concat(symbols1).concat('");');
+
+	yql.execute(query, function(err,results) {
+		if (err) {
+			console.log('Eror:', err);
+		} else {
+			res(results);
 		}
 	});
 };
@@ -119,7 +142,7 @@ exports.localSearch = function(symbol, res) {
 		}
   		else {
 			res.jsonp(quote);					
-		}		
+		}
 	});
 };
 
@@ -134,18 +157,4 @@ exports.quoteByID = function(req, res, next, id) {
 		req.quote = quote;
 		next();
 	});
-};
-
-exports.blockUpdate = function() {
-
-	var quotes = Quote.find().execute(),
-		res = null; //How to create a res object? TODO
-
-	for (var i = quotes.length - 1; i >= 0; i--) {
-		var quote = quotes[i];
-
-		exports.yahooQuote(quote.yahooSymbol,res);
-	}
-
-	
 };

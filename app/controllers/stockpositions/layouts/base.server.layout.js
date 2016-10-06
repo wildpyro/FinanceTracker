@@ -1,6 +1,15 @@
 'use strict';
+var _ = require('lodash');
 
-exports.BaseLayout = class BaseLayout {
+/**
+ * Add in all the children controllers 
+ */
+module.exports = _.extend(
+	require('./bns.server.layout'),
+	require('./tangerine.server.layout')
+);
+
+/*exports.BaseLayout = class BaseLayout {
     constructor(layoutName, startPosition, endPosition, logicalRecordLength) {
         this.name = layoutName;
         this.startPosition = startPosition;
@@ -8,5 +17,4 @@ exports.BaseLayout = class BaseLayout {
         this.logicalRecordLength = logicalRecordLength;     
     }
         
-}
-;
+};*/

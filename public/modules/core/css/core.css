@@ -122,14 +122,17 @@
 }
 
 .st-summary .progress {
+  margin-top: 12px;
   height: 30px;
 }
 
 .st-summary-small {
   padding-bottom: 20px;
-  padding-top: 10px;  
+  padding-top: 10px;
+  font-size: 17px;  
 }
 
 .st-summary-small .progress {
+  margin-top: 10px;
   height: 15px; 
 }

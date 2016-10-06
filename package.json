@@ -45,6 +45,7 @@
     "passport-yahoo": "~0.3.0",
     "passport-yahoo-oauth": "^0.1.2",
     "swig": "~1.4.1",
+    "swig-email-templates": "^4.0.0",
     "yql-node": "^0.2.1"
   },
   "devDependencies": {

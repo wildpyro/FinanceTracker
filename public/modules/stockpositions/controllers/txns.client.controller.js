@@ -34,7 +34,7 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 		    	vm.safeRows= result.data;
         		vm.displayRowsCollection = vm.displayRowsCollection.concat(vm.safeRows);
 				
-				console.log(vm.displayRowsCollection);
+				//console.log(vm.displayRowsCollection);
 				
 				tableState.pagination.numberOfPages = result.numberOfPages;//set the number of pages so the pagination can update
 				vm.isLoading = false;
@@ -137,6 +137,6 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 				
 				return false;
 			}
-		};		
+		};
 	}
 ]);

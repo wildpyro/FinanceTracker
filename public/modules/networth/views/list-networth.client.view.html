@@ -1,10 +1,10 @@
-<section data-ng-controller="NetworthsController">
+<section data-ng-controller="networthController">
     <div class="page-header">
-        <h1>Networths</h1>
+        <h1>networth</h1>
     </div>
 
     <div class="pull-right">
-      <a type="button" class="btn btn-success" href="/#!/networths/create">
+      <a type="button" class="btn btn-success" href="/#!/networth/create">
         <i class="glyphicon glyphicon-open"></i> New Networth
       </a>
     </div>
@@ -17,10 +17,10 @@
                     <div class="table-actions">
                 <td>
                    <div class="table-actions">
-                        <a class="btn btn-default" title="View" href="/#!/networths/{{networth._id}}">
+                        <a class="btn btn-default" title="View" href="/#!/networth/{{networth._id}}">
                             <span class="glyphicon glyphicon-eye-open"></span>
                         </a>
-                        <a class="btn btn-default" title="Edit" href="/#!/networths/{{networth._id}}/edit">
+                        <a class="btn btn-default" title="Edit" href="/#!/networth/{{networth._id}}/edit">
                             <span class="glyphicon glyphicon-edit"></span>
                         </a>
                         <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove(networth)" item="networth">

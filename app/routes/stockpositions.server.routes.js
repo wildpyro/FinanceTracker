@@ -6,7 +6,7 @@ module.exports = function(app) {
 
 	// Stockpositions Routes
 	app.route('/stockpositions')
-		.get(stockpositions.list)
+		.get(users.requiresLogin, stockpositions.listBase)
 		.post(users.requiresLogin, stockpositions.checkDuplicates, stockpositions.create);
 
 	app.route('/stockpositions/:stockpositionId')

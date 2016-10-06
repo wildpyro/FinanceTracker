@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(app) {
-	var stockpositiondetails = require('../../app/controllers/stockpositiondetails.server.controller');
+	var stockpositiondetails = require('../../app/controllers/stockpositions/sp.details.server.controller');
 
 	app.route('/stockpositiondetails').get(stockpositiondetails.list);		
 

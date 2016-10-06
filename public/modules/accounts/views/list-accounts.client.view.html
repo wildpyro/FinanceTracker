@@ -36,8 +36,8 @@
                             <td>{{row.shares | number}}</td>
                             <td class="money">{{ctrl.calcMV(row.type, row.price,row.shares) | currency}}</td>
                             <td class="money">{{row.book | currency}}</td>
-                            <td ng-show="ctrl.stockUp(row.price, row.shares, row.book)" class="money stockup"><span>{{ctrl.calcGainLoss(row.price, row.shares, row.book) | currency}}</span><span class="glyphicon glyphicon-arrow-up"></span></td> 
-                            <td ng-show="!ctrl.stockUp(row.price, row.shares, row.book)" class="money stockdown"><span>{{ctrl.calcGainLoss(row.price, row.shares, row.book) | currency}}</span><span class="glyphicon glyphicon-arrow-down"></span></td>                             
+                            <td ng-show="ctrl.stockUp(row.price, row.shares, row.book)" class="money stockup"><span class="glyphicon glyphicon-arrow-up"></span><span>{{ctrl.calcGainLoss(row.price, row.shares, row.book) | currency}}</span></td> 
+                            <td ng-show="!ctrl.stockUp(row.price, row.shares, row.book)" class="money stockdown"><span class="glyphicon glyphicon-arrow-down"></span><span>{{ctrl.calcGainLoss(row.price, row.shares, row.book) | currency}}</span></td>                             
                             <td>
                                <div class="table-actions">
                                     <a class="btn btn-default" title="View" ui-sref="spd({symbol: row.symbol})">
@@ -47,23 +47,14 @@
                                         <span class="glyphicon glyphicon-edit"></span>
                                     </a>
                                     <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="ctrl.remove(row)" item="ctrl.stockposition">
-                                            <span class="glyphicon glyphicon-remove-circle"></span>
-                                        </a>
+                                        <span class="glyphicon glyphicon-remove-circle"></span>
+                                    </a>
                                 </div>
                             </td>
                         </tr>
                     </tbody>
-                    <!--<tfoot>
-                        <tr>
-                            <td class="text-center" st-pagination="" st-items-by-page="10" colspan="4">
-                            </td>
-                        </tr>
-                    </tfoot>--> 
                 </table>
-                <br/>
-                <div class="pull-right">
-                    <p>Balance: {{value.marketValue}}</p>
-                </div>        
+                <br/>  
             </div>
         </div>
     </div>
