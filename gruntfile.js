@@ -100,8 +100,9 @@ module.exports = function(grunt) {
 			},			
 			dev: {
 				script: 'server.js',
+				stdout: true,
 				options: {
-					nodeArgs: ['--debug'], //or use --debug--brk
+					nodeArgs: ['--debug-brk'], //--debug or use --debug-brk
 					ext: 'js,html',
 					watch: watchFiles.serverViews.concat(watchFiles.serverJS),
 					ignore: ignoreFiles.node_modules 

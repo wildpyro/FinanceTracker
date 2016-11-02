@@ -4,6 +4,8 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
+	_ = require('lodash'),
+	TxnTypes = require('../enums/txntypes.server.enums'),
 	Schema = mongoose.Schema;
 
 /**
@@ -27,7 +29,7 @@ var TxnSchema = new Schema({
 		trim: true
 	},
 	type: {
-		type: String, enum: ['Buy','Sell','Dividend','Drip'],
+		type: String, enum: _.map(TxnTypes.TXNTYPES, 'type'),
 		required: 'Please select a transaction type',
 		trim: true
 	},

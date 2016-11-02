@@ -2,7 +2,7 @@
 .nodemonignore
 .sass-cache/
 npm-debug.log
-config/
+config/env/
 node_modules/
 public/lib
 app/tests/coverage/

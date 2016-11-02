@@ -13,5 +13,5 @@ module.exports = function(app) {
 	app.route('/maintenance/restoreFromBackup').post(users.requiresLogin, stockpositions_archive.restoreStockPositionsFromArchive);
 
 	//Add in the layout selected from the drop down 
-	app.route('/maintenance/importStockPositions').post(users.requiresLogin, layout.importStockPosition);
+	app.route('/maintenance/importStockPositions').post(users.requiresLogin, layout.importFiles);
 };

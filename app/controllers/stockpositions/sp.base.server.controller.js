@@ -41,7 +41,7 @@ var updateReferences = function(action, stockposition) {
 							Account.find({}, function(err, accounts) {
 								accounts.forEach(function(account) {
 									account.stockpositions.forEach(function(stockposition) {
-										console.log(stockposition);
+										//console.log(stockposition);
 									}, this);
 								}, this);
 							}); 
@@ -108,7 +108,7 @@ exports.create = function(req, res) {
 /**
  * Show the current Stockposition
  */
-exports.read = function(req, res) {
+exports.readBase = function(req, res) {
 	res.jsonp(req.stockposition);
 };
 
@@ -165,7 +165,7 @@ exports.updatePrice = function(req, res, next) {
 /**
  * Delete an Stockposition
  */
-exports.delete = function(req, res) {
+exports.deleteBase = function(req, res) {
 	var stockposition = req.stockposition ;
 
 	stockposition.remove(function(err) {
@@ -239,7 +239,7 @@ exports.getSymbols = function(user, callback) {
     ], 
 	function (err, result) {
         if (err) {
-            console.log(err);
+            console.log('Error:', err);
         }
 
 		callback(null, result[0].symbols);
@@ -255,7 +255,7 @@ exports.listDaily = function(user, callback) {
 	exports.getSymbols(user, function(err, symbols) {
 		quote.yahooQuotes(symbols, function(err, updatedQuotes) {
 			if (err) {
-				console.log(err);
+				console.log('Error:', err);
 			}
 
 			callback(updatedQuotes);

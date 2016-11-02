@@ -87,9 +87,7 @@
 }
 
 .smart-table-filters {
-  height: 75px;
-}
-.smart-table-filters .filter {
+  height: 100px;
   vertical-align: top;
 }
 
@@ -102,16 +100,12 @@
 }
 
 .smart-table th.filter .input-filter {
-  margin: 12px;
+  margin: 1px;
   width: 90%;
 }
 
 .smart-table-pager {
   margin-top: 20px;
-}
-
-.table-search-row {
-  width: 75px;
 }
 
 /*Smart table summary */

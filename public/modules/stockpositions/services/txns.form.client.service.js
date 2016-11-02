@@ -69,16 +69,15 @@ angular.module('stockpositions').factory('TxnsForm', ['TxnTypesService', 'Accoun
               label: 'Shares:'
             }  
           },                              
-          {
+          /*{
             className: 'col-xs-3',
             key: 'date',
             type: 'datepicker',
             templateOptions: {
               label: 'Date',
-              type: 'text',
-              datepickerPopup: 'dd-MMMM-yyyy'
+              type: 'text'
             }
-          },
+          },*/
           {
             className: 'col-xs-3',
             key: 'price',

@@ -4,52 +4,78 @@
     </div>
     <div data-ng-show="ctrl.success" class="alert alert-sucess form-group sucessPanel">
         <strong data-ng-bind="ctrl.success"></strong>
-    </div>    
+    </div>
     <div class="addAccordion">
         <uib-accordion>
             <uib-accordion-group is-open="status.open">
                 <uib-accordion-heading>
                     Add A Trade <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
                 </uib-accordion-heading>
-                    <div class="addPanel">
-                        <form ng-submit="ctrl.add()" novalidate>
-                            <formly-form model="ctrl.model" fields="ctrl.formFields" options="ctrl.options">
-                                <div class="centered">
-                                    <button type="submit" class="btn btn-primary submit-button" ng-disabled="ctrl.form.$invalid">Add</button>
-                                    <button type="button" class="btn btn-default" ng-click="ctrl.options.resetModel()">Reset</button>
-                                    <label><input type="checkbox" ng-model="ctrl.resetTable">Reset table?</label>
-                                </div>
-                            </formly-form>  
-                        </form>
-                    </div>
-                    <div data-ng-show="ctrl.error" class="alert alert-danger form-group errorPanel">
-                        <strong data-ng-bind="ctrl.error"></strong>
-                    </div>
+                <div class="addPanel">
+                    <form ng-submit="ctrl.add()" novalidate>
+                        <formly-form model="ctrl.model" fields="ctrl.formFields" options="ctrl.options">
+                            <div class="centered">
+                                <button type="submit" class="btn btn-primary submit-button" ng-disabled="ctrl.form.$invalid">Add</button>
+                                <button type="button" class="btn btn-default" ng-click="ctrl.options.resetModel()">Reset</button>
+                                <label><input type="checkbox" ng-model="ctrl.resetTable">Reset table?</label>
+                            </div>
+                        </formly-form>  
+                    </form>
+                </div>
+                <div data-ng-show="ctrl.error" class="alert alert-danger form-group errorPanel">
+                    <strong data-ng-bind="ctrl.error"></strong>
+                </div>
             </uib-accordion-group>
         </uib-accordion>
+    </div>
+    <div md-theme="altTheme">
+    <md-content class="md-padding txnFab">
+    <md-fab-speed-dial ng-hide="ctrl.fab.hidden" md-direction="down" md-open="ctrl.fab.isOpen" class="md-scale md-fab-top-right" ng-class="{ 'md-hover-full': ctrl.fab.hover }"
+        ng-mouseenter="ctrl.fab.isOpen=true" ng-mouseleave="ctrl.fab.isOpen=false">
+        <md-fab-trigger>
+            <md-button aria-label="menu" class="md-fab md-primary">
+                <md-icon class="glyphicon glyphicon-th-list" aria-label="menu"></md-icon>
+            </md-button>
+        </md-fab-trigger>
+        <md-fab-actions>
+            <md-button aria-label="Show Drip?" ng-model="ctrl.fab.showDrip" ng-click="ctrl.toggle()" class="md-fab md-mini" ng-class="ctrl.fab.showDrip ? 'md-accent' : 'md-primary'">
+                <md-icon class="material-icons glyphicon" ng-class="ctrl.fab.showDrip ? 'glyphicon-plus' : 'glyphicon-minus'" aria-label="Show Drip"></md-icon>
+                <md-tooltip md-direction="left" md-visible="ctrl.fab.tooltipVisible">Show Drip?</md-tooltip>
+            </md-button>
+            <md-button aria-label="Insert Link" class="md-fab md-mini md-primary">
+                <md-icon class="material-icons" aria-label="ShowMonth">1Mnth</md-icon>
+                <md-tooltip md-direction="left" md-visible="ctrl.fab.tooltipVisible">Trades for Month</md-tooltip>
+            </md-button>
+            <md-button aria-label="Edit" class="md-fab md-mini md-primary">
+                <md-icon class="material-icons" aria-label="ShowYear">1Yr</md-icon>
+                <md-tooltip md-direction="left" md-visible="ctrl.fab.tooltipVisible">Trades for Year</md-tooltip>
+            </md-button>
+        </md-fab-actions>
+    </md-fab-speed-dial>
+    </md-content>
     </div>
     <div>
         <div class="st-txn-summary"><st-txn-summary datacollection="ctrl.displayRowsCollection"></st-txn-summary></div>
         <table class="table smart-table table-hover" st-table="ctrl.displayRowsCollection" st-safe-src="ctrl.safeRows" st-pipe="ctrl.fetch">
             <thead>
                 <tr>
-                    <th style="width: 10%" st-sort="date" st-sort-default="true">Date</th>
+                    <th style="width: 18%" st-sort="date" st-sort-default="true">Date</th>
                     <th style="width: 8%" st-sort="account">Account</th>
                     <th style="width: 8%" st-sort="symbol">Symbol</th>
                     <th style="width: 8%" st-sort="type">Type</th>                    
                     <th style="width: 8%" st-sort="price">Price</th>
-                    <th style="width: 8%" st-sort="shares">Shares</th>
+                    <th style="width: 6%" st-sort="shares">Shares</th>
                     <th style="width: 8%" st-sort="commission">Commission</th>
                     <th style="width: 8%" st-sort="market">Settle</th>
                     <th style="width: 8%" st-sort="book">Book</th>
                     <th style="width: 20%" st-sort="tradeinfo">Trade Info</th>
-                    <th><!--Action !--></th> 
+                    <th></th>
                 </tr>
                 <tr class="smart-table-filters">
-                    <td><input st-search="date" class="input-sm form-control" type="search"/></td>
-                    <td><input st-search="account" class="input-sm form-control" type="search"/></td>
-                    <td><input st-search="symbol" class="input-sm form-control" type="search"/></td>
-                    <td><input st-search="type" class="input-sm form-control" type="search"/></td>
+                    <th><st-date-range predicate="txnDate" before="ctrl.filter.fromDate" after="ctrl.filter.toDate"></st-date-range></th>
+                    <th><input st-search="account" class="input-sm form-control" type="search"/></th>
+                    <th><input st-search="symbol" class="input-sm form-control" type="search"/></th>
+                    <th><input st-search="type" class="input-sm form-control" type="search"/></th>                    
                 </tr>
             </thead>
             <tbody>

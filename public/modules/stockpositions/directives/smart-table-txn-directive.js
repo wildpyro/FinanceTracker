@@ -14,28 +14,38 @@
 
 					if (angular.isDefined(vm.datacollection)) {
 
-			 			var totalsettle = 0,
-							totalbook = 0;
+			 			var totalSettle = 0,
+							totalBook = 0,
+							gainSettle = 0,
+							gainBook = 0;
 							 
 						vm.dataCollection = angular.copy(vm.datacollection);
 
 						for (var i = vm.dataCollection.length - 1; i >= 0; i--) {
-							var data = vm.dataCollection[i];
-							//console.log(data);						
+							var data = vm.dataCollection[i];			
 
 							if (!angular.isDefined(data.type)) {
 								console.log('This is bad', data.symbol);
+							}	
+
+							if (data.type === 'Sell') {
+								gainSettle += data.settle;
+								gainBook += data.book;
+							}
+							else {
+								gainSettle += 0;
+								gainBook += 0;
 							}
 
-							totalsettle += data.settle;
-							totalbook += data.book;
+							totalSettle += data.settle;
+							totalBook += data.book;
 						}
 						
 						vm.length = vm.dataCollection.length;
-						vm.totalsettle = Number(totalsettle).toFixed(2);
-						vm.totalbook = Number(totalbook).toFixed(2);
-						vm.gainloss = vm.totalsettle - vm.totalbook;
-						vm.gainlosspct = Number(vm.gainloss/totalbook * 100).toFixed(2);
+						vm.totalsettle = Number(totalSettle).toFixed(2);
+						vm.totalbook = Number(totalBook).toFixed(2);
+						vm.gainloss = gainSettle - gainBook;
+						vm.gainlosspct = Number(vm.gainloss/gainBook * 100).toFixed(2);
 					}
 			    } 
 			); 			
@@ -44,7 +54,6 @@
 
 		return {
 			restrict: 'EA', 
-			//scope: true,
 			scope: {datacollection: '='},
 			controller: controller,
 			controllerAs: 'vm',

@@ -103,6 +103,12 @@ exports.list = function(req, res) {
 		if (filter.type) {
 			query.where('type').in(JSON.parse(req.query.filter).type.split(','));
 		}
+
+		console.log(req.query.filter);
+
+		if (!filter.showDrip) {
+			query.where({type: {$ne : 'Drip'}});
+		}
 	}
 
 	//Sort

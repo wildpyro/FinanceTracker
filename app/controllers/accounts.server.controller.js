@@ -14,7 +14,7 @@ var mongoose = require('mongoose'),
 exports.create = function(req, res) {
 	var account = new Account(req.body);
 
-	console.log(account);
+	//console.log(account);
 	account.user = req.user;
 
 	account.save(function(err) {

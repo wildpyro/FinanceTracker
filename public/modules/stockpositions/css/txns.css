@@ -14,3 +14,12 @@
   padding-top: 10px;  
   font-size: 20px;
 }
+.md-fab > .glyphicon-th-list, .md-fab > .glyphicon-minus, .md-fab > .glyphicon-plus {
+  padding-top: 3px;
+}
+
+.txnFab {
+  height: 250px; 
+  width: 110px;
+  margin-left: 20px;
+}

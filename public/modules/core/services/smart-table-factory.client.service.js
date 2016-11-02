@@ -5,7 +5,7 @@ angular.module('core').factory('SmartTableFactory', ['$http', '$q', '$filter', '
 
         var deferred = $q.defer();
 
-        //console.log(params.sort);
+        //console.log(params.search.predicateObject);
 
         Entity.get({pagination: params.pagination, filter: params.search.predicateObject, sort: params.sort}, function(response) {
             deferred.resolve({

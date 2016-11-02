@@ -1,6 +1,6 @@
 {
   "name": "financetracker",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Full-Stack JavaScript with MongoDB, Express, AngularJS, and Node.js",
   "dependencies": {
     "bootstrap": "*",
@@ -17,7 +17,11 @@
     "angular-ui-router": "*",
     "api-check": "*",
     "angular-formly": "*",
-    "angular-formly-templates-bootstrap": "*"
+    "angular-formly-templates-bootstrap": "*",
+    "moment": "*",
+    "moment-range": "*",
+    "angular-moment": "*",
+    "angular-bindonce": "*"
   },
   "homepage": "https://github.com/wildpyro/FinanceTracker",
   "authors": [
@@ -33,8 +37,5 @@
     "public/lib",
     "test",
     "tests"
-  ],
-  "resolutions": {
-    "ng-table": "^0.8.3"
-  }
+  ]
 }

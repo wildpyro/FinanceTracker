@@ -7,7 +7,3 @@ var mongoose = require('mongoose'),
 	errorHandler = require('../../errors.server.controller'),
 	Stockposition = require('../../stockpositions.server.controller'),
 	StockpositionModel = mongoose.model('Stockposition');
-
-exports.importStockPosition = function() {
-
-};

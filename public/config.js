@@ -7,9 +7,9 @@ var ApplicationConfiguration = (function() {
 	var applicationModuleVendorDependencies = [
 						'ngResource', 
 						'ngCookies',  
-						'ngAnimate',  
-						'ngTouch',  
-						'ngSanitize',  
+						'ngAnimate',    
+						'ngSanitize',
+						'ngAria',  
 						'ui.router',
 						'ui.bootstrap',
 						'ui.scroll',
@@ -21,7 +21,12 @@ var ApplicationConfiguration = (function() {
 						'ui.uploader',
 						'formly',
 						'formlyBootstrap', 
-						'smart-table'];
+						'smart-table',
+						'angularMoment',
+						'pasvaz.bindonce',
+						'tawani.utils',
+						'ngMaterial'
+						];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {

@@ -54,8 +54,6 @@ angular.module('stockpositions').controller('MaintenanceController', ['$scope', 
 		}; 
 
 		this.importData = function() {			
-			//Not sure if formly supports this 
-			//var test = document.getElementById('fileToUpload');
 			var file = document.getElementById('fileToUpload').files[0];
 
 			var formData = new FormData();
@@ -63,7 +61,7 @@ angular.module('stockpositions').controller('MaintenanceController', ['$scope', 
 
 			var fileReader = new FileReader();
 			fileReader.onload = function(result) {
-				$http.post('/maintenance/importStockPositions', {type: vm.importDataForm.layout, file: result.target.result})
+				$http.post('/maintenance/importStockPositions', {type: vm.importDataForm.type, layout: vm.importDataForm.layout, file: result.target.result})
 				.success(function(response) {
 					vm.success = response.message;
 					vm.options.resetModel();
