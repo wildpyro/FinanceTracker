@@ -6,26 +6,27 @@ var ApplicationConfiguration = (function() {
 	var applicationModuleName = 'financetracker';
 	var applicationModuleVendorDependencies = [
 						'ngResource', 
-						'ngCookies',  
+						//'ngCookies',  
 						'ngAnimate',    
 						'ngSanitize',
 						'ngAria',  
+						'ngMessages',
+						'ngMaterial',
+						'formly',
+						'formlyMaterial', 
 						'ui.router',
 						'ui.bootstrap',
-						'ui.scroll',
-						'ui.scrollpoint',
-						'ui.event',
-						'ui.mask',
-						'ui.validate',
-						'ui.indeterminate',
-						'ui.uploader',
-						'formly',
-						'formlyBootstrap', 
+						//'ui.scroll',
+						//'ui.scrollpoint',
+						//'ui.event',
+						//'ui.mask',
+						//'ui.validate',
+						//'ui.indeterminate',
+						//'ui.uploader',
 						'smart-table',
 						'angularMoment',
-						'pasvaz.bindonce',
-						'tawani.utils',
-						'ngMaterial'
+						'pasvaz.bindonce'
+						//'tawani.utils'
 						];
 
 	// Add a new vertical module

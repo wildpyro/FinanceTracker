@@ -54,6 +54,7 @@ angular.module('stockpositions').controller('MaintenanceController', ['$scope', 
 		}; 
 
 		this.importData = function() {			
+			//JQuery dependency - wrap this in an angular.element
 			var file = document.getElementById('fileToUpload').files[0];
 
 			var formData = new FormData();

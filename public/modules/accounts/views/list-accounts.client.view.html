@@ -1,11 +1,14 @@
 <section data-ng-controller="AccountsController as acctCtrl">
-    <div class="page-header">
-        <div class="page-title">Accounts</div>
-        <div class="centered">
-          <a type="button" class="btn btn-success" href="/#!/accounts/create"><i class="glyphicon glyphicon-open"></i> New Account</a>
-        </div>        
-    </div>
-
+    <md-card>
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-headline">Accounts</span>
+                <md-card-actions class="md-card-actions" layout="row" layout-align="center">
+                    <a type="button" layout-align="end center" class="list-btn btn btn-success" href="/#!/stockpositions/create"><i class="glyphicon glyphicon-open"></i> New Stockposition</a>
+                </md-card-actions>
+            </md-card-title-text>
+        </md-card-title>
+    </md-card>    
     <div class="account-panel" ng-repeat="value in acctCtrl.accountsSearch.results">
         <a class="undecorated-link teal" href="/#!/accounts/{{value._id}}/edit"><h2 class="account-header">{{acctCtrl.formatTitle(value.description,value.accountNo)}}</h2></a>
         <div class="animate-show" ng-show="acctCtrl.show(True)">

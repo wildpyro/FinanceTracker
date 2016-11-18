@@ -208,7 +208,7 @@ exports.listBase = function(req, res) {
 		query.sort({[sortKey] : direction});
 	}
 	else {
-		query.sort({isCash: 'asc', symbol: 'asc'});
+		query.sort({type: 'asc', symbol: 'asc', accountType: 'asc'});
 	}
 
 	query.page(pagination, function(err, stockpositions){

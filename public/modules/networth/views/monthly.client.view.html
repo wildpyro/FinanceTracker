@@ -1,22 +1,36 @@
 <section data-ng-controller="monthlyController as ctrl">
-    <div class="page-header">
-        <h1 class="page-title">{{ctrl.title}}</h1>
-    </div>
-    <div data-ng-show="ctrl.success" class="alert alert-sucess form-group sucessPanel">
-        <strong data-ng-bind="ctrl.success"></strong>
-    </div>
+    <md-content class="md-padding" >
+        <div layout="row">
+            <div flex></div>
+            <md-card flex-gt-sm="70" flex="95"> 
+                <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline">Historical Returns</span>
+                        <span class="md-subhead">Month by month position totals</span>
+                    </md-card-title-text>
+                </md-card-title>                
+            </md-card>
+            <div flex></div>
+        </div>
+        <md-grid-list
+            md-cols-xs="1" md-cols-sm="2" md-cols-gt-md="3"
+            md-row-height-gt-md="1:1" md-row-height="1:1"
+            md-gutter="15px" md-gutter-gt-sm="4px" >
 
-    <div class="list-group centered">
-        <li ng-repeat="(key, rec) in ctrl.monthlystats" class="list-group-item">
-            <h4 class="list-group-item-heading">Reporting Month: {{rec.month.toUpperCase()}}</h4>
-            <p class="list-group-item-text">Total Market: {{rec.market | currency}}</p>
-            <p class="list-group-item-text">Total Book: {{rec.book | currency}}</p>
-
-            <p ng-if="rec.gainLoss >= 0" class="list-group-item-text stockup">Gain/Loss in: $ {{rec.gainLoss | currency}}</p>
-            <p ng-if="rec.gainLoss >= 0" class="list-group-item-text stockup">Gain/Loss Percentage: {{rec.gainLossPct}}%</p>
-
-            <p ng-if="rec.gainLoss < 0" class="list-group-item-text stockdown">Gain/Loss in: $ {{rec.gainLoss | currency}}</p>
-            <p ng-if="rec.gainLoss < 0" class="list-group-item-text stockdown">Gain/Loss Percentage: {{rec.gainLossPct}}%</p>            
-        </li>
-    </div>
+            <md-grid-tile ng-repeat="(key, rec) in ctrl.monthlystats">
+                <div class="monthly-card">  
+                    <md-grid-tile-header>
+                        <h4>{{rec.year}} : {{rec.month.toUpperCase()}}</h4>
+                    </md-grid-tile-header>
+                    
+                    <p>Total Market: {{rec.market | currency}}</p>
+                    <p>Total Book: {{rec.book | currency}}</p>
+                    <p ng-if="rec.gainLoss >= 0" class="stockup">Gain/Loss in: $ {{rec.gainLoss | currency}}</p>
+                    <p ng-if="rec.gainLoss >= 0" class="stockup">Gain/Loss Percentage: {{rec.gainLossPct}}%</p>
+                    <p ng-if="rec.gainLoss < 0" class="stockdown">Gain/Loss in: $ {{rec.gainLoss | currency}}</p>
+                    <p ng-if="rec.gainLoss < 0" class="stockdown">Gain/Loss Percentage: {{rec.gainLossPct}}%</p>
+                </div>            
+            </md-grid-tile>
+        </md-grid-list>
+    </md-content>
 </section>    

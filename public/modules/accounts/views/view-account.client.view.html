@@ -1,28 +1,23 @@
-<section data-ng-controller="AccountsController" data-ng-init="toViewAccount()">
-	<div class="page-header">
-		<h1 data-ng-bind="account.name"></h1>
-	</div>
-
-	<div class="col-md-12">
-
-		<form novalidate>
-			<formly-form model="account" fields="formFields">
-			</formly-form>
-		</form>
-
-		<hr/>
-		<div data-ng-show="((authentication.user) && (authentication.user._id == account.user._id))">
-			<a class="btn btn-success" href="/#!/accounts/{{account._id}}/edit">
-				<i class="glyphicon glyphicon-edit"></i> Edit
-			</a>
-			<a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="remove()" item="account">
-				<i class="glyphicon glyphicon-remove-circle"></i> Delete
-			</a>
-			<a class="btn btn-primary" href="/#!/accounts">
-				<i class="glyphicon glyphicon-list"></i> List Accounts
-			</a>
-		</div>
-
-	</div>
-
+<section data-ng-controller="AccountsController as ctrl" data-ng-init="ctrl.toViewAccount()" ng-cloak>
+    <form novalidate>
+        <md-card>
+            <md-card-title>
+                <md-card-title-text>
+                    <span class="md-headline">View: {{ctrl.account.description}} ~ {{ctrl.account.accountNo}}</span>
+                </md-card-title-text>
+            </md-card-title>
+            <div data-ng-show="ctrl.error" class="alert alert-danger form-group">
+                <strong data-ng-bind="ctrl.error"></strong>
+            </div>
+            <formly-form model="ctrl.account" fields="ctrl.formFields"></formly-form>
+            <md-card-actions class="md-card-actions" layout="row" layout-align="end center">
+				<md-button class="md-raised" href="/#!/accounts/{{ctrl.account._id}}/edit"><i class="glyphicon glyphicon-edit"></i>&nbsp;Edit</md-button>&nbsp; &nbsp;
+				<md-button class="md-raised md-warn md-hue-2" ng-href="/#!/accounts" title="Remove" ng-really-message="Are you sure ?" ng-really-click="ctrl.remove()" item="ctrl.account">
+					<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;Remove
+				</md-button>
+				<md-button class="md-raised" href="/#!/accounts"><i class="glyphicon glyphicon-list"></i>&nbsp;List Stockpositions</md-button>
+				&nbsp; &nbsp;
+            </md-card-actions>
+        </md-card>
+    </form>
 </section>

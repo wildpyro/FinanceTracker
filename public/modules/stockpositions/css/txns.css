@@ -1,12 +1,6 @@
 .addPanel {
 	margin-bottom: 5px;
 }
-.errorPanel {
-	margin-bottom: 15px;
-}
-.successPanel {
-	margin-bottom: 15px;
-}
 
 /*Smart Txn summary */
 .st-txn-summary {
@@ -14,12 +8,15 @@
   padding-top: 10px;  
   font-size: 20px;
 }
-.md-fab > .glyphicon-th-list, .md-fab > .glyphicon-minus, .md-fab > .glyphicon-plus {
-  padding-top: 3px;
+
+.txn-table > tbody > tr > th, .txn-table > thead > tr > td, .txn-table > tbody > tr > td{
+  width: 15%;
 }
 
-.txnFab {
-  height: 250px; 
-  width: 110px;
-  margin-left: 20px;
+.txn-fab {
+  padding-top: 30px;
+}
+
+.md-fab > .glyphicon-minus, .md-fab > .glyphicon-plus {
+  padding-top: 3px;
 }

@@ -9,9 +9,9 @@ angular.module('accounts').controller('AccountsController', ['$scope', '$statePa
 		vm.accountsSearch = AccountService.get();
 		
 //Single Record Functions 
-		this.setFormFields = function(disabled, isAdd) {
+		this.setFormFields = function(disabled) {
 
-			this.formFields = AccountsForm.getFormFields(disabled, isAdd);
+			this.formFields = AccountsForm.getFormFields(disabled);
 		};
 
 		// Create new Account from create-account.client.view.html

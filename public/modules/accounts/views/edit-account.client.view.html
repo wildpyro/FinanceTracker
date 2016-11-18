@@ -1,27 +1,25 @@
-<section data-ng-controller="AccountsController as ctrl" data-ng-init="ctrl.toEditAccount()">
-    <div class="page-header">
-        <h1>Edit Account</h1>
-    </div>
-    <div class="col-md-12">
-        <form class="form-horizontal" data-ng-submit="ctrl.update()" novalidate>
-
-          <formly-form model="ctrl.account" fields="ctrl.formFields">
-    			</formly-form>
-
-          <hr/>
-          <div class="form-group">
-              <button type="submit" class="btn btn-success">
-                <i class="glyphicon glyphicon-ok"></i> Save
-              </button>
-              <a class="btn btn-danger" href="/#!/accounts">
-                <i class="glyphicon glyphicon-remove"></i> Cancel
-              </a>
-          </div>
-
-          <div data-ng-show="error" class="alert alert-danger form-group">
-            <strong data-ng-bind="error"></strong>
-          </div>
-
+<section data-ng-controller="AccountsController as ctrl" data-ng-init="ctrl.toEditAccount()" ng-cloak>
+    <md-content class="md-padding" >
+        <form data-ng-submit="ctrl.update()" novalidate layout="row">
+            <div flex></div>
+            <md-card flex-gt-sm="70" flex="95"> <!-- Have this grow to full screen if mobile greater than 960px-->                 
+                <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline">View: {{ctrl.account.description}} ~ {{ctrl.account.accountNo}}</span>
+                        <span class="md-subhead">* denotes a mandatory field</span>
+                    </md-card-title-text>
+                </md-card-title>
+                <div data-ng-show="ctrl.error" class="alert alert-danger form-group">
+                    <strong data-ng-bind="ctrl.error"></strong>
+                </div>
+                <formly-form model="ctrl.account" fields="ctrl.formFields"></formly-form>
+                <md-card-actions class="md-card-actions" layout="row" layout-align="end center">
+                    <md-button class="md-raised"><i class="glyphicon glyphicon-ok"></i>&nbsp;Save</md-button>
+                    &nbsp; &nbsp; 
+                    <md-button class="md-raised md-warn md-hue-2" ng-href="/#!/accounts"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;Cancel</md-button>
+                </md-card-actions>
+            </md-card>
+            <div flex></div>
         </form>
-    </div>
+    </md-content>  
 </section>

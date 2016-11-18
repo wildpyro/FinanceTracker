@@ -69,7 +69,7 @@ angular.module('stockpositions').factory('TxnsForm', ['TxnTypesService', 'Accoun
               label: 'Shares:'
             }  
           },                              
-          /*{
+          {
             className: 'col-xs-3',
             key: 'date',
             type: 'datepicker',
@@ -77,7 +77,7 @@ angular.module('stockpositions').factory('TxnsForm', ['TxnTypesService', 'Accoun
               label: 'Date',
               type: 'text'
             }
-          },*/
+          },
           {
             className: 'col-xs-3',
             key: 'price',
@@ -126,7 +126,7 @@ angular.module('stockpositions').factory('TxnsForm', ['TxnTypesService', 'Accoun
             type: 'input',
             templateOptions: {
               label: 'Trade Info:',
-              disabled: 'true'
+              disabled: true
             }
           }          
         ]

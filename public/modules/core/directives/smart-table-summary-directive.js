@@ -67,7 +67,6 @@
 
 		return {
 			restrict: 'EA', 
-			//scope: true,
 			scope: {datacollection: '='},
 			controller: controller,
 			controllerAs: 'vm',

@@ -1,0 +1,6 @@
+.monthly-card > md-grid-tile-header > figcaption > h4 {
+    font-weight: bold;
+    font-size: 150%;
+    padding: 0 0 2px 0;
+    color: teal;
+}

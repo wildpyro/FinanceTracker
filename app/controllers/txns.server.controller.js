@@ -104,11 +104,13 @@ exports.list = function(req, res) {
 			query.where('type').in(JSON.parse(req.query.filter).type.split(','));
 		}
 
-		console.log(req.query.filter);
-
-		if (!filter.showDrip) {
+		if (filter.showDrip === undefined) {
 			query.where({type: {$ne : 'Drip'}});
 		}
+	}
+	else {
+		// smart table won't send a false it will just send a blank filter object
+		query.where({type: {$ne : 'Drip'}});
 	}
 
 	//Sort

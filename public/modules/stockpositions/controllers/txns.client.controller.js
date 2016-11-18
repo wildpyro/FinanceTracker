@@ -15,7 +15,7 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 		this.formFields = TxnsForm.getFormFields1();
 		
 		vm.isLoading = false;
-		vm.resetTable = true;
+		vm.resetTable = false;
 	    vm.model = {};
 	    vm.options = {formState: {}};
 
@@ -28,7 +28,7 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 		vm.fab = {};
 		vm.fab.isOpen = false;
 		vm.fab.tooltipVisible = false;
-		vm.fab.showDrip = true;
+		vm.fab.showDrip = false;
 
 		// On opening, add a delayed property which shows tooltips after the speed dial has opened
 		// so that they have the proper position; if closing, immediately hide the tooltips
@@ -43,28 +43,6 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 			}
 		});
 
-		this.openDialog = function ($event, item) {
-			// Show the dialog
-			$mdDialog.show({
-				clickOutsideToClose: true,
-				controller: function ($mdDialog) {
-					// Save the clicked item
-					this.item = item;
-
-					// Setup some handlers
-					this.close = function () {
-						$mdDialog.cancel();
-					};
-					this.submit = function () {
-						$mdDialog.hide();
-					};
-				},
-				controllerAs: 'dialog',
-				templateUrl: 'dialog.html',
-				targetEvent: $event
-			});
-		};
-
 		this.toggle = function() {
 			vm.fab.showDrip = !vm.fab.showDrip;
 		};
@@ -78,7 +56,7 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 		    var start = pagination.start || 0;     // This is NOT the page number, but the index of item in the list that you want to use to display the table.
 		    var number = pagination.number || 10;  // Number of entries showed per page.
 
-			console.log(vm.showDrip);
+			//console.log(tableState);
 
 		    SmartTableFactory.getPage(start, number, tableState, Txns).then(function (result) {
 				vm.safeRows = [];

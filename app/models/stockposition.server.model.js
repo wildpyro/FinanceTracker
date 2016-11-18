@@ -15,9 +15,6 @@ var StockpositionSchema = new Schema({
 		required: 'Please select an account type',
 		trim: true
 	},
-	isCash: {
-		type: Boolean
-	},
 	symbol: {
 		type: String,
 		default: '',
@@ -62,7 +59,7 @@ var StockpositionSchema = new Schema({
 		type: String, enum: ['cash','fixed','equity'], 
 		required: 'Please select a position type',
 		trim: true
-	},	
+	},
 	quoteData: {}
 });
 

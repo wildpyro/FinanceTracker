@@ -1,27 +1,23 @@
-<section data-ng-controller="StockpositionsController as ctrl" data-ng-init="ctrl.toViewStockposition()">
-	<div class="page-header">
-		<h1>View: {{ctrl.stockposition.symbol}} ~ {{ctrl.stockposition.description}}</h1>
-	</div>
-
-	<div class="col-md-12">
-
-		<form novalidate>
-			<formly-form model="ctrl.stockposition" fields="ctrl.formFields"></formly-form>
-		</form>
-
-		<hr/>
-		<div data-ng-show="((authentication.user) && (authentication.user._id == stockposition.user._id))">
-			<a class="btn btn-success" href="/#!/stockpositions/{{stockposition._id}}/edit">
-				<i class="glyphicon glyphicon-edit"></i> Edit
-			</a>
-			<a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="ctrl.remove()" item="ctrl.stockposition">
-				<i class="glyphicon glyphicon-remove-circle"></i> Delete
-			</a>
-			<a class="btn btn-primary" href="/#!/stockpositions">
-				<i class="glyphicon glyphicon-list"></i> List Stockpositions
-			</a>
-		</div>
-
-	</div>
-
+<section data-ng-controller="StockpositionsController as ctrl" data-ng-init="ctrl.toViewStockposition()" ng-cloak>
+    <form novalidate>
+        <md-card>
+            <md-card-title>
+                <md-card-title-text>
+                    <span class="md-headline">View: {{ctrl.stockposition.symbol}} ~ {{ctrl.stockposition.description}}</span>
+                </md-card-title-text>
+            </md-card-title>
+            <div data-ng-show="ctrl.error" class="alert alert-danger form-group">
+                <strong data-ng-bind="ctrl.error"></strong>
+            </div>
+            <formly-form model="ctrl.stockposition" fields="ctrl.formFields"></formly-form>
+            <md-card-actions class="md-card-actions" layout="row" layout-align="end center">
+				<md-button class="md-raised" href="/#!/stockpositions/{{ctrl.stockposition._id}}/edit"><i class="glyphicon glyphicon-edit"></i>&nbsp;Edit</md-button>&nbsp; &nbsp;
+				<md-button class="md-raised md-warn md-hue-2" ng-href="/#!/stockpositions" title="Remove" ng-really-message="Are you sure ?" ng-really-click="ctrl.remove()" item="ctrl.stockposition">
+					<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;Remove
+				</md-button>
+				<md-button class="md-raised" href="/#!/stockpositions"><i class="glyphicon glyphicon-list"></i>&nbsp;List Stockpositions</md-button>
+				&nbsp; &nbsp;
+            </md-card-actions>
+        </md-card>
+    </form>  
 </section>

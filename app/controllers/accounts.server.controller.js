@@ -110,7 +110,7 @@ exports.list = function(req, res) {
 	Account
 		.find()
 		.filter(filter)
-		.populate({path: 'stockPositions', model: 'Stockposition', options: {sort: {isCash: 'desc', symbol: 'asc'}}})
+		.populate({path: 'stockPositions', model: 'Stockposition', options: {sort: {type: 'desc', symbol: 'asc'}}})
 		.sort(sort)
 		.page(pagination, function(err, accounts){
 			if (err) {

@@ -68,8 +68,8 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		};
 
 //Single Record functions//
-		this.setFormFields = function(disabled, isAdd) {
-			vm.formFields = StockpositionsForm.getFormFields(disabled, isAdd);
+		this.setFormFields = function(disabled) {
+			vm.formFields = StockpositionsForm.getFormFields(disabled);
 		};
 
 		// Create new Stockposition
@@ -131,14 +131,14 @@ angular.module('stockpositions').controller('StockpositionsController', ['$scope
 		this.toViewStockposition = function() {	
 			Stockpositions.get({stockpositionId: $stateParams.stockpositionId}, function(stockposition) {
 				vm.stockposition = stockposition;
-				vm.setFormFields(true, true);
+				vm.setFormFields(true);
 			});
 		};
 
 		this.toEditStockposition = function() {
 			Stockpositions.get({stockpositionId: $stateParams.stockpositionId}, function(stockposition) {
 				vm.stockposition = stockposition;
-				vm.setFormFields(false, false);
+				vm.setFormFields(false);
 			});			
 		};
 

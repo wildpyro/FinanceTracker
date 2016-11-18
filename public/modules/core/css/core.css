@@ -1,33 +1,86 @@
+/*-- Containers --*/
 .content {
 	margin-top: 50px;
+}
+
+.jumbotron {
+  background-color: teal;
+  color: white;
+}
+
+.main {
+  padding: 0 10px;
+}
+
+.well-lg {
+  font-size: 1.25em;
+  background: teal;
+  color: white; 
+}
+
+.errorPanel {
+	margin-bottom: 15px;
+}
+.successPanel {
+	margin-bottom: 15px;
 }
 
 .undecorated-link:hover {
 	text-decoration: none;
 }
 
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+	display: none !important;
+}
+
+/*-- Colouring --*/
 .teal {
   color: teal;
 }
 
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-	display: none !important;
-}
 .ng-invalid.ng-dirty {
 	border-color: #FA787E;
 }
+
 .ng-valid.ng-dirty {
 	border-color: #78FA89;
 }
 
-/*Page Headers */
-.page-title {
-  height: 80px;
-  font-size: 60px;
+.stockup {
+	color: #64A34E;
+}
+.stockdown {
+	color: #BA2727;
+}
+
+/* form content */
+.form-group > div > md-input-container {
+	padding: 5px 0 0 45px;
+	font-size: 110%;
+  width: 85%;
+	font-weight: bold; /*This is required for the select fields as they don't seem to inherit bold like the input labels */
+}
+
+/*-- Page Headers --*/
+
+.md-headline {
+	font-size: 350%;
+	text-align: center;
+  color: teal;
+}
+
+.md-subhead {
   text-align: center;
 }
-.page-header {
-  height: 150px;
+
+.list-btn {
+  width: 175px;
+}
+/*-- Page Headers End--*/
+
+/*Card bottom panel */
+.md-card-actions {
+	padding: 25px 0 10px 0;
 }
 
 .money {
@@ -38,16 +91,6 @@
   text-align: center;
 }
 
-.jumbotron {
-  background-color: teal;
-  color: white;
-}
-
-.main {
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
 .main-header{
   font-size: 35px;
 }
@@ -56,11 +99,6 @@
   font-size: 85%;
 }
 
-.well-lg {
-  font-size: 1.25em;
-  background: teal;
-  color: white; 
-}
 
 /* smart-table */
 .smart-table {
@@ -68,26 +106,30 @@
   padding-bottom: 50px;
 }
 
+/* Generic smart-table header row */
 .smart-table > thead > tr > th {
   text-align: left;
   border-bottom: 3px solid teal;
-  padding-bottom: 15px;
-  padding-top: 0;
-}
-.smart-table > tbody > tr > th, .smart-table > thead > tr > td, .smart-table > tbody > tr > td {
-  height: 60px;
-  border-bottom: 1px solid lightgray;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 0 5px 15px 5px;
 }
 
-.smart-table > tfoot > tr > th, .smart-table > tfoot > tr > td {
+/* Generic smart-table detail row */
+.smart-table > tbody > tr > td {
   height: 60px;
+  border-bottom: 1px solid lightgray;
+  padding: 0 5px;
+}
+
+/* Generic smart-table footer row */
+.smart-table > tfoot > tr  {
+  height: 45px;
   border-bottom: 3px solid teal;
 }
 
+/*-- Smart-table internals --*/
+
 .smart-table-filters {
-  height: 100px;
+  height: 70px;
   vertical-align: top;
 }
 
@@ -99,19 +141,9 @@
   width: 130px;
 }
 
-.smart-table th.filter .input-filter {
-  margin: 1px;
-  width: 90%;
-}
-
-.smart-table-pager {
-  margin-top: 20px;
-}
-
-/*Smart table summary */
+/*--Smart table summary --*/
 .st-summary {
-  padding-bottom: 20px;
-  padding-top: 10px;  
+  padding: 10px 0 20px 0;
   font-size: 20px;
 }
 
@@ -121,8 +153,7 @@
 }
 
 .st-summary-small {
-  padding-bottom: 20px;
-  padding-top: 10px;
+  padding: 10px 0 20px 0;
   font-size: 17px;  
 }
 
