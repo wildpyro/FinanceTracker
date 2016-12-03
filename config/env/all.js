@@ -47,7 +47,7 @@ module.exports = {
 				'public/lib/angular-moment/angular-moment.js',
 				'public/lib/angular-bindonce/bindonce.js',
 				//'public/lib/ta-date-range-picker/dist/ta-date-range-picker.js',
-				'public/lib/angular-formly-material/dist/formly-material.min.js'
+				'public/lib/angular-formly-material/dist/formly-material.js'
 				]
 		},
 		css: [

@@ -72,6 +72,10 @@ exports.listArchive = function(req, res) {
 	});
 };
 
+/**
+ * Not currently used
+ * Going to be a historic total of a for given symbol. Probably used on the stock position detail screen  
+ */
 exports.listSymbolHistory = function(req, res) {
 
  	var query = Stockposition_Archive.find();

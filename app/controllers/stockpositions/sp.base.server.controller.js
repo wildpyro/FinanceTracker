@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
 	_ = require('lodash'),
 	errorHandler = require('../errors.server.controller'),
 	quote = require('../quote.server.controller'),
+	Exchanges = require('../../enums/exchanges.server.enums'),
 	Quote = mongoose.model('Quote'),
 	Stockposition = mongoose.model('Stockposition'),
 	Account = mongoose.model('Account');
@@ -59,7 +60,10 @@ var updateReferences = function(action, stockposition) {
 			}
 		}
 	});
-}; 
+};
+
+/**
+ * Exports Start */ 
 
 /** 
  * Check to ensure we aren't adding duplicate symbols to the same accounttype'
@@ -106,63 +110,6 @@ exports.create = function(req, res) {
 };
 
 /**
- * Show the current Stockposition
- */
-exports.readBase = function(req, res) {
-	res.jsonp(req.stockposition);
-};
-
-/**
- * Update a Stockposition
- */
-exports.update = function(req, res, next) {
-	var stockposition = req.stockposition;
-
-	stockposition = _.extend(stockposition , req.body);
-
-	stockposition.save(function(err) {
-		if (err) {
-			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
-		} 
-		else {
-			updateReferences('check', stockposition);
-
-			res.jsonp(stockposition);
-		}
-
-		next();
-	});
-};
-
-/**
- * Helper to update all prices in one shot
- */
-exports.updatePrice = function(req, res, next) {
-	var symbolToSearch = req.stockposition.symbol,
-		accountType = req.stockposition.accountType,
-		price = req.stockposition.price,
-		filter = ({symbol: symbolToSearch });
-		
-	Stockposition.find(filter, function(err, results) {
-		if (err) {
-			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
-		}
-		else {
-			results.forEach(function(result) {
-				result.price = price;
-				result.market = Number(price * result.shares).toFixed(2);
-				result.save(function(err) {
-					if (err) {
-						return res.status(400).send({message: errorHandler.getErrorMessage(err)});
-					}
-				});
-			}, this);
-		}
-	});
-
-};
-
-/**
  * Delete an Stockposition
  */
 exports.deleteBase = function(req, res) {
@@ -182,6 +129,40 @@ exports.deleteBase = function(req, res) {
 			res.jsonp(stockposition);
 		}
 	});
+};
+
+exports.getPositionSymbols = function(user, callback) {
+	Stockposition.aggregate([
+		{
+			$match : {symbol : {$ne : 'CASH'}}
+		},
+        {
+			$group: {
+				_id: null,
+				symbols: {$addToSet: {$concat: ['$symbol']}},
+				exchanges: {$addToSet: {$concat: ['$exchange']}} 
+			}
+		}
+    ], 
+	function (err, result) {
+        if (err) {
+            console.log('Error:', err);
+        }
+
+		var positionsObj = _.zipWith(result[0].symbols, result[0].exchanges, (key, value)=> ({ key, value }));		
+
+		callback(null, positionsObj);
+	});	
+};
+
+/**
+ * Stockposition authorization middleware
+ */
+exports.hasAuthorization = function(req, res, next) {
+	if (req.stockposition.user.id !== req.user.id) {
+		return res.status(403).send({message: 'User is not authorized'});
+	}
+	next();
 };
 
 /**
@@ -222,45 +203,30 @@ exports.listBase = function(req, res) {
 	});
 };
 
-exports.getSymbols = function(user, callback) {
-	Stockposition.aggregate([
-		{
-			$match : {symbol : {$ne : 'CASH'}}
-		},
-        {
-			$group: {
-				_id: null,
-				symbols: {$addToSet: {$concat: ['$symbol', '.TO']}} 
-				//grouper: {$push: '$symbol'}
-				//total: {$sum: '$market'}
-				//_id : null, // Will group by everything 
-			}
-		}
-    ], 
-	function (err, result) {
-        if (err) {
-            console.log('Error:', err);
-        }
-
-		callback(null, result[0].symbols);
-	});	
-};
-
 /**
  * Find the stockpositions you currently hold
  * Get the updated ones from yahoo
  * Currently this doesn't use the User but it should
  */
 exports.listDaily = function(user, callback) {
-	exports.getSymbols(user, function(err, symbols) {
-		quote.yahooQuotes(symbols, function(err, updatedQuotes) {
+	this.getPositionSymbols(user, function(err, symbols) {
+
+		console.log(symbols);
+		quote.yahooQuotes(symbols, function(err, newQuotes) {
 			if (err) {
-				console.log('Error:', err);
+				callback(err, null);
 			}
 
-			callback(updatedQuotes);
+			callback(null, newQuotes);
 		});
 	});
+};
+
+/**
+ * Show the current Stockposition
+ */
+exports.readBase = function(req, res) {
+	res.jsonp(req.stockposition);
 };
 
 /**
@@ -276,11 +242,86 @@ exports.stockpositionByID = function(req, res, next, id) {
 };
 
 /**
- * Stockposition authorization middleware
+ * Update a Stockposition
  */
-exports.hasAuthorization = function(req, res, next) {
-	if (req.stockposition.user.id !== req.user.id) {
-		return res.status(403).send({message: 'User is not authorized'});
-	}
-	next();
+exports.update = function(req, res, next) {
+	var stockposition = req.stockposition;
+
+	console.log(req.body);
+
+	stockposition = _.extend(stockposition , req.body);
+
+	stockposition.save(function(err) {
+		if (err) {
+			next({message: errorHandler.getErrorMessage(err)});
+			//res.status(400).send({message: errorHandler.getErrorMessage(err)}); 
+		} 
+		else {
+			updateReferences('check', stockposition);
+
+			res.jsonp(stockposition);
+		}
+
+		next();
+	});
+};
+
+/**
+ * Helper to update all prices in one shot
+ */
+exports.updatePriceInner = function(symbol, price, callback) {
+
+	var query = Stockposition.find();
+
+	query.where('symbol', symbol);
+	query.exec(function(err, results) {
+		if (err) {
+			callback(err);
+		}
+		else {
+			results.forEach(function(result) {
+				result.price = price;
+				result.market = Number(price * result.shares).toFixed(2);
+				result.save(function(err) {
+					if (err) {
+						callback(err);
+					}
+				});
+			});
+
+			callback(null);
+		}
+	});
+};
+
+/**
+ * Used for single manual prices updates from UI. 
+ */
+exports.updatePrice = function(req, res, next) {
+	exports.updatePriceInner(req.stockposition.symbol, req.stockposition.price, function(err) {
+		if (err) {
+			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
+		}
+	});
+};
+
+/**
+ * Used for wholesale prices updates from UI. 
+ */
+exports.updatePrices = function(req, res, next) {
+	exports.listDaily(req.user, function(err, quoteResponses) {
+		if (err) {
+			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
+		}
+		else {
+			quoteResponses.forEach(function(quoteResponse) {
+				console.log(quoteResponse.Symbol);
+				this.updatePriceInner(quoteResponse.Symbol, quoteResponse.LastTradePriceOnly, function() {
+					if (err) {
+						return res.status(400).send({message: quoteResponse.Symbol + ': ' + errorHandler.getErrorMessage(err)});
+					}
+				});
+			});
+		}
+	});
 };

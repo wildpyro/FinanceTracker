@@ -22,7 +22,7 @@ exports.read = function(req, res) {
 /**
  * List of Stockpositiondetails
  */
-exports.list = function(req, res) {
+exports.listQuoteDetails = function(req, res) {
 
 	if (req.query.symbol !== null && req.query.symbol !== undefined && req.query.symbol !== '') {
 		Quote.yahooQuote(req.query.symbol,res);

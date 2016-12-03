@@ -1,12 +1,19 @@
 'use strict';
 
 // Accounts controller
-angular.module('accounts').controller('AccountsController', ['$scope', '$stateParams', '$location', 'Authentication', 'AccountService', 'AccountsForm', 
-	function($scope, $stateParams, $location, Authentication, AccountService, AccountsForm) {
+angular.module('accounts').controller('AccountsController', ['$scope', '$stateParams', '$location', 'Authentication', 'AccountService', 'AccountsForm', '$mdSidenav', '$mdDialog',
+	function($scope, $stateParams, $location, Authentication, AccountService, AccountsForm, $mdSidenav, $mdDialog) {
 		var vm = this; 
 		this.authentication = Authentication;
 		this.account = {};
 		vm.accountsSearch = AccountService.get();
+
+		$scope.toggleLeft = buildToggler('left');
+
+		function buildToggler(componentId) {
+			return function() {$mdSidenav(componentId).toggle();};
+		}
+
 		
 //Single Record Functions 
 		this.setFormFields = function(disabled) {

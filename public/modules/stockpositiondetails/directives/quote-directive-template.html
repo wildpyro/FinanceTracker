@@ -1,0 +1,91 @@
+<md-content ng-controller="StockpositiondetailsController as ctrl" style="height: 330px;">
+    <div layout="row" class="md-theme-indigo" flex>
+        <md-sidenav
+            flex="15" 
+            class="md-sidenav-left" 
+            md-component-id="left"
+            md-is-locked-open="$mdMedia('gt-md')" 
+            md-whiteframe="3">
+            
+            <md-toolbar>
+                <h1 class="md-toolbar-tools">Stock Quote for {{symbol}}</h1>
+            </md-toolbar>
+
+            <md-content>
+                <ul>
+                    <li ng-click="ctrl.screen = 'base'">Details</li>
+                    <li ng-click="ctrl.screen = 'performance'">Performance</li>
+                    <li ng-click="ctrl.screen = 'fundamentals'">Fundamentals</li>
+                </ul>
+            </md-content>
+        </md-sidenav>
+
+        <md-content flex>
+            <div ng-if="ctrl.screen === 'base'">
+                <div layout="row" layout-fill layout-margin> 
+                    <div ng-if="ctrl.colour(ctrl.quoteResponse.Change)" class="stockup"><span>Daily Change: ${{ctrl.quoteResponse.Change}}</span><span class="glyphicon glyphicon-arrow-up"></span></div> 
+                    <div ng-if="!ctrl.colour(ctrl.quoteResponse.Change)" class="stockdown"><span>Daily Change: ${{ctrl.quoteResponse.Change}}</span><span class="glyphicon glyphicon-arrow-down"></span></div> 
+
+                    <div ng-if="ctrl.colour(ctrl.quoteResponse.PercentChange)" class="stockup"><span>Daily Change Pct: {{ctrl.quoteResponse.PercentChange}}</span><span class="glyphicon glyphicon-arrow-up"></span></div>
+                    <div ng-if="!ctrl.colour(ctrl.quoteResponse.PercentChange)" class="stockdown"><span>Daily Change Pct: {{ctrl.quoteResponse.PercentChange}}</span><span class="glyphicon glyphicon-arrow-down"></span></div>
+
+                    <div ng-if="ctrl.colour(ctrl.quoteResponse.PercentChangeFromYearLow)" class="stockup"><span>Yearly Change Pct: {{ctrl.quoteResponse.PercentChangeFromYearLow}}</span><span class="glyphicon glyphicon-arrow-up"></span></div>
+                    <div ng-if="!ctrl.colour(ctrl.quoteResponse.PercentChangeFromYearLow)" class="stockdown"><span>Yearly Change Pct: {{ctrl.quoteResponse.PercentChangeFromYearLow}}</span><span class="glyphicon glyphicon-arrow-down"></span></div>
+                </div>
+                <div layout="row">
+                    <div flex-gt-md="15" flex="0"></div>
+                    <div layout="column" layout-padding layout-margin layout-fill>
+                        Quote Details 
+                        <form novalidate>
+                            <formly-form model="ctrl.quoteResponse" fields="ctrl.quote1"></formly-form>
+                        </form>
+                    </div>
+                    <div layout="column" layout-padding layout-margin layout-fill>
+                        Daily Movement
+                        <form novalidate>
+                            <formly-form model="ctrl.quoteResponse" fields="ctrl.quote2"></formly-form>
+                        </form>
+                    </div>
+                    <div layout="column" layout-padding layout-margin layout-fill>
+                        High/Low
+                        <form novalidate>
+                            <formly-form model="ctrl.quoteResponse" fields="ctrl.quote3"></formly-form>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-if="ctrl.screen === 'performance'">
+                <div layout="row">
+                    <div flex-gt-md="15" flex="0"></div>
+                    <div layout="column" layout-padding layout-margin layout-fill>
+                        Moving Averages
+                        <form novalidate><formly-form model="ctrl.quoteResponse" fields="ctrl.perf1"></formly-form></form>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-if="ctrl.screen === 'fundamentals'">
+                <div layout="row">
+                    <div flex-gt-md="15" flex="0"></div>
+                    <div layout="column" layout-padding layout-margin layout-fill>
+                        Price Ratios
+                        <form novalidate><formly-form model="ctrl.quoteResponse" fields="ctrl.fund1"></formly-form></form>
+                    </div>
+                    <div layout="column" layout-padding layout-margin layout-fill>
+                        Dividends
+                        <form novalidate>
+                            <formly-form model="ctrl.quoteResponse" fields="ctrl.fund2"></formly-form>
+                        </form>
+                    </div>
+                    <div layout="column" layout-padding layout-margin layout-fill>
+                        Earnings Per Share
+                        <form novalidate>
+                            <formly-form model="ctrl.quoteResponse" fields="ctrl.fund3"></formly-form>
+                        </form>
+                    </div>
+                </div>                                
+            </div>
+        </md-content>
+    </div>
+</md-content>

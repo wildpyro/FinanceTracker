@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeService', 'PositionsTypesService', function(accountTypes, positionsTypes) {
+angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeService', 'PositionsTypesService', 'ExchangesService', function(accountTypes, positionsTypes, exchanges) {
 
   var getFormFields = function(disabled) {
       var fields = [
@@ -18,6 +18,16 @@ angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeServ
               }
             },
             {
+              key: 'exchange',
+              type: 'select',
+              templateOptions: {
+                label: 'Stock Exchange',
+                options: exchanges.getEnums(),
+                disabled: disabled,
+                required: true
+              }
+            },            
+            {
               key: 'type',
               type: 'select',
               templateOptions: {
@@ -26,7 +36,7 @@ angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeServ
                 disabled: disabled,
                 required: true
               }
-            },            
+            },
             { 
               key: 'symbol',
               type: 'input',

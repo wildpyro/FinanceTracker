@@ -9,11 +9,12 @@
 
         var fields = [
           {
+            className: 'info',
             key: 'Name',
             type: 'input',
             templateOptions: {
               label: 'Name:',
-              disabled: disabled
+              readOnly: true
             }
           },
           {
@@ -21,23 +22,7 @@
             type: 'input',
             templateOptions: {
               label: 'Exchange:',
-              disabled: disabled
-            }
-          },
-          {
-            key: 'Symbol',
-            type: 'input',
-            templateOptions: {
-              label: 'Symbol:',
-              disabled: disabled
-            }
-          },        
-          {
-            key: 'lastUpdated',
-            type: 'input',
-            templateOptions: {
-              label: 'Last Updated:',
-              disabled: disabled
+              readOnly: true
             }
           },
           {
@@ -45,11 +30,11 @@
             type: 'input',
             templateOptions: {
               label: 'Market Capitalization:',
-              disabled: disabled
+              readOnly: true
             }
           }
         ];
-        
+
         return fields;
       };
 
@@ -61,7 +46,7 @@
             type: 'input',
             templateOptions: {
               label: 'Intra Day Low:',
-              disabled: disabled
+              readOnly: true
             }
           },                    
           {
@@ -69,23 +54,7 @@
             type: 'input',
             templateOptions: {
               label: 'Intra Day High:',
-              disabled: disabled
-            }
-          },
-          {
-            key: 'YearLow',
-            type: 'input',
-            templateOptions: {
-              label: '52 Week Low:',
-              disabled: disabled
-            }
-          },
-          {
-            key: 'YearHigh',
-            type: 'input',
-            templateOptions: {
-              label: '52 Week High:',
-              disabled: disabled
+              readOnly: true
             }
           },
           {
@@ -93,7 +62,31 @@
             type: 'input',
             templateOptions: {
               label: 'Shares Traded:',
-              disabled: disabled
+              readOnly: true
+            }
+          }
+        ];
+        
+        return fields;
+      };
+
+      var getFormFieldsQuote3 = function(disabled) {
+
+        var fields = [      
+          {
+            key: 'YearLow',
+            type: 'input',
+            templateOptions: {
+              label: '52 Week Low:',
+              readOnly: true
+            }
+          },
+          {
+            key: 'YearHigh',
+            type: 'input',
+            templateOptions: {
+              label: '52 Week High:',
+              readOnly: true
             }
           }
         ];
@@ -109,7 +102,7 @@
             type: 'input',
             templateOptions: {
               label: '50 Day Moving Average:',
-              disabled: disabled
+              readOnly: true
             }
           },
           {
@@ -117,7 +110,7 @@
             type: 'input',
             templateOptions: {
               label: '200 Day Moving Average:',
-              disabled: disabled
+              readOnly: true
             }
           },
           {
@@ -125,7 +118,7 @@
             type: 'input',
             templateOptions: {
               label: 'Pct Change 50 Day MVA:',
-              disabled: disabled
+              readOnly: true
             }
           },        
           {
@@ -133,7 +126,7 @@
             type: 'input',
             templateOptions: {
               label: 'Pct Change 200 Day MVA:',
-              disabled: disabled
+              readOnly: true
             }
           }
         ];
@@ -149,23 +142,7 @@
             type: 'input',
             templateOptions: {
               label: 'P/E Ratio:',
-              disabled: disabled
-            }
-          },        
-          {
-            key: 'ExDividendDate',
-            type: 'input',
-            templateOptions: {
-              label: 'Ex Dividend Date:',
-              disabled: disabled
-            }
-          },
-          {
-            key: 'DividendPayDate',
-            type: 'input',
-            templateOptions: {
-              label: 'Dividend Date:',
-              disabled: disabled
+              readOnly: true
             }
           },          
           {
@@ -173,7 +150,7 @@
             type: 'input',
             templateOptions: {
               label: 'Pirce to Sales:',
-              disabled: disabled
+              readOnly: true
             }
           },
           {
@@ -181,7 +158,7 @@
             type: 'input',
             templateOptions: {
               label: 'Price to Book:',
-              disabled: disabled
+              readOnly: true
             }
           }
         ];
@@ -193,11 +170,35 @@
 
         var fields = [
           {
+            key: 'ExDividendDate',
+            type: 'input',
+            templateOptions: {
+              label: 'Ex Dividend Date:',
+              readOnly: true
+            }
+          },
+          {
+            key: 'DividendPayDate',
+            type: 'input',
+            templateOptions: {
+              label: 'Dividend Date:',
+              readOnly: true
+            }
+          }
+        ];
+
+        return fields;
+      };      
+
+      var getFormFieldsFund3 = function(disabled) {
+
+        var fields = [
+          {
             key: 'EarningsShare',
             type: 'input',
             templateOptions: {
               label: 'Earnings per Share:',
-              disabled: disabled
+              readOnly: true
             }
           },
           {
@@ -205,7 +206,7 @@
             type: 'input',
             templateOptions: {
               label: 'EPS E Next Quarter:',
-              disabled: disabled
+              readOnly: true
             }
           },          
           {
@@ -213,7 +214,7 @@
             type: 'input',
             templateOptions: {
               label: 'EPS E Current Year:',
-              disabled: disabled
+              readOnly: true
             }
           },
           {
@@ -221,7 +222,7 @@
             type: 'input',
             templateOptions: {
               label: 'EPS E Next Year:',
-              disabled: disabled
+              readOnly: true
             }
           }
         ];
@@ -232,11 +233,13 @@
       var service = {
         getFormFieldsQuote1: getFormFieldsQuote1,
         getFormFieldsQuote2: getFormFieldsQuote2,
+        getFormFieldsQuote3: getFormFieldsQuote3,
         
         getFormFieldsPerf1: getFormFieldsPerf1,
         
         getFormFieldsFund1: getFormFieldsFund1,
-        getFormFieldsFund2: getFormFieldsFund2
+        getFormFieldsFund2: getFormFieldsFund2,
+        getFormFieldsFund3: getFormFieldsFund3
       };
 
       return service;

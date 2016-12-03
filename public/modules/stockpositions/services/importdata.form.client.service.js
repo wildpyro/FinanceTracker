@@ -28,11 +28,8 @@ angular.module('stockpositions').factory('ImportDataForm', ['StockPositionsLayou
         type: 'input',
         id: 'fileToUpload',
         templateOptions: {
-          label: 'File to import:',
-          type: 'file',
-          addonRight: {
-            class: 'glyphicon glyphicon-save'
-          }
+          label: '',
+          type: 'file'
         }
       }
     ];

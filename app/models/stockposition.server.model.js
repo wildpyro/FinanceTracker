@@ -4,6 +4,8 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
+	_ = require('lodash'),
+	Exchanges = require('../enums/exchanges.server.enums'),
 	Schema = mongoose.Schema;
 
 /**
@@ -12,8 +14,11 @@ var mongoose = require('mongoose'),
 var StockpositionSchema = new Schema({
 	accountType: {
 		type: String, enum: ['open','rsp','tfsa','resp','joint'],
-		required: 'Please select an account type',
-		trim: true
+		required: 'Please select an account type'
+	},
+	exchange: {
+		type: String, enum: _.map(Exchanges.EXCHANGES, 'exchange'),
+		required: 'Please select an exchange type'
 	},
 	symbol: {
 		type: String,

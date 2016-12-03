@@ -6,6 +6,8 @@ var schedule = require('node-schedule'),
     mongoose = require('mongoose'),
     mailer = require('nodemailer'),
     async = require('async'),
+    quoteCtrl = require('./quotes.server.controller'),
+    stockPositionsCtrl = require('./stockpositions.server.controller'),
     User = mongoose.model('User'),
     StockPositions = mongoose.model('StockPositions');
 
@@ -42,6 +44,7 @@ exports.dailyStockPositionsSchedule = function () {
 
 /**
  * Update stock positions with new quote data
+ * Right now this does one call at a time. Bulk call would probably be better. 
  */
 exports.dailyQuoteUpdateSchedule = function () {
   var j = schedule.scheduleJob({ hour: 15, minute: 45, dayOfWeek: 1 - 5 }, function () {
@@ -52,11 +55,18 @@ exports.dailyQuoteUpdateSchedule = function () {
         });
       },
       function(users, callback) {
-        users.forEach(function(user) {
-          StockPositions.getSymbols(user, function(err, stocks) {
-            callback(err,null);
+          users.forEach(function(user) {
+            StockPositions.getSymbols(user, function(err, positions) {
+              callback(err,positions);
+          }, this);
         });
-      });
+      },
+      function(positions, callback) {
+          positions.forEach(function(position) {
+            quoteCtrl.yahooQuote(position.symbol, function(err, quote) {
+              stockPositionsCtrl.updatePriceInner(position.symbol, quote.price);
+            }, this);
+        });
       }
     ], 
     function(err) {

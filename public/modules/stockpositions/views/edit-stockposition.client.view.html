@@ -1,6 +1,6 @@
 <section data-ng-controller="StockpositionsController as ctrl" data-ng-init="ctrl.toEditStockposition()" ng-cloak>
     <md-content class="md-padding" >    
-        <form data-ng-submit="ctrl.create()" novalidate layout="row">
+        <form data-ng-submit="ctrl.update()" novalidate layout="row">
             <div flex></div>
             <md-card flex-gt-sm="70" flex="95"> <!-- Have this grow to full screen if mobile greater than 960px-->
                 <md-card-title>
@@ -14,7 +14,7 @@
                 </div>
                 <formly-form model="ctrl.stockposition" fields="ctrl.formFields"></formly-form>
                 <md-card-actions class="md-card-actions" layout="row" layout-align="end center">
-                    <md-button class="md-raised"><i class="glyphicon glyphicon-ok"></i>&nbsp;Save</md-button>
+                    <md-button type="submit" class="md-raised"><i class="glyphicon glyphicon-ok"></i>&nbsp;Save</md-button>
                     &nbsp; &nbsp; 
                     <md-button class="md-raised md-warn md-hue-2" ng-href="/#!/stockpositions"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;Cancel</md-button>
                 </md-card-actions>

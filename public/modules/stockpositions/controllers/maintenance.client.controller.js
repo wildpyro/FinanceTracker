@@ -6,8 +6,6 @@ angular.module('stockpositions').controller('MaintenanceController', ['$scope', 
 		var vm = this;
 		$scope.authentication = Authentication;
 
-		this.title = 'Position Maintenance';
-
 	    vm.model = {};		
 	    vm.options = {formState: {}};
 		initMonthlyArchiving();
@@ -73,6 +71,17 @@ angular.module('stockpositions').controller('MaintenanceController', ['$scope', 
 			};
 
 			fileReader.readAsText(file);
+		};
+
+		this.updatePrices = function() {
+			$http.post('/maintenance/updatePrices')
+			.success(function(response) {
+				vm.success = response.message;
+				vm.options.resetModel();
+			})
+			.error(function(response) {
+				vm.error = response.message;
+			});			
 		}; 		
 	}
 ]);

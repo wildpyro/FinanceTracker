@@ -5,13 +5,17 @@
  */
 var mongoose = require('mongoose'),
 	passport = require('passport'),
+	_ = require('lodash'),
+	async = require('async'),
+	yql = require('yql-node'),
 	config = require('../../config/config'),
 	errorHandler = require('./errors.server.controller'),
+	//Apparently this can't find the children '
+	stockPositionsCtrl = require('./stockpositions/sp.base.server.controller'),
+	//stockPositionsCtrl = require('./stockpositions.server.controller'),
 	Quote = mongoose.model('Quote'),
 	Fundamentals = mongoose.model('Fundamentals'),
-	Performance = mongoose.model('Performance'),
-	_ = require('lodash'),
-	yql = require('yql-node');
+	Performance = mongoose.model('Performance');
 
 /**
  * Create a Quote
@@ -63,7 +67,8 @@ function update(req, res) {
 }
 
 /**
- * Update references to the other records associated with a quote 
+ * Update references to the other records associated with a quote
+ * Also call a price update to the any stock positions that exists.  
  */
 function updateReferences(response, symbol, yahooSymbol, res) {
 	var query = {'Symbol': symbol},
@@ -74,27 +79,36 @@ function updateReferences(response, symbol, yahooSymbol, res) {
 	quoteResponse.Symbol = symbol;
 	quoteResponse.lastUpdate = Date.now;
 
-	Quote.findOneAndUpdate(query, quoteResponse, options, function (err, quote) {
+	async.parallel({
+		quote: function (callback) {
+			Quote.findOneAndUpdate(query, quoteResponse, options, function (err) {
+				callback(err);
+			});
+		},
+		fundamaentals: function (callback) {
+			Fundamentals.findOneAndUpdate(query, quoteResponse, options, function (err) {
+				callback(err);
+			});
+		},
+		performance: function (callback) {
+			Performance.findOneAndUpdate(query, quoteResponse, options, function (err) {
+				callback(err);
+			});
+		},
+		stockPositions: function(callback) {
+			stockPositionsCtrl.updatePriceInner(symbol, quoteResponse.LastTradePriceOnly, function(err) {
+				callback(err);
+			});
+		}
+	},
+	function (err) {
 		if (err) {
 			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
 		}
-		else {
-			Fundamentals.findOneAndUpdate(query, quoteResponse, options, function (err, quote) {
-				if (err) {
-					return res.status(400).send({message: errorHandler.getErrorMessage(err)});
-				}
-				else {
-					Performance.findOneAndUpdate(query, quoteResponse, options, function (err, quote) {
-						if (err) {
-							return res.status(400).send({message: errorHandler.getErrorMessage(err)});
-						}
-						else {
-							res.jsonp(quoteResponse);
-						}
-					});
-				}
-			});
-		}
+
+		//The result from the calls will be an object that needs to be unwrapped
+		//Right now I just need the initial query result. 
+		res.jsonp(quoteResponse);
 	});
 }
 
@@ -124,24 +138,6 @@ exports.yahooQuotes = function(symbols, res) {
 			console.log('Eror:', err);
 		} else {
 			res(results);
-		}
-	});
-};
-
-/**
-* Local Search 
-* when no connection is available, try and see if we have anything stored
-**/
-exports.localSearch = function(symbol, res) {
-
-	var query = Quote.findOne({'Symbol': symbol});
-
-	query.exec(function(err, quote ) {
-		if (err) {
-			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
-		}
-  		else {
-			res.jsonp(quote);					
 		}
 	});
 };

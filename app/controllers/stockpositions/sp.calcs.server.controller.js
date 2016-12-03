@@ -8,6 +8,9 @@ var mongoose = require('mongoose'),
 	Stockposition = mongoose.model('Stockposition'),
 	SpTotals = mongoose.model('spTotals');
 
+/**
+ * Buils the totals for the monthly reporting screen 
+ */
 exports.calcTotal = function(user, callback) {
 	Stockposition.aggregate([
 		/*{
@@ -37,11 +40,14 @@ exports.calcTotal = function(user, callback) {
 	});
 };
 
+/**
+ * Calculates the current total position for a symbol. 
+ */
 exports.calcTotalBySymbol = function(req, callback) {
 	Stockposition.aggregate([
 		{$unwind: '$stockpositions'},
 		{$match : {'stockpositions.symbol' : req.symbol}}
-    ], 
+    ],
 	function (err, result) {
 
         if (err) {
@@ -50,11 +56,10 @@ exports.calcTotalBySymbol = function(req, callback) {
  
 		var spTotals = new SpTotals();
 
-		console.log(result);
-		/*spTotals.market = Number(result[0].totalmv).toFixed(2);
+		spTotals.market = Number(result[0].totalmv).toFixed(2);
 		spTotals.book = Number(result[0].totalbook).toFixed(2);
 		spTotals.gainLoss = result[0].totalmv - result[0].totalbook; 
-		spTotals.gainLossPct = Number(spTotals.gainLoss/spTotals.book * 100).toFixed(2);*/
+		spTotals.gainLossPct = Number(spTotals.gainLoss/spTotals.book * 100).toFixed(2);
 
 		callback(spTotals);
 	});

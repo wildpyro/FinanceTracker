@@ -1,8 +1,0 @@
-The server just uses npm for package deployment. 
-
-The ui uses bower. Updating the bower.json also requires that you update:
-	/home/ben/FinanceTracker/config/env/all.js for passing the libs to the ui
-		You can point them to the non-minified guys if you like 
-	/home/ben/FinanceTracker/public/config.js to load the dependencies into angular. 
-
-You only add things to the dependency list in config.js if they have an ng-module? 

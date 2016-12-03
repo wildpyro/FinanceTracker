@@ -8,7 +8,7 @@
                 </md-card-actions>
             </md-card-title-text>
         </md-card-title>
-    </md-card>    
+    </md-card>
     <div class="account-panel" ng-repeat="value in acctCtrl.accountsSearch.results">
         <a class="undecorated-link teal" href="/#!/accounts/{{value._id}}/edit"><h2 class="account-header">{{acctCtrl.formatTitle(value.description,value.accountNo)}}</h2></a>
         <div class="animate-show" ng-show="acctCtrl.show(True)">
@@ -32,7 +32,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="row in ctrl.getInstance(value.accountType)">
+                        <tr ng-repeat-start="row in ctrl.getInstance(value.accountType)">                            
                             <td>{{row.symbol | uppercase}}</td>
                             <td>{{row.description}}</td>
                             <td class="money">{{row.price | currency}}</td>
@@ -52,7 +52,16 @@
                                     <a class="btn btn-danger" title="Remove" ng-really-message="Are you sure ?" ng-really-click="ctrl.remove(row)" item="ctrl.stockposition">
                                         <span class="glyphicon glyphicon-remove-circle"></span>
                                     </a>
+                                    <div ng-if="row.type !== 'cash'">
+                                        <md-button class="md-raised" title="Quote" ng-if="row.expanded" ng-click="row.expanded = false">-</md-button>
+                                        <md-button class="md-raised" title="Quote" ng-if="!row.expanded" ng-click="row.expanded = true">+</md-button>
+                                    </div>    
                                 </div>
+                            </td>
+                        </tr>    
+                        <tr ng-if="row.expanded" ng-repeat-end="">
+                            <td colspan="9">
+                                <quote-directive symbol="row.symbol"></quote-directive>
                             </td>
                         </tr>
                     </tbody>
