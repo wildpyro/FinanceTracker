@@ -4,6 +4,7 @@
  */
 var mongoose = require('mongoose'),
     mailer = require('nodemailer'),
+    path = require('path'),
     EmailTemplates = require('swig-email-templates'),
     config = require('../../../config/config'),
     StockPositions = require('./sp.base.server.controller');
@@ -22,18 +23,20 @@ exports.sendMail = function(user, res) {
         }
 
         var smtpTransport = mailer.createTransport(config.mailer.transportoptions),
-            templateDir = './app/views/templates';
+            templateDir = path.resolve(__dirname, '../../views/templates'),
+            quotes = JSON.parse(stockpositions).query.results.quote;
 
         var templates = new EmailTemplates({root: templateDir}),
             context = {
                 name : user.displayName,
                 appName : 'Finance Tracker',
-                stocks : stockpositions
+                stocks : quotes
             };
 
+        //console.log(templates.root);            
         templates.render('daily-stock-positions.server.view.html', context, function(err, html, text, subject) {
-
             if (err) {
+                console.log('error', err);
                 res(err);
             }
             
@@ -45,8 +48,11 @@ exports.sendMail = function(user, res) {
                 text: text
             };
 
+            console.log('prep to send');
+
             smtpTransport.sendMail(options, function(err, info) {
                 if (err)
+                    console.log('error', err);
                     res(err);
 
                 //console.log(info);    

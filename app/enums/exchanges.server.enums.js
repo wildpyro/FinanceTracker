@@ -5,9 +5,12 @@
  */
 var _ = require('lodash');
 
-const EXCHANGES = [{'exchange': 'TSX', 'yahoo': 'TO'},
+const EXCHANGES = [{'exchange': '', 'yahoo': ''},
+				   {'exchange': 'TSX', 'yahoo': 'TO'},
                    {'exchange': 'TSX-V', 'yahoo': 'V'},
-                   {'exchange': 'NYSE', 'yahoo': ''}]; 
+                   {'exchange': 'NYSE', 'yahoo': ''},
+				   {'exchange': 'Funds', 'yahoo': ''}
+				  ]; 
 
 exports.getExchanges = function() {
     return EXCHANGES;
@@ -26,7 +29,7 @@ exports.getByYahooCode = function(yahooCode) {
 	
 	var returnVal = '';
 	if (foundExchange !== undefined && foundExchange.length > 0) {
-		returnVal = foundExchange[0].type;
+		returnVal = foundExchange[0].exchange;
 	}
 
 	return returnVal;
@@ -42,7 +45,7 @@ exports.getByExchangeCode = function(exchangeCode) {
 	
 	var returnVal = '';
 	if (foundExchange !== undefined && foundExchange.length > 0) {
-		returnVal = foundExchange[0].type;
+		returnVal = foundExchange[0].yahoo;
 	}
 
 	return returnVal;

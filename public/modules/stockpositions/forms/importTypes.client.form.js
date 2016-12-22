@@ -8,16 +8,16 @@ angular.module('stockpositions').factory('ImportTypesService', function() {
                 'value': 'txnhist'
             },
             {
-                'name': 'Income and Dividends',
-                'value': 'incdiv'
-            },
-            {
                 'name': 'Tax Liability',
                 'value': 'tax'
             },
             {
                 'name': 'Stock Positions',
                 'value': 'stocks'
+            },
+            {
+                'name': 'Gain Loss',
+                'value': 'gainloss'
             }
         ];
 

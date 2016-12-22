@@ -10,9 +10,8 @@ var mongoose = require('mongoose'),
 	yql = require('yql-node'),
 	config = require('../../config/config'),
 	errorHandler = require('./errors.server.controller'),
-	//Apparently this can't find the children '
 	stockPositionsCtrl = require('./stockpositions/sp.base.server.controller'),
-	//stockPositionsCtrl = require('./stockpositions.server.controller'),
+	Exchanges = require('../enums/exchanges.server.enums'),
 	Quote = mongoose.model('Quote'),
 	Fundamentals = mongoose.model('Fundamentals'),
 	Performance = mongoose.model('Performance');
@@ -23,27 +22,47 @@ var mongoose = require('mongoose'),
 function create(req, res) {
 	var quote = new Quote(req);
 
-	quote.save(function(err) {
+	quote.save(function (err) {
 		if (err) {
-			return res.status(400).send({message: errorHandler.getErrorMessage(err)
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
 			});
 		}
 		else {
 			res = quote;
-		} 
+		}
 	});
 }
 
 /**
  * Initialize the YQL commands 
  */
-function init()
-{
-	yql.formatAsJSON().withOAuth(config.yahoo.clientID,config.yahoo.clientSecret);
+function init() {
+	yql.formatAsJSON().withOAuth(config.yahoo.clientID, config.yahoo.clientSecret);
 	//To have access to all the community tables 
 	yql.setQueryParameter({
 		env: 'store://datatables.org/alltableswithkeys'
 	});
+}
+
+/**
+ * Clean up the symbols to put them in yahoo quote format 
+ */
+function prepSymbols(symbols) {
+	function cleanUp(symbol) {
+		var re = /[.]/g;
+
+		//See if there are more than one period
+		if (symbol.match(re).length > 1) {
+			symbol = symbol.replace('.', '-');
+		}
+
+		symbol = symbol.replace('.TSX', '.TO');
+
+		return symbol;
+	}
+
+	return symbols.map(cleanUp);
 }
 
 /**
@@ -52,14 +71,15 @@ function init()
 function update(req, res) {
 	var quote = req;
 
-	quote = _.extend(quote , req);
+	quote = _.extend(quote, req);
 	var quoteObj = new Quote(quote);
 
-	quoteObj.save(function(err) {
+	quoteObj.save(function (err) {
 		if (err) {
-			return res.status(400).send({message: errorHandler.getErrorMessage(err)
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
 			});
-		} 
+		}
 		else {
 			res = quoteObj;
 		}
@@ -71,8 +91,8 @@ function update(req, res) {
  * Also call a price update to the any stock positions that exists.  
  */
 function updateReferences(response, symbol, yahooSymbol, res) {
-	var query = {'Symbol': symbol},
-		options = {'upsert': true, 'new': true, 'setDefaultOnInsert': true},
+	var query = { 'Symbol': symbol },
+		options = { 'upsert': true, 'new': true, 'setDefaultOnInsert': true },
 		quoteResponse = JSON.parse(response).query.results.quote;
 
 	quoteResponse.YahooSymbol = yahooSymbol;
@@ -95,49 +115,53 @@ function updateReferences(response, symbol, yahooSymbol, res) {
 				callback(err);
 			});
 		},
-		stockPositions: function(callback) {
-			stockPositionsCtrl.updatePriceInner(symbol, quoteResponse.LastTradePriceOnly, function(err) {
+		stockPositions: function (callback) {
+			stockPositionsCtrl.updatePriceInner(symbol, quoteResponse.LastTradePriceOnly, function (err) {
 				callback(err);
 			});
 		}
 	},
-	function (err) {
-		if (err) {
-			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
-		}
+		function (err) {
+			if (err) {
+				return res.status(400).send({ message: errorHandler.getErrorMessage(err) });
+			}
 
-		//The result from the calls will be an object that needs to be unwrapped
-		//Right now I just need the initial query result. 
-		res.jsonp(quoteResponse);
-	});
+			//The result from the calls will be an object that needs to be unwrapped
+			//Right now I just need the initial query result. 
+			res.jsonp(quoteResponse);
+		});
 }
 
-exports.yahooQuote = function(symbol, res) {
+exports.yahooQuote = function (symbol, res) {
 	init();
-	var exchange = 'TO'; // TSX is TO in YQL. Make this dynamic once I support other exchanges 
-	var yahooSymbol = symbol.concat('.', exchange); 
+
+	var yahooSymbol = prepSymbols([symbol]);
+
 	var query = 'select * from yahoo.finance.quotes where symbol in ("'.concat(yahooSymbol).concat('");');
 
-	yql.execute(query, function(err,results) {
+	yql.execute(query, function (err, results) {
 		if (err) {
-			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
+			return res.status(400).send({ message: errorHandler.getErrorMessage(err) });
 		} else {
 			return updateReferences(results, symbol, yahooSymbol, res);
 		}
 	});
 };
 
-exports.yahooQuotes = function(symbols, res) {
+/**
+ * Returns the current prices from yahoo for a set of symbols. Symbols should be suffixed with .<<Exchange>>
+ */
+exports.yahooQuotes = function (symbols, res) {
 	init();
 
-	var symbols1 = symbols.join('","');
+	var symbols1 = prepSymbols(symbols);
 	var query = 'select * from yahoo.finance.quotes where symbol in ("'.concat(symbols1).concat('");');
 
-	yql.execute(query, function(err,results) {
+	yql.execute(query, function (err, results) {
 		if (err) {
 			console.log('Eror:', err);
 		} else {
-			res(results);
+			res(null, results);
 		}
 	});
 };
@@ -146,10 +170,10 @@ exports.yahooQuotes = function(symbols, res) {
 * QuoteById 
 * Fetch a stock quote by Id 
 */
-exports.quoteByID = function(req, res, next, id) {
-	Quote.findById(id).populate('user', 'displayName').exec(function(err, quote) {
+exports.quoteByID = function (req, res, next, id) {
+	Quote.findById(id).populate('user', 'displayName').exec(function (err, quote) {
 		if (err) return next(err);
-		if (! quote) return next(new Error('Failed to load Quote ' + id));
+		if (!quote) return next(new Error('Failed to load Quote ' + id));
 		req.quote = quote;
 		next();
 	});

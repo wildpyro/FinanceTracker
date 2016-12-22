@@ -6,6 +6,8 @@
 var mongoose = require('mongoose'),
 	StockpositionModel = mongoose.model('Stockposition'),
 	Txn = mongoose.model('Txn'),
+	GainLoss = mongoose.model('GainLoss'),
+	Income = mongoose.model('Income'),
 	TxnTypes = require('../../../enums/txntypes.server.enums'),
 	csvParse = require('csv-parse'),
 	errorHandler = require('../../errors.server.controller'),
@@ -52,8 +54,8 @@ exports.importFiles = function(req, res) {
 	if (type === 'txnhist') {
 		importTrades(req,res);
 	}
-	else if (type === 'incdiv') {
-		importIncomeAndDividends(req,res);
+	else if (type === 'gainloss') {
+		importGainLoss(req,res);
 	}
 	else if (type === 'stocks') {
 		importStockPosition(req,res);
@@ -63,8 +65,51 @@ exports.importFiles = function(req, res) {
 	}
 };
 
-function importIncomeAndDividends(req, res) {
-	console.log('div', req);
+/**
+ * Import the gain/loss trade summary 
+ */
+function importGainLoss(req, res) {
+	csvParse(req.body.file, {delimiter: ',', rowDelimiter: '\n', relax_column_count: 'true'}, function(err, output) {
+		if (err) {
+			console.log('Error:', err);	
+		}
+
+		var options = { 'upsert': true, 'new': true, 'setDefaultOnInsert': true },
+			errorMessage;
+		
+		for (var i = 1; i <= output.length-1; i++) {
+
+			var record = output[i],
+				gainLoss = 
+					new GainLoss({ 
+						'settlementDate': record[3],
+						'symbol': String(record[1]),
+						'description': String(record[0]).trim(),
+						'price': Number(record[7]),
+						'shares': Math.abs(Number(record[6])),
+						'exchangeRate': record[4],
+						'tradeCurrency': record[8],
+						'settle': Math.abs(Number(record[9]).toFixed(2)),
+						'book': Number(record[10]),
+						'gainLoss': Number(record[11]),
+						'gainLossPct': Number(Number(record[11]) / Number(record[10]) * 100).toFixed(2),									 
+						'user': req.user
+					});
+					
+			var query = GainLoss.findOneAndUpdate({'settle': gainLoss.settleAmount, 'settlementDate': gainLoss.settlementDate}, gainLoss, options);
+			query.exec(function(err, createdTxn) {	
+				if (err) {
+					errorMessage = errorHandler.getErrorMessage(err);
+				}
+			});
+		}
+
+		if (errorMessage) {
+			return res.status(400).send({ message: errorMessage});	
+		}
+				
+		return res.status(200).send({message: 'Gain/Loss loaded'});
+	});
 }
 
 function importStockPosition(req, res) {
@@ -99,6 +144,10 @@ function importStockPosition(req, res) {
 	console.log(records);
 }
 
+/**
+ * Imports the tax liability for the year 
+ * Will be a combination of trades and reinvests in my open accounts 
+ */
 function importTax(req, res) {
 	console.log('tax', req);
 }
@@ -106,6 +155,9 @@ function importTax(req, res) {
 /**
  * Attempt to import transactions from a CSV file from ITrade. Use an upsert to check if it alredy exists. 
  * Matching will be on accounttype, symbol, type, date
+ * This process splits into two different tables 
+ * 		1. To include real buys and sells  
+ * 		2. Dividends will be pulled out and put into an income table.
  */
 function importTrades(req, res) {
 	csvParse(req.body.file, {delimiter: ',', rowDelimiter: '\n', relax_column_count: 'true'}, function(err, output) {
@@ -122,66 +174,64 @@ function importTrades(req, res) {
 
 			var description = String(record[0]).trim(),
 				symbol = String(record[1]),
-				date = record[2],
-				type = record[5],
-				shares = Number(record[6]),
-				currency = record[7],
+				settlementDate = record[2],
+				shares = Math.abs(Number(record[6])),
 				price = Number(record[8]),
 				settleAmount = Math.abs(Number(record[9]).toFixed(2)),
-				bookAmount = Number(0.00),
-				commission = Number(0.00),
 				accountType = 'rsp';
 
-			//The ITrade guys are createive with their descriptions 
-			if (description.indexOf('DPP-Divd') !== -1 || description.indexOf('Reinvest') !== -1 || description.indexOf('REINVEST') !== -1) {
-				type = 'Drip';
-			}
-			else {
-				type = TxnTypes.getByITrade(type);
-			}
+			//Do dividends
+			if (symbol === null || symbol === ' ') {
 
-			//Some trades don't have the price set for some stupid reason
-			if (price === 0) {
-				price = Number(settleAmount / shares).toFixed(2);
-				bookAmount = settleAmount;
-			}
-			else {
-				bookAmount = shares * price;
-				commission = Math.abs(settleAmount - (shares * price)); 
-			}
+				/**
+				 * Only select specific records from the file.
+				 * BNS BO is creative with their naming of txn types 
+				 **/ 
 
-			var txn = new Txn({'date': date, 
-								'accountType': accountType, 
-								'symbol': symbol, 
-								'type': type, 
+				if (['CASH DIV', 'STOCKDIV', 'REI'].indexOf(record[5]) > -1 && settleAmount > 0) {					
+					var income = 
+						new Income({
+								'settlementDate': settlementDate,  
+								'description': description,
+								'symbol': symbol,  
 								'price': price, 
-								'shares': shares, 
-								'commission': commission, 
-								'settle': settleAmount, 
-								'book': bookAmount, 
-								'tradeinfo': description, 
-								'user': req.user});								
+								'shares': shares,
+								'exchangeRate': record[4],
+								'tradeCurrency': record[7],								  
+								'settle': settleAmount,
+								'user': req.user});
 
-
-			var query = Txn.findOneAndUpdate({'accountType': accountType, 'type': type, 'settle': settleAmount, 'date': date}, txn, options);
-			query.exec(function(err, createdTxn) {	
-				if (err) {
-					errorMessage = errorHandler.getErrorMessage(err);
-				}
-
-				/* Reset the data for testing
-				if (createdTxn.symbol || createdTxn.symbol === '') {
-					Txn.remove(function(err) {
+					var queryDiv = Income.findOneAndUpdate({'settle': settleAmount, 'settlementDate': settlementDate}, income, options);
+					queryDiv.exec(function(err, createdRow) {	
 						if (err) {
-							console.log('removal failed');
+							errorMessage = errorHandler.getErrorMessage(err);
 						}
-						else {
-							console.log('removal successful');
-						}
-					});
-				}*/
-			});
+					});					
+				}
+			}
+			//Do buys and sells 
+			else {
+				var txn = 
+					new Txn({
+							'settlementDate': settlementDate, 
+							'accountType': accountType, 
+							'symbol': symbol, 
+							'type': TxnTypes.getByITrade(record[5]), 
+							'price': price, 
+							'shares': shares, 
+							'commission': Math.abs(settleAmount - (shares * price)).toFixed(2),
+							'exchangeRate': record[4],
+							'tradeCurrency': record[7],									 
+							'settle': settleAmount,  
+							'user': req.user});
 
+				var query = Txn.findOneAndUpdate({'accountType': txn.accountType, 'type': txn.type, 'settle': txn.settle, 'settlementDate': txn.settlementDate}, txn, options);
+				query.exec(function(err, createdRow) {	
+					if (err) {
+						errorMessage = errorHandler.getErrorMessage(err);
+					}
+				});
+			}
 		}
 
 		if (errorMessage) {

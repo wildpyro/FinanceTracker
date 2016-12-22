@@ -1,12 +1,12 @@
-<section data-ng-controller="TxnsController as ctrl">
+<section data-ng-controller="GainLossesController as ctrl">
     <md-content class="md-padding" >
         <div layout="row">
             <div flex></div>
             <md-card flex-gt-sm="70" flex="95"> 
                 <md-card-title>
                     <md-card-title-text>
-                        <span class="md-headline">Trades and Transactions</span>
-                        <span class="md-subhead">Provides a listing of trades done</span>
+                        <span class="md-headline">Gain Loss Report</span>
+                        <span class="md-subhead">How much money has been made</span>
                     </md-card-title-text>
                 </md-card-title>                
             </md-card>
@@ -17,36 +17,8 @@
         <strong data-ng-bind="ctrl.success"></strong>
     </div>
 
-    <div class="addAccordion">
-        <uib-accordion>
-            <uib-accordion-group is-open="status.open">
-                <uib-accordion-heading>
-                    Add A Trade <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-                </uib-accordion-heading>
-                <div class="addPanel">
-                    <form ng-submit="ctrl.add()" novalidate>
-                        <formly-form model="ctrl.model" fields="ctrl.formFields" options="ctrl.options">
-                            <div class="centered">
-                                <button type="submit" class="btn btn-primary submit-button" ng-disabled="ctrl.form.$invalid">Add</button>
-                                <button type="button" class="btn btn-default" ng-click="ctrl.options.resetModel()">Reset</button>
-                                <label><input type="checkbox" ng-model="ctrl.resetTable">Reset table?</label>
-                            </div>
-                        </formly-form>  
-                    </form>
-                </div>
-                <div data-ng-show="ctrl.error" class="alert alert-danger form-group errorPanel">
-                    <strong data-ng-bind="ctrl.error"></strong>
-                </div>
-            </uib-accordion-group>
-        </uib-accordion>
-    </div>
+    <div class="st-summary"><st-gain-loss-summary datacollection="ctrl.displayRowsCollection"></st-gain-loss-summary></div>
 
-    <div class="st-summary"><st-txn-summary datacollection="ctrl.displayRowsCollection"></st-txn-summary></div>
-    <div class="centered">
-        <button type="button" ng-click="ctrl.tableSave()" class="btn btn-primary">Save Table</button>
-        <button type="button" ng-click="ctrl.tableReset()" class="btn btn-primary">Reset Table</button>    
-    </div>
-    
     <md-content>
 <!--        <md-fab-speed-dial ng-hide="ctrl.fab.hidden" md-direction="down" md-open="ctrl.fab.isOpen" class="txn-fab md-scale md-fab-top-right" ng-class="{ 'md-hover-full': ctrl.fab.hover }"
             ng-mouseenter="ctrl.fab.isOpen=true" ng-mouseleave="ctrl.fab.isOpen=false">
@@ -63,25 +35,25 @@
             </md-fab-actions>
         </md-fab-speed-dial>
 !-->        
-        <table class="table smart-table table-hover txn-table" search-watch-model="showDrip" st-table="ctrl.displayRowsCollection" st-safe-src="ctrl.safeRows" st-pipe="ctrl.fetch">
+        <table class="table smart-table table-hover txn-table" st-table="ctrl.displayRowsCollection" st-safe-src="ctrl.safeRows" st-pipe="ctrl.fetch">
             <thead>
                 <tr>
                     <th st-sort="settlementDate" st-sort-default="true">Settlement Date</th>
-                    <th st-sort="account">Account</th>
+                    <th st-sort="description">Description</th>                    
                     <th st-sort="symbol">Symbol</th>
-                    <th st-sort="type">Type</th>                    
                     <th st-sort="price">Price</th>
                     <th st-sort="shares">Shares</th>
-                    <th st-sort="commission">Commission</th>
-                    <th st-sort="market">Settle</th>
+                    <th st-sort="settle">Settle Amount</th>
+                    <th st-sort="book">Book Amount</th>
+                    <th st-sort="gainLoss">Gain/Loss</th>
+                    <th st-sort="gainLossPct">Gain/Loss %</th>
                     <th></th>
                 </tr>
                 <tr class="smart-table-filters">
                     <!--Maybe add this back later<th><st-date-range predicate="txnDate" before="ctrl.filter.fromDate" after="ctrl.filter.toDate"></st-date-range></th>-->
-                    <td ></td>
-                    <td><input st-search="account" type="search"/></td>
+                    <td></td>
+                    <td></td>
                     <td><input st-search="symbol" type="search"/></td>
-                    <td><input st-search="type" type="search"/></td>
                     <!--Create a hidden bind for the search to work. This way the directive can get correct filter predicate object -->
                     <!--<td ng-hide="true"><input st-search="showDrip" type="search"/></td>-->                    
                 </tr>
@@ -89,13 +61,14 @@
             <tbody>
                 <tr ng-repeat="row in ctrl.displayRowsCollection">
                     <td>{{row.settlementDate | date}}</td>
-                    <td>{{row.accountType | uppercase}}</td>
+                    <td>{{row.description}}</td>
                     <td>{{row.symbol | uppercase}}</td>
-                    <td>{{row.type}}</td>
                     <td>{{row.price | currency}}</td>
                     <td>{{row.shares | number}}</td>
-                    <td>{{row.commission | currency}}</td>
                     <td>{{row.settle | currency}}</td>
+                    <td>{{row.book | currency}}</td>
+                    <td>{{row.gainLoss | currency}}</td>
+                    <td>{{row.gainLossPct | number:2}}%</td>
 <!--                    <td ng-if="ctrl.colour(row.tradeinfo)" class="stockup"><span class="glyphicon glyphicon-arrow-up"></span><span>{{row.tradeinfo}}</span></div>
                     <td ng-if="!ctrl.colour(row.tradeinfo)" class="stockdown"><span class="glyphicon glyphicon-arrow-down"></span><span>{{row.tradeinfo}}</span></div>!--> 
                     <td><a class="btn btn-danger" title="Delete Row" ng-really-message="Are you sure ?" ng-really-click="ctrl.tableRemoveItem(row)" item="txn"><span class="glyphicon glyphicon-remove-circle"></span></a>

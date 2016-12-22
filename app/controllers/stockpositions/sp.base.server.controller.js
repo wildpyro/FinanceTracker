@@ -42,7 +42,6 @@ var updateReferences = function(action, stockposition) {
 							Account.find({}, function(err, accounts) {
 								accounts.forEach(function(account) {
 									account.stockpositions.forEach(function(stockposition) {
-										//console.log(stockposition);
 									}, this);
 								}, this);
 							}); 
@@ -131,27 +130,22 @@ exports.deleteBase = function(req, res) {
 	});
 };
 
-exports.getPositionSymbols = function(user, callback) {
-	Stockposition.aggregate([
-		{
-			$match : {symbol : {$ne : 'CASH'}}
-		},
-        {
-			$group: {
-				_id: null,
-				symbols: {$addToSet: {$concat: ['$symbol']}},
-				exchanges: {$addToSet: {$concat: ['$exchange']}} 
-			}
+exports.getPositionSymbols = function(user, callback) {	
+	Stockposition.aggregate(
+	[
+		{$match : {type : {$nin : ['cash']}}},
+		{$match : {exchange : {$ne : 'Funds'}}},
+		{$group: {
+			_id: null,
+			symbols: {$addToSet: {$concat: ['$symbol', '.', '$exchange']}}}
 		}
-    ], 
+	],
 	function (err, result) {
         if (err) {
             console.log('Error:', err);
         }
-
-		var positionsObj = _.zipWith(result[0].symbols, result[0].exchanges, (key, value)=> ({ key, value }));		
-
-		callback(null, positionsObj);
+		
+		callback(null, result[0].symbols);
 	});	
 };
 
@@ -210,13 +204,10 @@ exports.listBase = function(req, res) {
  */
 exports.listDaily = function(user, callback) {
 	this.getPositionSymbols(user, function(err, symbols) {
-
-		console.log(symbols);
 		quote.yahooQuotes(symbols, function(err, newQuotes) {
 			if (err) {
 				callback(err, null);
 			}
-
 			callback(null, newQuotes);
 		});
 	});
@@ -247,8 +238,6 @@ exports.stockpositionByID = function(req, res, next, id) {
 exports.update = function(req, res, next) {
 	var stockposition = req.stockposition;
 
-	console.log(req.body);
-
 	stockposition = _.extend(stockposition , req.body);
 
 	stockposition.save(function(err) {
@@ -271,25 +260,33 @@ exports.update = function(req, res, next) {
  */
 exports.updatePriceInner = function(symbol, price, callback) {
 
+	//Strip off the exchange and search by both 
+	var re = /.([^.]*)$/;
+	
+	var symbolAndExchange = symbol.split(re);
 	var query = Stockposition.find();
 
-	query.where('symbol', symbol);
+	var symbolOnly = symbolAndExchange[0].replace('-','.'),
+		exchange = Exchanges.getByYahooCode(symbolAndExchange[1]);
+
+	query.where('symbol', symbolOnly);
+	query.where('exchange', exchange);
 	query.exec(function(err, results) {
 		if (err) {
-			callback(err);
+			callback(err,null);
 		}
 		else {
 			results.forEach(function(result) {
 				result.price = price;
 				result.market = Number(price * result.shares).toFixed(2);
-				result.save(function(err) {
+				result.save(function(err, result) {
 					if (err) {
-						callback(err);
+						callback(err,null);
 					}
+					
+					callback(null,result);
 				});
 			});
-
-			callback(null);
 		}
 	});
 };
@@ -298,10 +295,11 @@ exports.updatePriceInner = function(symbol, price, callback) {
  * Used for single manual prices updates from UI. 
  */
 exports.updatePrice = function(req, res, next) {
-	exports.updatePriceInner(req.stockposition.symbol, req.stockposition.price, function(err) {
-		if (err) {
-			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
-		}
+	exports.updatePriceInner(req.stockposition.symbol, req.stockposition.price, function(err,updated) {
+// TODO - Figure out how to handle multi-level errors. Previous stage should not be calling next? 
+//		if (err) {
+//			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
+//		}
 	});
 };
 
@@ -314,14 +312,14 @@ exports.updatePrices = function(req, res, next) {
 			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
 		}
 		else {
-			quoteResponses.forEach(function(quoteResponse) {
-				console.log(quoteResponse.Symbol);
-				this.updatePriceInner(quoteResponse.Symbol, quoteResponse.LastTradePriceOnly, function() {
+			var results = JSON.parse(quoteResponses).query.results.quote;
+			_.forIn(results, function(value, key) {
+				exports.updatePriceInner(value.Symbol, value.LastTradePriceOnly, function(err,updated) {
 					if (err) {
-						return res.status(400).send({message: quoteResponse.Symbol + ': ' + errorHandler.getErrorMessage(err)});
+						return res.status(400).send({message: value.Symbol + ': ' + errorHandler.getErrorMessage(err)});
 					}
-				});
-			});
+				});				
+			});			
 		}
 	});
 };

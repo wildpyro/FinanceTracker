@@ -17,6 +17,11 @@ angular.module('stockpositions').factory('ExchangesService', function() {
                 'name': 'TSX Venture',
                 'value': 'V',
                 'yahoo': 'V'
+            },
+            {
+                'name': 'Funds',
+                'value': 'Funds',
+                'yahoo': ''
             }
         ];
 

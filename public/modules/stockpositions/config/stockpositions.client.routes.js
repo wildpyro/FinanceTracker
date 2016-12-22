@@ -4,32 +4,40 @@
 angular.module('stockpositions').config(['$stateProvider',
 	function($stateProvider) {
 		// Stockpositions state routing
-		$stateProvider.
-		state('listStockpositions', {
+		$stateProvider
+		.state('listStockpositions', {
 			url: '/stockpositions',
 			templateUrl: 'modules/stockpositions/views/list-stockpositions.client.view.html'
-		}).
-		state('listStockpositionsByAccount', {
+		})
+		.state('listStockpositionsByAccount', {
 			url: '/stockpositions/:accoountType/list',
 			templateUrl: 'modules/stockpositions/views/list-stockpositions.client.view.html'
-		}).
-		state('createStockposition', {
+		})
+		.state('createStockposition', {
 			url: '/stockpositions/create',
 			templateUrl: 'modules/stockpositions/views/create-stockposition.client.view.html'
-		}).
-		state('viewStockposition', {
+		})
+		.state('viewStockposition', {
 			url: '/stockpositions/:stockpositionId',
 			templateUrl: 'modules/stockpositions/views/view-stockposition.client.view.html'
-		}).
-		state('editStockposition', {
+		})
+		.state('editStockposition', {
 			url: '/stockpositions/:stockpositionId/edit',
 			templateUrl: 'modules/stockpositions/views/edit-stockposition.client.view.html'
-		}).
-		state('listTxns', {
+		})
+		.state('listTxns', {
 			url: '/txns',
 			templateUrl: 'modules/stockpositions/views/list-txns.client.view.html'
-		}).
-		state('maintenance', {
+		})
+		.state('listGainLosses', {
+			url: '/gainloss',
+			templateUrl: 'modules/stockpositions/views/list-gainloss.client.view.html'
+		})
+		.state('listIncomeDistributions', {
+			url: '/income',
+			templateUrl: 'modules/stockpositions/views/list-income.client.view.html'
+		})		
+		.state('maintenance', {
 			url: '/maintenance',
 			templateUrl: 'modules/stockpositions/views/maintenance.client.view.html'
 		});		

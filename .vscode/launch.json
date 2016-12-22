@@ -5,7 +5,7 @@
             "name": "Launch Chrome against localhost, with sourcemaps",
             "type": "chrome",
             "request": "launch",
-            "url": "http://localhost:8080",
+            "url": "http://localhost:3000",
             "sourceMaps": true,
             "webRoot": "${workspaceRoot}"
         },
@@ -13,9 +13,22 @@
             "name": "Attach to Chrome, with sourcemaps",
             "type": "chrome",
             "request": "attach",
-            "port": 9222,
+            "port": 585,
             "sourceMaps": true,
             "webRoot": "${workspaceRoot}"
-        }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Node Launch Program",
+            "program": "${workspaceRoot}/app.js",
+            "cwd": "${workspaceRoot}"
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Node Attach to Process",
+            "port": 5858
+        }        
     ]
 }

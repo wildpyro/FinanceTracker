@@ -1,7 +1,7 @@
-<section class="row" data-ng-controller="SettingsController">
+<section class="row" data-ng-controller="SettingsController as ctrl">
 	<h3 class="col-md-12 text-center">Edit your profile</h3>
 	<div class="col-xs-offset-2 col-xs-8 col-md-offset-5 col-md-2">
-		<form name="userForm" data-ng-submit="updateUserProfile(userForm.$valid)" class="signin form-horizontal" autocomplete="off">
+		<form name="userForm" data-ng-submit="ctrl.updateUserProfile(userForm.$valid)" class="signin form-horizontal" autocomplete="off">
 			<fieldset>
 				<div class="form-group">
 					<label for="firstName">First Name</label>
@@ -35,13 +35,14 @@
 			</fieldset>
 		</form>
 		<br>
+		
 		<div>
-			<button ng-click="restoreFromBackup()">Restore from backup</button>
+			<button ng-click="ctrl.restoreFromBackup()">Restore from backup</button>
 		</div>
 		<br>
 		<div>
-			<label for="paging">Manually Gen Daily Stocks Email</label>
-			<button ng-click="dailyStocksEmail()">Bombs Away!</button>
+			<label for="emailGen">Manually Gen Daily Stocks Email</label>
+			<button id="emailGen" ng-click="ctrl.dailyStocksEmail()">Bombs Away!</button>
 		</div>		
 	</div>
 </section>

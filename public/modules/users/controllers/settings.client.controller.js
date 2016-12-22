@@ -56,7 +56,7 @@ angular.module('users').controller('SettingsController', ['$scope', '$http', '$l
 		};
 
 		// Change user password
-		$scope.changeUserPassword = function() {
+		this.changeUserPassword = function() {
 			$scope.success = $scope.error = null;
 
 			$http.post('/users/password', $scope.passwordDetails)
@@ -68,7 +68,7 @@ angular.module('users').controller('SettingsController', ['$scope', '$http', '$l
 			});
 		};
 
-		$scope.restoreFromBackup = function() {
+		this.restoreFromBackup = function() {
 			$http.post('/stockpositions_archive/restoreFromBackup')
 			.success(function(response) {
 				$scope.error = response.message;
@@ -77,7 +77,9 @@ angular.module('users').controller('SettingsController', ['$scope', '$http', '$l
 			});
 		};
 
-		$scope.dailyStocksEmail = function() {
+		this.dailyStocksEmail = function() {
+			$scope.error = 'Message Sent';
+			console.log('send mail');
 			$http.post('/users/generateDailyStocksEmail')
 			.success(function(response) {
 				$scope.error = response.message;

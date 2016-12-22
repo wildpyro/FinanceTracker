@@ -156,15 +156,5 @@ angular.module('stockpositions').controller('TxnsController', ['$scope', '$state
 		this.resolveTxnType = function(enumValue) {
 			return TxnTypesService.getText(enumValue);
 		};
-
-		this.colour = function(value) {
-			if (!angular.isUndefined(value)) {	
-				if (value.substr(0,1) === 'G') {
-					return true; 
-				}
-				
-				return false;
-			}
-		};
 	}
 ]);

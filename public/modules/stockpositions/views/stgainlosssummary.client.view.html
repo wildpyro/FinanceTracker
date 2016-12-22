@@ -1,0 +1,14 @@
+<div class="centered">
+	<p>Number of Trades: {{vm.length}}</p>
+
+	<div> 
+		<p>Total Trade Amount: {{vm.totalsettle | currency}}</p>
+		<p>Total Book Amount: {{vm.totalbook | currency}}</p>
+
+		<span ng-if="vm.gainloss >= 0" class="stockup">Gain: {{vm.gainloss | currency}}</span>
+		<span ng-if="vm.gainloss >= 0" class="stockup">Pct: {{vm.gainlosspct | number:2}}%</span>
+		
+		<span ng-if="vm.gainloss < 0" class="stockdown">Loss: {{vm.gainloss | currency}}</span>	
+		<span ng-if="vm.gainloss < 0" class="stockdown">Pct: {{vm.gainlosspct | number:2}}%</span>
+	</div> 	
+</div>

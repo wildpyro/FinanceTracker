@@ -11,15 +11,12 @@
 					return $scope.vm.datacollection; 
 			    }, 
 			    function () {
-
 					if (angular.isDefined(vm.datacollection)) {
-
-			 			var totalSettle = 0,
-							totalBook = 0,
-							gainSettle = 0,
-							gainBook = 0;
-							 
 						vm.dataCollection = angular.copy(vm.datacollection);
+
+						var totalSettle = 0,
+							dollarChange = 0,
+							totalCommission = 0;
 
 						for (var i = vm.dataCollection.length - 1; i >= 0; i--) {
 							var data = vm.dataCollection[i];			
@@ -29,24 +26,21 @@
 							}	
 
 							if (data.type === 'Sell') {
-								gainSettle += data.settle;
-								gainBook += data.book;
+								dollarChange -= data.settle;
 							}
 							else {
-								gainSettle += 0;
-								gainBook += 0;
+								dollarChange += data.settle;
 							}
 
 							totalSettle += data.settle;
-							totalBook += data.book;
+							totalCommission += data.commission;
 						}
 						
 						vm.length = vm.dataCollection.length;
-						vm.totalsettle = Number(totalSettle).toFixed(2);
-						vm.totalbook = Number(totalBook).toFixed(2);
-						vm.gainloss = gainSettle - gainBook;
-						vm.gainlosspct = Number(vm.gainloss/gainBook * 100).toFixed(2);
-					}
+						vm.totalSettle = totalSettle;
+						vm.dollarChange = dollarChange;
+						vm.totalCommission = totalCommission; 
+					}					
 			    } 
 			); 			
 

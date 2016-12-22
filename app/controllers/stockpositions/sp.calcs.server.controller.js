@@ -9,7 +9,7 @@ var mongoose = require('mongoose'),
 	SpTotals = mongoose.model('spTotals');
 
 /**
- * Buils the totals for the monthly reporting screen 
+ * Builds the totals for the monthly reporting screen 
  */
 exports.calcTotal = function(user, callback) {
 	Stockposition.aggregate([

@@ -1,0 +1,44 @@
+<section data-ng-controller="IncomeController as ctrl">
+    <md-content class="md-padding" >
+        <div layout="row">
+            <div flex></div>
+            <md-card flex-gt-sm="70" flex="95"> 
+                <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline">Income Report</span>
+                        <span class="md-subhead">How much you made from distributions</span>
+                    </md-card-title-text>
+                </md-card-title>                
+            </md-card>
+            <div flex></div>
+        </div>
+    </md-content>
+    <div data-ng-show="ctrl.success" class="alert alert-sucess form-group sucessPanel">
+        <strong data-ng-bind="ctrl.success"></strong>
+    </div>
+
+    <div class="st-summary"><st-income-summary datacollection="ctrl.displayRowsCollection"></st-income-summary></div>
+
+    <md-content>        
+        <table class="table smart-table table-hover txn-table" st-table="ctrl.displayRowsCollection" st-safe-src="ctrl.safeRows" st-pipe="ctrl.fetch">
+            <thead>
+                <tr>
+                    <th st-sort="description">Description</th>                    
+                    <th st-sort="settle">Settle Amount</th>
+                    <th st-sort="exchangeRate">Exchange Rate</th>
+                    <th st-sort="tradeCurrency">Trade Currency</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in ctrl.displayRowsCollection">
+                    <td>{{row.description}}</td>
+                    <td>{{row.settle | currency}}</td>
+                    <td>{{row.exchangeRate}}</td>
+                    <td>{{row.tradeCurrency}}</td>
+                    </td>                        
+                </tr>
+            </tbody>
+            <tfoot></tfoot>            
+        </table>
+    </md-content>
+</section>

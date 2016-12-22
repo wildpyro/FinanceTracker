@@ -2,13 +2,6 @@
 	margin-bottom: 5px;
 }
 
-/*Smart Txn summary */
-.st-txn-summary {
-  padding-bottom: 20px;
-  padding-top: 10px;  
-  font-size: 20px;
-}
-
 .txn-table > tbody > tr > th, .txn-table > thead > tr > td, .txn-table > tbody > tr > td{
   width: 15%;
 }

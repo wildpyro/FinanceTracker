@@ -7,8 +7,9 @@ var _ = require('lodash');
 
 const TXNTYPES = [{'type': 'Buy', 'ITrade': 'BUY'},
 				    {'type': 'Sell', 'ITrade': 'SELL'},
-				    {'type': 'Dividend', 'ITrade': 'DIVIDEND'},
-				    {'type': 'Drip', 'ITrade': 'Drip'}]; 
+				    {'type': 'Dividend', 'ITrade': 'STOCKDIV'},
+				    {'type': 'Drip', 'ITrade': 'Drip'}
+				 ]; 
 
 exports.getTypes = function() {
     return TXNTYPES;

@@ -1,34 +1,6 @@
 'use strict';
 
 angular.module('stockpositions').factory('TxnsForm', ['TxnTypesService', 'AccountTypeService', function(txnTypes, accountTypes) {
-
-  function createTradeInfo(field, newValue, scope) {
-    if (newValue) {
-      var book = field === 'book' ? Number(newValue) : Number(scope.model.book),
-          settle = field === 'book' ? Number(scope.model.settle) : Number(newValue),
-          diff = Number(settle - book).toFixed(2),
-          pctDiff = Number(Math.abs(diff)/book) * 100;
-
-      if (scope.model.type === 'Sell') {
-        if (book > settle) {
-          scope.model.tradeinfo = 'Loss of: $'.concat(diff).concat(' Pct: -').concat(pctDiff.toFixed(2)).concat('%');
-        }
-        else {
-          scope.model.tradeinfo = 'Gain of: $'.concat(diff).concat(' Pct: ').concat(pctDiff.toFixed(2)).concat('%');
-        }
-      }
-      else if (scope.model.type === 'Buy') {
-          scope.model.tradeinfo = 'Buy';        
-      }
-      else if (scope.model.type === 'Drip') {
-          scope.model.tradeinfo = 'Drip';        
-      }
-      else if (scope.model.type === 'Dividend') {
-          scope.model.tradeinfo = 'Dividend';
-      }      
-    }
-  }
-
   var getFormFields = function() {
     
     var fields = [
@@ -71,10 +43,10 @@ angular.module('stockpositions').factory('TxnsForm', ['TxnTypesService', 'Accoun
           },                              
           {
             className: 'col-xs-3',
-            key: 'date',
+            key: 'settlementDate',
             type: 'datepicker',
             templateOptions: {
-              label: 'Date',
+              label: 'Settlement Date',
               type: 'text'
             }
           },
@@ -92,11 +64,6 @@ angular.module('stockpositions').factory('TxnsForm', ['TxnTypesService', 'Accoun
             type: 'input',
             templateOptions: {
               label: 'Book Value:'
-            },
-            watcher: {
-              listener: function(field, newValue, oldValue, scope, stopWatching) {
-                createTradeInfo('book', newValue, scope);
-              }
             }
           },
           {
@@ -105,11 +72,6 @@ angular.module('stockpositions').factory('TxnsForm', ['TxnTypesService', 'Accoun
             type: 'input',
             templateOptions: {
               label: 'Settlement Amount:'
-            },
-            watcher: {
-              listener: function(field, newValue, oldValue, scope, stopWatching) {
-                createTradeInfo('settle', newValue, scope);
-              }
             }
           },
           {

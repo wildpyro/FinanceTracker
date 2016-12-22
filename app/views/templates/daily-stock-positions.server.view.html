@@ -6,15 +6,14 @@
 	<p>Afternoon {{name}},</p>
 	<br>
 	<p>
-		Courtest of {{appName}}, here's your daily stock position updates
+		Courtesy of {{appName}}, here's your daily stock position updates
 	</p>
-	<br>
     <p>
 		{% for stock in stocks %} 
-			<li>{{stock.symbol}} - {{stock.description}}</li>
-			<li>{{stock.price}}</li>
-			<li>{{stock.shares}}</li>
-			<li>{{stock.market}}</li>
+			<li>{{stock.symbol}} - {{stock.Name}}</li>
+			<li>Price: {{stock.LastTradePriceOnly}}</li>
+			<li>Price Range: {{stock.DaysRange}}</li>
+			<li>Pct Change: {{stock.Change_PercentChange}}</li>
 		{% endfor %}
 	</p>
 	<br>

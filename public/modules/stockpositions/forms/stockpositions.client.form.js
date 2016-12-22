@@ -25,7 +25,11 @@ angular.module('stockpositions').factory('StockpositionsForm', ['AccountTypeServ
                 options: exchanges.getEnums(),
                 disabled: disabled,
                 required: true
-              }
+              },
+              expressionProperties: {
+                'templateOptions.required': 'model.type === "equity" || model.type === "fixed"',
+                'templateOptions.disabled': 'model.type !== "equity" && model.type !== "fixed"'
+              }              
             },            
             {
               key: 'type',

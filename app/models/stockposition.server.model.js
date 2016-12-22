@@ -17,8 +17,7 @@ var StockpositionSchema = new Schema({
 		required: 'Please select an account type'
 	},
 	exchange: {
-		type: String, enum: _.map(Exchanges.EXCHANGES, 'exchange'),
-		required: 'Please select an exchange type'
+		type: String, enum: _.map(Exchanges.EXCHANGES, 'exchange')
 	},
 	symbol: {
 		type: String,
