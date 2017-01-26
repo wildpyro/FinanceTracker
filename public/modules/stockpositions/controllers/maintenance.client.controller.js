@@ -36,7 +36,7 @@ angular.module('stockpositions').controller('MaintenanceController', ['$scope', 
 			})
 			.error(function(response) {
 				vm.error = response.message;
-			});			
+			});
 		};		
 
 		this.exportData = function() {

@@ -1,5 +1,6 @@
 'use strict';
-angular.module('stockpositions').factory('ImportDataForm', ['StockPositionsLayoutService', 'ImportTypesService', function(StockPositionsLayoutService, ImportTypesService) {
+angular.module('stockpositions').factory('ImportDataForm', ['StockPositionsLayoutService', 'ImportTypesService', 'AccountsService',
+  function(StockPositionsLayoutService, ImportTypesService, AccountsService) {
 
   var getFormFields = function () {
     var fields = [
@@ -23,6 +24,19 @@ angular.module('stockpositions').factory('ImportDataForm', ['StockPositionsLayou
           'templateOptions.disabled': 'model.layout !== "bns"'
         }
       },
+      {
+        //Only needed for stock 
+        key: 'accounttype',
+        type: 'select',
+        templateOptions: {
+          options: AccountsService.getEnums(),
+          label: 'Account number:',
+          disabled: true
+        },
+        expressionProperties: {
+          'templateOptions.disabled': 'model.type !== "stocks"'
+        }
+      },      
       {
         key: 'fileToImport',
         type: 'input',

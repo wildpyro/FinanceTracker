@@ -62,8 +62,7 @@ exports.delete = function(req, res) {
 
 	account.remove(function(err) {
 		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
+			return res.status(400).send({message: errorHandler.getErrorMessage(err)
 			});
 		} else {
 			res.jsonp(account);
@@ -134,6 +133,22 @@ exports.list = function(req, res) {
 			}
 		});
 
+};
+
+/**
+ * Load the account drop down 
+ */
+exports.fetchAccountNos = function(req, res) {
+	var query = Account.find();
+
+	query.select('description accountNo');
+	query.exec(function(err, results) {
+		if (err) {
+			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
+		}
+		
+		res.jsonp(results);
+	});
 };
 
 /**

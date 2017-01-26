@@ -29,7 +29,7 @@ module.exports = {
 				'public/lib/jquery/dist/jquery.min.js',
 				//'public/lib/jquery/dist/jquery.slim.min.js', -- Find out about slim version    
 				'public/lib/bootstrap/dist/js/bootstrap.js', 				
-				'public/lib/angular-bootstrap/ui-bootstrap-custom-tpls-1.3.3.js',
+				'public/lib/angular-bootstrap/ui-bootstrap-tpls.min.js', //Need to get rid of this and bootstrap. Only using modal and accordion.
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
 				'public/lib/api-check/dist/api-check.js',
 				'public/lib/angular-formly/dist/formly.js',

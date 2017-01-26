@@ -10,7 +10,10 @@ module.exports = function(app) {
 		.post(users.requiresLogin, accounts.create);
 
 	app.route('/accountsFetch')
-		.get(accounts.list);	
+		.get(users.requiresLogin, accounts.hasAuthorization, accounts.list);
+
+	app.route('/accounts/fetchAccountNo')
+		.get(accounts.fetchAccountNos);
 
 	app.route('/accounts/:accountId')
 		.get(accounts.read)

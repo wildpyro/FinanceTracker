@@ -5,8 +5,11 @@
   "dependencies": {
     "bootstrap": "*",
     "angular": "*",
+    "angular-material": "*",
+    "angular-aria": "*",
     "angular-resource": "*",
     "angular-mocks": "*",
+    "angular-messages": "*",
     "angular-cookies": "*",
     "angular-animate": "*",
     "angular-touch": "*",
@@ -18,6 +21,7 @@
     "api-check": "*",
     "angular-formly": "*",
     "angular-formly-templates-bootstrap": "*",
+    "angular-formly-material": "*",
     "moment": "*",
     "moment-range": "*",
     "angular-moment": "*",
@@ -37,5 +41,10 @@
     "public/lib",
     "test",
     "tests"
-  ]
+  ],
+  "resolutions": {
+    "angular": "1.6.1",
+    "angular-formly": ">=4.0.5",
+    "angular-messages": "^1.4.8"
+  }
 }

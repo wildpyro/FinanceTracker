@@ -1,12 +1,22 @@
 'use strict';
 
-// Users service used for communicating with the users REST endpoint
-angular.module('users').factory('Users', ['$resource',
-	function($resource) {
-		return $resource('users', {}, {
+angular.module('users').factory('User', ['$resource', function($resource) {
+	var User = $resource(
+        'users', 
+		{},
+		{
 			update: {
 				method: 'PUT'
 			}
+		}
+	);
+
+	User.prototype.signin = function(credentials) {
+		$resource.post('/auth/signin', credentials)
+		.then(function(response) {
+				return response;
 		});
-	}
-]);
+	};		
+
+	return User;	
+}]);
