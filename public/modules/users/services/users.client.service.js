@@ -1,22 +1,32 @@
 'use strict';
 
-angular.module('users').factory('User', ['$resource', function($resource) {
-	var User = $resource(
-        'users', 
-		{},
-		{
-			update: {
-				method: 'PUT'
+angular.module('users').factory('UserFactory', ['$http', '$resource', '$location',
+	function($http, $resource, $location) {
+		var factory = $resource(
+			'users', 
+			{},
+			{
+				update: {
+					method: 'PUT'
+				}
 			}
-		}
-	);
+		);
+		
+		factory.signin = function(credentials) {
 
-	User.prototype.signin = function(credentials) {
-		$resource.post('/auth/signin', credentials)
-		.then(function(response) {
-				return response;
-		});
-	};		
+			$http.post('/auth/signin', credentials)
+			.then(function(response) {
+					$location.path('/');
+					return response;
+				}
+			)
+			.catch(
+				function(response) {
+					return response;
+				}
+			);
+		};
 
-	return User;	
-}]);
+		return factory;
+	}
+]);

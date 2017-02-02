@@ -1,11 +1,9 @@
 'use strict';
 
-angular.module('users').controller('AuthenticationController', ['$scope', '$location', 'Authentication', 'User',
-	function($scope, $http, $location, Authentication, User) {
-
+angular.module('users').controller('AuthenticationController', ['$scope', '$http', '$location', 'Authentication', 'UserFactory',
+	function($scope, $http, $location, Authentication, UserFactory) {
 		var vm = this;
 		vm.authentication = Authentication;
-		this.user = User;
 
 		// If user is signed in then redirect back home
 		if (vm.authentication.user) {
@@ -27,12 +25,10 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$loca
 		};
 
 		this.signin = function() {
-			console.log(this.user);
-			var response = User.signin({credentials: vm.credentials});
-			
+			var response = UserFactory.signin(vm.credentials);
+	
 			// If successful we assign the response to the global user model
-			//$scope.authentication.user = response;
-			//$location.path('/');
+			//vm.authentication.user = response;
 		};
 	}
 ]);
