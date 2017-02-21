@@ -1,13 +1,18 @@
 'use strict';
 
-module.exports = function(grunt) {
-	// Unified Watch Object
+module.exports = function (grunt) {
+	/**
+	 *  Watch objects are split up into peices that need to be linted via JS or ts
+	 *  Config objects are still in JS 
+	 **/
 	var watchFiles = {
 		serverViews: ['app/views/**/*.*'],
-		serverJS: ['gruntfile.js', 'server.js', 'config/**/*.js', 'app/**/*.js'],
+		configJS: ['gruntfile.js', 'server.js', 'config/**/*.js',],
+		serverTS: ['app/**/*.ts'],
 		clientViews: ['public/modules/**/views/**/*.html'],
 		clientJS: ['public/js/*.js', 'public/modules/**/*.js'],
-		clientCSS: ['public/modules/**/*.css'],
+		//clientTS: ['public/js/*.ts', 'public/modules/**/*.ts'],
+		lintCSS: ['public/modules/**/*.css', 'app/**/*.css'],
 		mochaTests: ['app/tests/**/*.js']
 	};
 
@@ -18,6 +23,7 @@ module.exports = function(grunt) {
 	// Project Configuration
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
+		/* Create watches for each of the different componenets. This way we can apply different rules*/
 		watch: {
 			serverViews: {
 				files: watchFiles.serverViews,
@@ -25,9 +31,15 @@ module.exports = function(grunt) {
 					livereload: true
 				}
 			},
-			serverJS: {
-				files: watchFiles.serverJS,
-				tasks: ['jshint'],
+			serverConfig: {
+				files: watchFiles.configJS,
+				options: {
+					livereload: true
+				}
+			},			
+			serverTS: {
+				files: watchFiles.serverTS,
+				tasks: ['tslint'],
 				options: {
 					livereload: true
 				}
@@ -45,21 +57,30 @@ module.exports = function(grunt) {
 					livereload: true
 				}
 			},
-			clientCSS: {
-				files: watchFiles.clientCSS,
+			lintCSS: {
+				files: watchFiles.lintCSS,
 				tasks: ['csslint'],
 				options: {
 					livereload: true
 				}
 			}
 		},
+		/* Lint tasks */
 		jshint: {
 			all: {
-				src: watchFiles.clientJS.concat(watchFiles.serverJS),
+				src: watchFiles.clientJS,
 				options: {
 					jshintrc: true,
 					force: true
 				}
+			}
+		},
+		tslint: {
+			options: {
+				configuration: 'tslint.json'
+			},
+			files: {
+				src: watchFiles.serverTS,
 			}
 		},
 		csslint: {
@@ -67,9 +88,10 @@ module.exports = function(grunt) {
 				csslintrc: '.csslintrc',
 			},
 			all: {
-				src: watchFiles.clientCSS
+				src: watchFiles.lintCSS
 			}
 		},
+		/* Deployment tasks */
 		uglify: {
 			production: {
 				options: {
@@ -87,28 +109,14 @@ module.exports = function(grunt) {
 				}
 			}
 		},
-		nodemon: {
-			default: {
-				script: 'server.js',
-				stdout: true,
-				options: {
-					nodeArgs: ['--debug'],
-					ext: 'js,html',
-					watch: watchFiles.serverViews.concat(watchFiles.serverJS),
-					ignore: ignoreFiles.node_modules 
-				}
-			},			
-			dev: {
-				script: 'server.js',
-				stdout: true,
-				options: {
-					nodeArgs: ['--debug-brk'], //--debug or use --debug-brk
-					ext: 'js,html',
-					watch: watchFiles.serverViews.concat(watchFiles.serverJS),
-					ignore: ignoreFiles.node_modules 
+		ngAnnotate: {
+			production: {
+				files: {
+					'public/dist/application.js': '<%= applicationJavaScriptFiles %>'
 				}
 			}
 		},
+		/* Dev related */
 		'node-inspector': {
 			custom: {
 				options: {
@@ -122,10 +130,37 @@ module.exports = function(grunt) {
 				}
 			}
 		},
-		ngAnnotate: {
-			production: {
-				files: {
-					'public/dist/application.js': '<%= applicationJavaScriptFiles %>'
+		mochaTest: {
+			src: watchFiles.mochaTests,
+			options: {
+				reporter: 'spec',
+				require: 'server.js'
+			}
+		},
+		karma: {
+			unit: {
+				configFile: 'karma.conf.js'
+			}
+		},		
+		nodemon: {
+			default: {
+				script: 'server.js',
+				stdout: true,
+				options: {
+					nodeArgs: ['--debug'],
+					ext: 'js,html',
+					watch: watchFiles.serverViews.concat(watchFiles.serverTS),
+					ignore: ignoreFiles.node_modules
+				}
+			},
+			dev: {
+				script: 'server.js',
+				stdout: true,
+				options: {
+					nodeArgs: ['--debug-brk'], //--debug or use --debug-brk
+					ext: 'ts,js,html',
+					watch: watchFiles.serverViews.concat(watchFiles.serverTS),
+					ignore: ignoreFiles.node_modules
 				}
 			}
 		},
@@ -144,18 +179,6 @@ module.exports = function(grunt) {
 			secure: {
 				NODE_ENV: 'secure'
 			}
-		},
-		mochaTest: {
-			src: watchFiles.mochaTests,
-			options: {
-				reporter: 'spec',
-				require: 'server.js'
-			}
-		},
-		karma: {
-			unit: {
-				configFile: 'karma.conf.js'
-			}
 		}
 	});
 
@@ -166,7 +189,7 @@ module.exports = function(grunt) {
 	grunt.option('force', true);
 
 	// A Task for loading the configuration object
-	grunt.task.registerTask('loadConfig', 'Task that loads the config into a grunt option.', function() {
+	grunt.task.registerTask('loadConfig', 'Task that loads the config into a grunt option.', function () {
 		var init = require('./config/init')();
 		var config = require('./config/config');
 
@@ -175,7 +198,7 @@ module.exports = function(grunt) {
 	});
 
 	// Default task(s).
-	grunt.registerTask('default', ['lint', 'concurrent:default']);
+	grunt.registerTask('default', ['lint', 'tsBuild', 'concurrent:default']);
 
 	// Debug task.
 	grunt.registerTask('debug', ['lint', 'concurrent:debug']);
@@ -184,7 +207,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('secure', ['env:secure', 'lint', 'concurrent:default']);
 
 	// Lint task(s).
-	grunt.registerTask('lint', ['jshint', 'csslint']);
+	grunt.registerTask('lint', ['jshint', 'csslint', 'tslint']);
 
 	// Build task(s).
 	grunt.registerTask('build', ['lint', 'loadConfig', 'ngAnnotate', 'uglify', 'cssmin']);

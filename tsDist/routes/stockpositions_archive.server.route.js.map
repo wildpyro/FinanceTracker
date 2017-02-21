@@ -1,0 +1,1 @@
+{"version":3,"file":"stockpositions_archive.server.route.js","sourceRoot":"","sources":["../../app/routes/stockpositions_archive.server.route.ts"],"names":[],"mappings":"AAAA,YAAY,CAAC;AAEb,MAAM,CAAC,OAAO,GAAG,UAAS,GAAG;IAC5B,IAAI,sBAAsB,GAAG,OAAO,CAAC,wDAAwD,CAAC,CAAC;IAE/F,GAAG,CAAC,KAAK,CAAC,2CAA2C,CAAC,CAAC,IAAI,CAAC,sBAAsB,CAAC,gCAAgC,CAAC,CAAC;AACtH,CAAC,CAAC"}

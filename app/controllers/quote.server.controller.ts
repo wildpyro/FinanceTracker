@@ -88,7 +88,7 @@ function update(req, res) {
 
 /**
  * Update references to the other records associated with a quote
- * Also call a price update to the any stock positions that exists.  
+ * Also call a price update to any stock positions that exists.  
  */
 function updateReferences(response, symbol, yahooSymbol, res) {
 	var query = { 'Symbol': symbol },
