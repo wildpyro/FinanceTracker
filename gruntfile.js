@@ -36,7 +36,7 @@ module.exports = function (grunt) {
 				options: {
 					livereload: true
 				}
-			},			
+			},
 			serverTS: {
 				files: watchFiles.serverTS,
 				tasks: ['tslint'],
@@ -63,6 +63,26 @@ module.exports = function (grunt) {
 				options: {
 					livereload: true
 				}
+			}
+		},
+		/* Build tasks*/
+		tsbuild: {
+			all: {
+				files: [{
+					src: watchFiles.serverTS,
+					dest: 'tsDist'
+				}],
+				options: {
+					module: 'commonjs',
+					noLib: true,
+					target: 'es6',
+					sourceMap: false
+				},
+				'exclude': [
+					ignoreFiles,
+					'tsDist',
+					'dist'
+				]
 			}
 		},
 		/* Lint tasks */
@@ -117,31 +137,6 @@ module.exports = function (grunt) {
 			}
 		},
 		/* Dev related */
-		'node-inspector': {
-			custom: {
-				options: {
-					'web-port': 1337,
-					'web-host': 'localhost',
-					'debug-port': 5858,
-					'save-live-edit': true,
-					'no-preload': true,
-					'stack-trace-limit': 50,
-					'hidden': []
-				}
-			}
-		},
-		mochaTest: {
-			src: watchFiles.mochaTests,
-			options: {
-				reporter: 'spec',
-				require: 'server.js'
-			}
-		},
-		karma: {
-			unit: {
-				configFile: 'karma.conf.js'
-			}
-		},		
 		nodemon: {
 			default: {
 				script: 'server.js',
@@ -185,6 +180,10 @@ module.exports = function (grunt) {
 	// Load NPM tasks
 	require('load-grunt-tasks')(grunt);
 
+	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-ts');
+	grunt.loadNpmTasks('grunt-tslint');	
+
 	// Making grunt default to force in order not to break the project.
 	grunt.option('force', true);
 
@@ -198,7 +197,7 @@ module.exports = function (grunt) {
 	});
 
 	// Default task(s).
-	grunt.registerTask('default', ['lint', 'tsBuild', 'concurrent:default']);
+	grunt.registerTask('default', ['lint', 'tsbuild', 'concurrent:default']);
 
 	// Debug task.
 	grunt.registerTask('debug', ['lint', 'concurrent:debug']);
@@ -212,6 +211,10 @@ module.exports = function (grunt) {
 	// Build task(s).
 	grunt.registerTask('build', ['lint', 'loadConfig', 'ngAnnotate', 'uglify', 'cssmin']);
 
+	//typescript build 
+	grunt.registerTask('tsbuild', ['lint', 'tsbuild']);
+
 	// Test task.
-	grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);
+	//grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);
+	
 };

@@ -5,14 +5,14 @@
  */
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
-	Networth = mongoose.model('Networth'),
+	NETWORTH = mongoose.model('networth'),
 	_ = require('lodash');
 
 /**
- * Create a Networth
+ * Create a NETWORTH
  */
 exports.create = function(req, res) {
-	var networth = new Networth(req.body);
+	var networth = new NETWORTH(req.body);
 	networth.user = req.user;
 
 	networth.save(function(err) {
@@ -27,14 +27,14 @@ exports.create = function(req, res) {
 };
 
 /**
- * Show the current Networth
+ * Show the current NETWORTH
  */
 exports.read = function(req, res) {
 	res.jsonp(req.networth);
 };
 
 /**
- * Update a Networth
+ * Update a NETWORTH
  */
 exports.update = function(req, res) {
 	var networth = req.networth ;
@@ -53,7 +53,7 @@ exports.update = function(req, res) {
 };
 
 /**
- * Delete an Networth
+ * Delete an NETWORTH
  */
 exports.delete = function(req, res) {
 	var networth = req.networth ;
@@ -70,7 +70,7 @@ exports.delete = function(req, res) {
 };
 
 /**
- * List of Networths
+ * List of NETWORTHs
  */
 exports.list = function(req, res) {
 
@@ -96,8 +96,7 @@ exports.list = function(req, res) {
 		var sortKey = Object.keys(req.query.sorting)[0];
 		var sortValue = req.query.sorting[sortKey];
 		sortObject[sortValue] = sortKey;
-	}
-	else {
+	} else {
 		sortObject.desc = '_id';
 	}
 
@@ -105,8 +104,7 @@ exports.list = function(req, res) {
 		sort: sortObject
 	};
 
-
-	Networth
+	NETWORTH
 		.find()
 		.filter(filter)
 		.order(sort)
@@ -122,19 +120,25 @@ exports.list = function(req, res) {
 };
 
 /**
- * Networth middleware
+ * NETWORTH middleware
  */
 exports.networthByID = function(req, res, next, id) {
-	Networth.findById(id).populate('user', 'displayName').exec(function(err, networth) {
-		if (err) return next(err);
-		if (! networth) return next(new Error('Failed to load Networth ' + id));
+	NETWORTH.findById(id).populate('user', 'displayName').exec(function(err, networth) {
+		if (err) {
+			return next(err);
+		}
+
+		if (! networth) {
+			return next(new Error('Failed to load NETWORTH ' + id));
+		}
+
 		req.networth = networth ;
 		next();
 	});
 };
 
 /**
- * Networth authorization middleware
+ * NETWORTH authorization middleware
  */
 exports.hasAuthorization = function(req, res, next) {
 	if (req.networth.user.id !== req.user.id) {

@@ -1,9 +1,7 @@
 'use strict';
 
-/**
- * Get unique error field name
- */
-var getUniqueErrorMessage = function(err) {
+/* Get unique error field name */
+function getUniqueErrorMessage(err: any) : string {
 	var output;
 
 	try {
@@ -17,10 +15,7 @@ var getUniqueErrorMessage = function(err) {
 	return output;
 };
 
-/**
- * Get the error message from error object
- */
-exports.getErrorMessage = function(err) {
+export function getErrorMessage(err: any) : string {
 	var message = '';
 
 	if (err.code) {
@@ -34,9 +29,11 @@ exports.getErrorMessage = function(err) {
 		}
 	} else {
 		for (var errName in err.errors) {
-			if (err.errors[errName].message) message = err.errors[errName].message;
+			if (err.errors[errName].message) {
+				message = err.errors[errName].message;
+			}
 		}
 	}
 
 	return message;
-};
+}

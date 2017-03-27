@@ -3,24 +3,26 @@
 /**
  * Module dependencies.
  */
-var mongoose = require('mongoose'),
-	errorHandler = require('./errors.server.controller'),
-	Account = mongoose.model('Account'),
-	_ = require('lodash');
+import { Mongoose as mongoose} from 'mongoose';
+import { Model as model} from 'mongoose';
+import { lodash as _} from 'lodash';
+import * as ErrorHandler from './errors.server.controller';
+import {Request, Response, NextFunction} from 'express';
+
+var ACCOUNT = new model('Account');
 
 /**
- * Create a Account
+ * Create a ACCOUNT
  */
-exports.create = function(req, res) {
-	var account = new Account(req.body);
+exports.create = function(req: any, res: any) {
+	var account = new ACCOUNT(req.body);
 
-	//console.log(account);
 	account.user = req.user;
-
-	account.save(function(err) {
+	account.save(function(err: string) {
 		if (err) {
 			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
+				message: ErrorHandler.getErrorMessage(err)
+
 			});
 		} else {
 			res.jsonp(account);
@@ -29,24 +31,24 @@ exports.create = function(req, res) {
 };
 
 /**
- * Show the current Account
+ * Show the current ACCOUNT
  */
-exports.read = function(req, res) {
+exports.read = function(req: any, res: any) {
 	res.jsonp(req.account);
 };
 
 /**
- * Update a Account
+ * Update a ACCOUNT
  */
-exports.update = function(req, res) {
+exports.update = function(req: any, res: any) {
 	var account = req.account ;
 
 	account = _.extend(account , req.body);
 
-	account.save(function(err) {
+	account.save(function(err: string) {
 		if (err) {
 			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
+				message: ErrorHandler.getErrorMessage(err)
 			});
 		} else {
 			res.jsonp(account);
@@ -55,14 +57,14 @@ exports.update = function(req, res) {
 };
 
 /**
- * Delete an Account
+ * Delete an ACCOUNT
  */
-exports.delete = function(req, res) {
+exports.delete = function(req: any, res: any) {
 	var account = req.account ;
 
-	account.remove(function(err) {
+	account.remove(function(err : string) {
 		if (err) {
-			return res.status(400).send({message: errorHandler.getErrorMessage(err)
+			return res.status(400).send({message: ErrorHandler.getErrorMessage(err)
 			});
 		} else {
 			res.jsonp(account);
@@ -71,9 +73,9 @@ exports.delete = function(req, res) {
 };
 
 /**
- * List of Accounts
+ * List of ACCOUNTs
  */
-exports.list = function(req, res) {
+exports.list = function(req: any, res: any) {
 
 	var sort;
 	var sortObject = {};
@@ -101,23 +103,21 @@ exports.list = function(req, res) {
 		sort = {
 			sort: sortObject
 		};
-	}
-	else {
+	} else {
 		sort = {accountType: 'asc'};
 	}
 
-	Account
+	ACCOUNT
 		.find()
 		.filter(filter)
 		.populate({path: 'stockPositions', model: 'Stockposition', options: {sort: {type: 'desc', symbol: 'asc'}}})
 		.sort(sort)
-		.page(pagination, function(err, accounts){
+		.page(pagination, function(err : string, accounts : any){
 			if (err) {
 				return res.status(400).send({
 					message: errorHandler.getErrorMessage(err)
 				});
-			}	
-  			else {
+			} else {
   				for (var i = accounts.results.length - 1; i >= 0; i--) {
   					var balance = 0;
 
@@ -132,41 +132,46 @@ exports.list = function(req, res) {
 				res.jsonp(accounts);
 			}
 		});
-
 };
 
 /**
- * Load the account drop down 
+ * Load the account drop down
  */
-exports.fetchAccountNos = function(req, res) {
+exports.fetchAccountNos = function(req: any, res: any) {
 	var query = Account.find();
 
 	query.select('description accountNo');
-	query.exec(function(err, results) {
+	query.exec(function(err : string, results: [Account]) {
 		if (err) {
 			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
 		}
-		
+
 		res.jsonp(results);
 	});
 };
 
 /**
- * Account middleware
+ * ACCOUNT middleware
  */
-exports.accountByID = function(req, res, next, id) {
-	Account.findById(id).populate('user', 'displayName').exec(function(err, account) {
-		if (err) return next(err);
-		if (! account) return next(new Error('Failed to load Account ' + id));
+exports.accountByID = function(req: any, res: any, next: NextFunction, id: number) {
+	ACCOUNT.findById(id).populate('user', 'displayName').exec(function(err : string, account : Account) {
+		if (err) {
+			return next(err);
+		}
+
+		if (! account) {
+			return next(new Error('Failed to load ACCOUNT ' + id));
+		}
+
 		req.account = account ;
 		next();
 	});
 };
 
 /**
- * Account authorization middleware
+ * ACCOUNT authorization middleware
  */
-exports.hasAuthorization = function(req, res, next) {
+exports.hasAuthorization = function(req: any, res: any, next: NextFunction) {
 	if (req.account.user.id !== req.user.id) {
 		return res.status(403).send({message: 'User is not authorized'});
 	}

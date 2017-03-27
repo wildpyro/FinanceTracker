@@ -17,7 +17,6 @@ var validateLocalStrategyProperty = function(property) {
  * Account Schema
  */
 var AccountSchema = new Schema({
-	
 	description: {
 		type: String,
 		default: '',
@@ -32,7 +31,7 @@ var AccountSchema = new Schema({
 		trim: true
 	},
 	accountType: {
-		type: String, enum: ['open','rsp','tfsa','resp','joint'],
+		type: String, enum: ['open', 'rsp', 'tfsa', 'resp', 'joint'],
 		required: 'Please select an account type',
 		trim: true
 	},

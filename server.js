@@ -11,11 +11,10 @@ var init = require('./config/init')(),
  * Main application entry file.
  * Please note that the order of loading is important.
  */
-
 require('mongoose-middleware').initialize(mongoose);
 
 // Bootstrap db connection
-var db = mongoose.connect(config.db, function(err) {
+mongoose.connect(config.db, function(err) {
 	if (err) {
 		console.error(chalk.red('Could not connect to MongoDB!'));
 		console.log(chalk.red(err));
@@ -23,7 +22,7 @@ var db = mongoose.connect(config.db, function(err) {
 });
 
 // Init the express application
-var app = require('./config/express')(db);
+var app = require('./config/express');
 
 // Bootstrap passport config
 require('./config/passport')();

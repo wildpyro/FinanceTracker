@@ -1,26 +1,51 @@
+/**
+ * Account router for REST endpoints
+ */
+
 'use strict';
 
-module.exports = function(app) {
-	var users = require('../../app/controllers/users.server.controller');
-	var accounts = require('../../app/controllers/accounts.server.controller');
+import { Router, Request, Response, NextFunction } from 'express';
 
-	// Accounts Routes
-	app.route('/accounts')
-		.get(accounts.list)
-		.post(users.requiresLogin, accounts.create);
+const users = require('../../app/controllers/users.server.controller');
+const accounts = require('../../app/controllers/accounts.server.controller');
 
-	app.route('/accountsFetch')
-		.get(users.requiresLogin, accounts.hasAuthorization, accounts.list);
+export class AccountRouter {
+  router: Router;
 
-	app.route('/accounts/fetchAccountNo')
-		.get(accounts.fetchAccountNos);
+  constructor() {
+    this.router = Router();
+    this.init();
+  }
 
-	app.route('/accounts/:accountId')
-		.get(accounts.read)
-		//.put(users.requiresLogin, accounts.hasAuthorization, accounts.update)
-		.put(users.requiresLogin, accounts.update)
-		.delete(users.requiresLogin, accounts.hasAuthorization, accounts.delete);
+  /**
+   * Take each handler, and attach to one of the Express.Router's
+   * endpoints.
+   */
+  init() {
+    this.router.route('/accounts')
+      .get(accounts.list)
+      .post(users.requiresLogin, accounts.create);
 
-	// Finish by binding the Account middleware
-	app.param('accountId', accounts.accountByID);
-};
+    this.router.route('/accountsFetch')
+      .get(users.requiresLogin, accounts.hasAuthorization, accounts.list);
+
+    this.router.route('/accounts/fetchAccountNo')
+      .get(accounts.fetchAccountNos);
+
+    this.router.route('/accounts/:accountId')
+      .get(accounts.read)
+      //.put(users.requiresLogin, accounts.hasAuthorization, accounts.update)
+      .put(users.requiresLogin, accounts.update)
+      .delete(users.requiresLogin, accounts.hasAuthorization, accounts.delete);
+
+    // Finish by binding to the middleware
+    this.router.param('accountId', accounts.accountByID);
+  }
+
+}
+
+//Create a new instance and expose it.
+const accountRoutes = new AccountRouter();
+accountRoutes.init();
+
+export default accountRoutes.router;
