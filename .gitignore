@@ -6,3 +6,4 @@ app/tests/coverage/
 .*/
 !/.gitignore
 tsconfig.json
+tsDist/

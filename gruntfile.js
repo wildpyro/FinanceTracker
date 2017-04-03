@@ -39,7 +39,7 @@ module.exports = function (grunt) {
 			},
 			serverTS: {
 				files: watchFiles.serverTS,
-				tasks: ['tslint'],
+				//tasks: ['tslint'],
 				options: {
 					livereload: true
 				}
@@ -66,15 +66,16 @@ module.exports = function (grunt) {
 			}
 		},
 		/* Build tasks*/
-		tsbuild: {
+		ts: {
 			all: {
 				files: [{
-					src: watchFiles.serverTS,
+					//src: watchFiles.serverTS,
+					src: ['**/*.ts', '!node_modules/**'],
 					dest: 'tsDist'
 				}],
 				options: {
 					module: 'commonjs',
-					noLib: true,
+					noLib: false,
 					target: 'es6',
 					sourceMap: false
 				},
@@ -100,7 +101,7 @@ module.exports = function (grunt) {
 				configuration: 'tslint.json'
 			},
 			files: {
-				src: watchFiles.serverTS,
+				src: watchFiles.serverTS
 			}
 		},
 		csslint: {
@@ -212,7 +213,8 @@ module.exports = function (grunt) {
 	grunt.registerTask('build', ['lint', 'loadConfig', 'ngAnnotate', 'uglify', 'cssmin']);
 
 	//typescript build 
-	grunt.registerTask('tsbuild', ['lint', 'tsbuild']);
+	//grunt.registerTask('tsbuild', ['lint', 'tsbuild']);
+	grunt.registerTask('tsbuild', 'runs the main typescript build', ['lint', 'ts']);
 
 	// Test task.
 	//grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);
