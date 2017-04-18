@@ -2,8 +2,6 @@
  * Account router for REST endpoints
  */
 
-'use strict';
-
 import { Router, Request, Response, NextFunction } from 'express';
 
 const users = require('../../app/controllers/users.server.controller');

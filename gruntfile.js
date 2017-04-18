@@ -207,14 +207,14 @@ module.exports = function (grunt) {
 	grunt.registerTask('secure', ['env:secure', 'lint', 'concurrent:default']);
 
 	// Lint task(s).
-	grunt.registerTask('lint', ['jshint', 'csslint', 'tslint']);
+	grunt.registerTask('lint', 'Lint JS and CSS files', ['jshint', 'csslint']);
 
 	// Build task(s).
 	grunt.registerTask('build', ['lint', 'loadConfig', 'ngAnnotate', 'uglify', 'cssmin']);
 
 	//typescript build 
 	//grunt.registerTask('tsbuild', ['lint', 'tsbuild']);
-	grunt.registerTask('tsbuild', 'runs the main typescript build', ['lint', 'ts']);
+	grunt.registerTask('tsbuild', 'runs the main typescript build this includes linting', ['ts']);
 
 	// Test task.
 	//grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);

@@ -1,6 +1,7 @@
-import { Schema } from 'mongoose';
+import * as mongoose from 'mongoose';
+import { IAccountModel } from '../models/account.interface';
 
-export var accountSchema: Schema = new Schema({
+let schema: mongoose.Schema = new Schema({
 	description: {
 		type: String,
 		default: '',
@@ -11,7 +12,7 @@ export var accountSchema: Schema = new Schema({
 		type: String,
 		default: '',
 		length: 8,
-		required: [validateLocalStrategyProperty, 'Please fill the account no'],
+		required: 'Please fill the account no',
 		trim: true
 	},
 	accountType: {
@@ -24,20 +25,24 @@ export var accountSchema: Schema = new Schema({
 		default: Date.now
 	},
 	user: {
-		type: Schema.Types.ObjectId,
+		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'
 	},
-	stockPositions: [{type: Schema.Types.ObjectId, ref: 'Stockposition'}],
+	stockPositions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Stockposition' }],
 	marketValue: {
 		type: Number
 	}
+})
+.pre('save', function (next: any) {
+	if (this._doc) {
+		let doc = <IAccountModel>this._doc;
+
+		if (!doc.created) {
+			doc.created = new Date();
+		}
+	}
+	next();
+ 	return this;
 });
 
-accountSchema.pre('save', function(next) {
-
-  if (!this.created) {
-    this.created = Date.now;
-  }
-
-  next();
-});
+export let AccountSchema = mongoose.model<IAccountModel>('account', schema);

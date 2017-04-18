@@ -13,11 +13,11 @@ var mongoose = require('mongoose'),
 	Account = mongoose.model('Account');
 
 /**
-* Update references either add, delete or check 
+* Update references either add, delete or check
 **/
-var updateReferences = function(action, stockposition) {
+var updateReferences = function(action: string, stockposition) {
 	Account.findOne({'accountType': stockposition.accountType}, function(err, account) {
-		if (err) {return err;}	
+		if (err) {return err; }
 		else {
 			if (account !== undefined) {
 				if (action === 'add') {
@@ -29,7 +29,7 @@ var updateReferences = function(action, stockposition) {
 				}
 				else if (action === 'remove') {
 					if (account.stockPositions !== undefined && account.stockPositions !== null) {
-						account.stockPositions.pop(stockposition);	
+						account.stockPositions.pop(stockposition);
 					}
 				}
 				else if (action === 'check') {
@@ -37,21 +37,20 @@ var updateReferences = function(action, stockposition) {
 						if (!account.stockPositions.includes(stockposition._id)) {
 							account.stockPositions.push(stockposition);
 						}
-						//Look through and make sure all the references are correct. 
+						//Look through and make sure all the references are correct.
 						else {
 							Account.find({}, function(err, accounts) {
 								accounts.forEach(function(account) {
-									account.stockpositions.forEach(function(stockposition) {
-									}, this);
+									account.stockpositions.forEach(function(stockposition) {}, this);
 								}, this);
-							}); 
+							});
 						}
 					}
 
 				}
 
 				account.save(function(err) {
-					if (err) {return err;}
+					if (err) {return err; }
 					else {
 						return null;
 					}
@@ -62,9 +61,9 @@ var updateReferences = function(action, stockposition) {
 };
 
 /**
- * Exports Start */ 
+ * Exports Start */
 
-/** 
+/**
  * Check to ensure we aren't adding duplicate symbols to the same accounttype'
  */
 exports.checkDuplicates = function(req, res, next) {
@@ -79,9 +78,9 @@ exports.checkDuplicates = function(req, res, next) {
 			if (duplicate !== null && duplicate !== undefined) {
 				return res.status(400).send({message: 'Stock already exists for the account'});
 			}
-		}	
+		}
 
-		next();	
+		next();
 	});
 };
 
@@ -97,14 +96,14 @@ exports.create = function(req, res) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
-		} 
+		}
 		else {
 			err = updateReferences('add', stockposition);
-			
-			if (err) {return res.status(400).send({message: errorHandler.getErrorMessage(err)});}
+
+			if (err) {return res.status(400).send({message: errorHandler.getErrorMessage(err)}); }
 
 			res.jsonp(stockposition);
-		}	
+		}
 	});
 };
 
@@ -120,17 +119,17 @@ exports.deleteBase = function(req, res) {
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-			//remove the reference after? What happens when this fails? 
+			//remove the reference after? What happens when this fails?
 			updateReferences('remove', stockposition);
 
-			if (err) {return res.status(400).send({message: errorHandler.getErrorMessage(err)});}
+			if (err) {return res.status(400).send({message: errorHandler.getErrorMessage(err)}); }
 
 			res.jsonp(stockposition);
 		}
 	});
 };
 
-exports.getPositionSymbols = function(user, callback) {	
+exports.getPositionSymbols = function(user, callback) {
 	Stockposition.aggregate(
 	[
 		{$match : {type : {$nin : ['cash']}}},
@@ -144,9 +143,9 @@ exports.getPositionSymbols = function(user, callback) {
         if (err) {
             console.log('Error:', err);
         }
-		
+
 		callback(null, result[0].symbols);
-	});	
+	});
 };
 
 /**
@@ -179,7 +178,7 @@ exports.listBase = function(req, res) {
 	if (req.query.sort && req.query.sort.length > 2) {
 		var sortKey = JSON.parse(req.query.sort).predicate,
 			direction = JSON.parse(req.query.sort).reverse ? 'desc' : 'asc';
-	
+
 		query.sort({[sortKey] : direction});
 	}
 	else {
@@ -243,8 +242,8 @@ exports.update = function(req, res, next) {
 	stockposition.save(function(err) {
 		if (err) {
 			next({message: errorHandler.getErrorMessage(err)});
-			//res.status(400).send({message: errorHandler.getErrorMessage(err)}); 
-		} 
+			//res.status(400).send({message: errorHandler.getErrorMessage(err)});
+		}
 		else {
 			updateReferences('check', stockposition);
 
@@ -260,20 +259,20 @@ exports.update = function(req, res, next) {
  */
 exports.updatePriceInner = function(symbol, price, callback) {
 
-	//Strip off the exchange and search by both 
+	//Strip off the exchange and search by both
 	var re = /.([^.]*)$/;
-	
+
 	var symbolAndExchange = symbol.split(re);
 	var query = Stockposition.find();
 
-	var symbolOnly = symbolAndExchange[0].replace('-','.'),
+	var symbolOnly = symbolAndExchange[0].replace('-', '.'),
 		exchange = Exchanges.getByYahooCode(symbolAndExchange[1]);
 
 	query.where('symbol', symbolOnly);
 	query.where('exchange', exchange);
 	query.exec(function(err, results) {
 		if (err) {
-			callback(err,null);
+			callback(err, null);
 		}
 		else {
 			results.forEach(function(result) {
@@ -281,10 +280,10 @@ exports.updatePriceInner = function(symbol, price, callback) {
 				result.market = Number(price * result.shares).toFixed(2);
 				result.save(function(err, result) {
 					if (err) {
-						callback(err,null);
+						callback(err, null);
 					}
-					
-					callback(null,result);
+
+					callback(null, result);
 				});
 			});
 		}
@@ -292,11 +291,11 @@ exports.updatePriceInner = function(symbol, price, callback) {
 };
 
 /**
- * Used for single manual prices updates from UI. 
+ * Used for single manual prices updates from UI.
  */
 exports.updatePrice = function(req, res, next) {
-	exports.updatePriceInner(req.stockposition.symbol, req.stockposition.price, function(err,updated) {
-// TODO - Figure out how to handle multi-level errors. Previous stage should not be calling next? 
+	exports.updatePriceInner(req.stockposition.symbol, req.stockposition.price, function(err, updated) {
+// TODO - Figure out how to handle multi-level errors. Previous stage should not be calling next?
 //		if (err) {
 //			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
 //		}
@@ -304,7 +303,7 @@ exports.updatePrice = function(req, res, next) {
 };
 
 /**
- * Used for wholesale prices updates from UI. 
+ * Used for wholesale prices updates from UI.
  */
 exports.updatePrices = function(req, res, next) {
 	exports.listDaily(req.user, function(err, quoteResponses) {
@@ -314,12 +313,12 @@ exports.updatePrices = function(req, res, next) {
 		else {
 			var results = JSON.parse(quoteResponses).query.results.quote;
 			_.forIn(results, function(value, key) {
-				exports.updatePriceInner(value.Symbol, value.LastTradePriceOnly, function(err,updated) {
+				exports.updatePriceInner(value.Symbol, value.LastTradePriceOnly, function(err, updated) {
 					if (err) {
 						return res.status(400).send({message: value.Symbol + ': ' + errorHandler.getErrorMessage(err)});
 					}
-				});				
-			});			
+				});
+			});
 		}
 	});
 };

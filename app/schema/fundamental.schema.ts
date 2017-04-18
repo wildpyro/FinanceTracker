@@ -1,29 +1,13 @@
-'use strict';
+import * as mongoose from 'mongoose';
+import { IFundamentalModel } from '../models/fundamental.interface';
 
-/**
- * Module dependencies.
- */
-var mongoose = require('mongoose'),
-	Schema = mongoose.Schema;
-
-/**
- * A Validation function for yahoo OAuth strategy properties
- */
-var validateLocalStrategyProperty = function(property) {
-	return ((this.provider !== 'local' && !this.updated) || property.length);
-};
-
-/**
- * Fundamentals Schema
- */
-var FundamentalsSchema = new Schema({
-	
+let schema: mongoose.Schema = new Schema({
 	Symbol: {
 		type: String
 	},
 	YahooSymbol: {
 		type: String
-	},	
+	},
 	lastUpdated: {
 		type: Date,
 		default: Date.now
@@ -33,7 +17,7 @@ var FundamentalsSchema = new Schema({
 		default: Date.now
 	},
 	user: {
-		type: Schema.ObjectId,
+		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'
 	},
 	EarningsShare: {
@@ -59,12 +43,21 @@ var FundamentalsSchema = new Schema({
 	},
 	DividendPayDate: {
 		type: String
-	},	
+	},
 	PERatio: {
 		type: Number
 	}
+})
+.pre('save', function (next: any) {
+	if (this._doc) {
+		let doc = <IFundamentalModel>this._doc;
 
-	
+		if (!doc.created) {
+			doc.created = new Date();
+		}
+	}
+	next();
+ 	return this;
 });
 
-mongoose.model('Fundamentals', FundamentalsSchema);
+export let FundamentalSchema = mongoose.model<IFundamentalModel>('fundamental', schema);

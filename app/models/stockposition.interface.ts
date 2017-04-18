@@ -1,0 +1,20 @@
+import * as mongoose from 'mongoose';
+import { Exchanges } from '../enums/exchanges.server.enums';
+import { AccountTypes } from '../enums/account_types.server.enums';
+import { AssetTypes } from '../enums/asset_types.server.enums';
+
+export interface IStockpositionModel extends mongoose.Document {
+	accountType: AccountTypes;
+	exchange: Exchanges;
+	symbol: String;
+	price: Number;
+	shares: Number;
+	market: Number;
+	book: Number;
+	description: String;
+	type: AssetTypes;
+	quoteData: {};
+	created: Date;
+	user: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }];
+};
+

@@ -1,16 +1,7 @@
-'use strict';
+import * as mongoose from 'mongoose';
+import { IIncomeModel } from '../models/income.interace';
 
-/**
- * Module dependencies.
- */
-var mongoose = require('mongoose'),
-	_ = require('lodash'),
-	Schema = mongoose.Schema;
-
-/**
- * Income Schema
- */
-var IncomeSchema = new Schema({
+let schema: mongoose.Schema = new Schema({
 	settlementDate: {
 		type: Date,
 		required: 'Please fill in a date'
@@ -20,14 +11,14 @@ var IncomeSchema = new Schema({
 		default: '',
 		required: 'Please fill in a description',
 		trim: true
-	},	
+	},
 	symbol: {
 		type: String,
 		default: '',
 		required: 'Please fill in a symbol',
 		uppercase: true,
 		trim: true
-	},    
+	},
 	price: {
 		type: Number,
 		default: 0,
@@ -52,7 +43,7 @@ var IncomeSchema = new Schema({
 		type: Number,
 		default: 0,
 		required: 'Please fill in the settle amount'
-	},		
+	},
 	created: {
 		type: Date,
 		default: Date.now
@@ -61,6 +52,16 @@ var IncomeSchema = new Schema({
 		type: Schema.ObjectId,
 		ref: 'User'
 	}
+}).pre('save', function (next: any) {
+	if (this._doc) {
+		let doc = <IIncomeModel>this._doc;
+
+		if (!doc.created) {
+			doc.created = new Date();
+		}
+	}
+	next();
+ 	return this;
 });
 
-mongoose.model('Income', IncomeSchema);
+export let IncomeSchema = mongoose.model<IIncomeModel>('income', schema);

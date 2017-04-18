@@ -1,29 +1,9 @@
-'use strict';
+import * as mongoose from 'mongoose';
+import { IQuoteModel } from '../models/quote.interface';
 
-/**
- * Module dependencies.
- */
-var mongoose = require('mongoose'),
-	Schema = mongoose.Schema;
-
-/**
- * A Validation function for yahoo OAuth strategy properties
- */
-var validateLocalStrategyProperty = function(property) {
-	return ((this.provider !== 'local' && !this.updated) || property.length);
-};
-
-/**
- * Quote Schema
- */
-var QuoteSchema = new Schema({
-	
+let schema: mongoose.Schema = new Schema({
 	lastUpdated: {
 		type: Date
-	},
-	created: {
-		type: Date,
-		default: Date.now
 	},
 	Symbol: {
 		type: String
@@ -72,8 +52,21 @@ var QuoteSchema = new Schema({
 	},
 	PercentChange: {
 		type: String
+	},
+	created: {
+		type: Date,
+		default: Date.now
 	}
+}).pre('save', function (next: any) {
+	if (this._doc) {
+		let doc = <IQuoteModel>this._doc;
 
+		if (!doc.created) {
+			doc.created = new Date();
+		}
+	}
+	next();
+ 	return this;
 });
 
-mongoose.model('Quote', QuoteSchema);
+export let QuoteSchema = mongoose.model<IQuoteModel>('quote', schema);

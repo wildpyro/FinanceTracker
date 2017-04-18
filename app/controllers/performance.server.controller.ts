@@ -3,20 +3,23 @@
 /**
  * Module dependencies.
  */
-var mongoose = require('mongoose'),
-	errorHandler = require('./errors.server.controller'),
-	Performance = mongoose.model('Performance'),
-	_ = require('lodash');
+import { Mongoose as mongoose} from 'mongoose';
+import { Model as model} from 'mongoose';
+import { lodash as _} from 'lodash';
+import * as ErrorHandler from './errors.server.controller';
+import {Request, Response, NextFunction} from 'express';
 
-exports.localSearch = function(symbol, res) {
+var Performance = new model('Performance');
+
+exports.localSearch = function(symbol : String, res : Response) {
 	var performance = Performance.findOne({'Symbol': symbol});
 
-	performance.exec(function(err, performance) {
+	performance.exec(function(err : String, performance : Performance) {
 		if (err) {
 			return res.status(400).send({message: errorHandler.getErrorMessage(err)});
 		}
   		else {
-			res.jsonp(performance);					
-		}		
+			res.jsonp(performance);
+		}
 	});
 };

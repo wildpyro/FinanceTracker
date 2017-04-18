@@ -13,7 +13,7 @@ var mongoose = require('mongoose'),
  */
 var StockpositionSchema = new Schema({
 	accountType: {
-		type: String, enum: ['open','rsp','tfsa','resp','joint'],
+		type: String, enum: ['open', 'rsp', 'tfsa', 'resp', 'joint'],
 		required: 'Please select an account type'
 	},
 	exchange: {
@@ -50,7 +50,7 @@ var StockpositionSchema = new Schema({
 		type: String,
 		default: '',
 		trim: true
-	},	
+	},
 	created: {
 		type: Date,
 		default: Date.now
@@ -60,7 +60,7 @@ var StockpositionSchema = new Schema({
 		ref: 'User'
 	},
 	type: {
-		type: String, enum: ['cash','fixed','equity'], 
+		type: String, enum: ['cash', 'fixed', 'equity'],
 		required: 'Please select a position type',
 		trim: true
 	},
@@ -71,7 +71,7 @@ var StockpositionTotalsSchema = new Schema({
 	market: {
 		type: Number,
 		default: 0
-	},	
+	},
 	book: {
 		type: Number,
 		default: 0

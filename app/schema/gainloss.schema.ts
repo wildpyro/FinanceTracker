@@ -1,16 +1,7 @@
-'use strict';
+import * as mongoose from 'mongoose';
+import { IGainLossModel } from '../models/gainloss.interface';
 
-/**
- * Module dependencies.
- */
-var mongoose = require('mongoose'),
-	_ = require('lodash'),
-	Schema = mongoose.Schema;
-
-/**
- * GainLoss Schema
- */
-var GainLossSchema = new Schema({
+let schema: mongoose.Schema = new Schema({
 	settlementDate: {
 		type: Date,
 		required: 'Please fill in a date'
@@ -27,7 +18,7 @@ var GainLossSchema = new Schema({
 		default: '',
 		required: 'Please fill in a description',
 		trim: true
-	},    
+	},
 	price: {
 		type: Number,
 		default: 0,
@@ -52,12 +43,12 @@ var GainLossSchema = new Schema({
 		type: Number,
 		default: 0,
 		required: 'Please fill in the settle amount'
-	},		
+	},
 	book: {
 		type: Number,
 		default: 0,
 		required: 'Please fill in the book amount'
-	},		
+	},
     gainLoss: {
 		type: Number,
 		default: 0,
@@ -67,7 +58,7 @@ var GainLossSchema = new Schema({
 		type: Number,
 		default: 0,
 		required: 'Please fill in the gain loss percent'
-    },    
+    },
 	created: {
 		type: Date,
 		default: Date.now
@@ -76,6 +67,16 @@ var GainLossSchema = new Schema({
 		type: Schema.ObjectId,
 		ref: 'User'
 	}
+}).pre('save', function (next: any) {
+	if (this._doc) {
+		let doc = <IGainLossModel>this._doc;
+
+		if (!doc.created) {
+			doc.created = new Date();
+		}
+	}
+	next();
+ 	return this;
 });
 
-mongoose.model('GainLoss', GainLossSchema);
+export let GainLossSchema = mongoose.model<IGainLossModel>('gainloss', schema);

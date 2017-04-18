@@ -1,21 +1,16 @@
-'use strict';
-
-/**
- * Module dependencies.
- */
 import { Mongoose as mongoose} from 'mongoose';
 import { Model as model} from 'mongoose';
 import { lodash as _} from 'lodash';
 import * as ErrorHandler from './errors.server.controller';
 import {Request, Response, NextFunction} from 'express';
 
-var ACCOUNT = new model('Account');
+var Account = new model('Account');
 
 /**
  * Create a ACCOUNT
  */
 exports.create = function(req: any, res: any) {
-	var account = new ACCOUNT(req.body);
+	var account = new Account(req.body);
 
 	account.user = req.user;
 	account.save(function(err: string) {
@@ -107,7 +102,7 @@ exports.list = function(req: any, res: any) {
 		sort = {accountType: 'asc'};
 	}
 
-	ACCOUNT
+	Account
 		.find()
 		.filter(filter)
 		.populate({path: 'stockPositions', model: 'Stockposition', options: {sort: {type: 'desc', symbol: 'asc'}}})
@@ -151,10 +146,10 @@ exports.fetchAccountNos = function(req: any, res: any) {
 };
 
 /**
- * ACCOUNT middleware
+ * Account middleware
  */
 exports.accountByID = function(req: any, res: any, next: NextFunction, id: number) {
-	ACCOUNT.findById(id).populate('user', 'displayName').exec(function(err : string, account : Account) {
+	Account.findById(id).populate('user', 'displayName').exec(function(err : string, account : Account) {
 		if (err) {
 			return next(err);
 		}
@@ -169,7 +164,7 @@ exports.accountByID = function(req: any, res: any, next: NextFunction, id: numbe
 };
 
 /**
- * ACCOUNT authorization middleware
+ * Account authorization middleware
  */
 exports.hasAuthorization = function(req: any, res: any, next: NextFunction) {
 	if (req.account.user.id !== req.user.id) {

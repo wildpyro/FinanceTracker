@@ -10,7 +10,7 @@ var mongoose = require('mongoose'),
 /**
  * A Validation function for local strategy properties
  */
-var validateLocalStrategyProperty = function(property) {
+var validateLocalStrategyProperty = function(property: String) {
 	return ((this.provider !== 'local' && !this.updated) || property.length);
 };
 
@@ -62,7 +62,7 @@ var UserSchema = new Schema({
 	paging: {
 		type: Number,
 		default: 10
-	},	
+	},
 	salt: {
 		type: String
 	},

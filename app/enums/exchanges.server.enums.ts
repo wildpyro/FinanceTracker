@@ -1,28 +1,36 @@
-'use strict';
+import * as _ from 'lodash';
 
 /**
- * Module dependencies.
+ * class to hold stock exchange to yahoo exchange sybmol
  */
-var _ = require('lodash');
+class Exchange{
+    exchange: string;
+    yahooExchange: string;
 
-const EXCHANGES = [{'exchange': '', 'yahoo': ''},
-				   {'exchange': 'TSX', 'yahoo': 'TO'},
-                   {'exchange': 'TSX-V', 'yahoo': 'V'},
-                   {'exchange': 'NYSE', 'yahoo': ''},
-				   {'exchange': 'Funds', 'yahoo': ''}
-				  ];
+    constructor(exchange: string, yahooExchange: string) {
+        this.exchange = exchange;
+        this.yahooExchange = yahooExchange;
+    }
+}
 
-exports.getExchanges = function() {
-    return EXCHANGES;
-};
+export type Exchanges = Array<Exchange>;
+
+export const EXCHANGES: Exchanges = [
+    new Exchange('', ''),
+    new Exchange('TSX', 'TO'),
+    new Exchange('TSX-V', 'V'),
+    new Exchange('NYSE', ''),
+    new Exchange('Funds', '')
+];
 
 /**
  * Get exchange by yahoo code
+ * @param yahooCode
  */
-exports.getByYahooCode = function(yahooCode) {
+export function getByYahooCode(yahooCode: string) : string {
 
 	var foundExchange = _.filter(EXCHANGES, function(i) {
-		if (i.yahoo === yahooCode) {
+		if (i.yahooExchange === yahooCode) {
 			return i;
 		}
 	});
@@ -35,7 +43,11 @@ exports.getByYahooCode = function(yahooCode) {
 	return returnVal;
 };
 
-exports.getByExchangeCode = function(exchangeCode) {
+/**
+ * Get by exchange code
+ * @param exchangeCode
+ */
+export function getByExchangeCode(exchangeCode: string) : string {
 
 	var foundExchange = _.filter(EXCHANGES, function(i) {
 		if (i.exchange === exchangeCode) {
@@ -45,7 +57,7 @@ exports.getByExchangeCode = function(exchangeCode) {
 
 	var returnVal = '';
 	if (foundExchange !== undefined && foundExchange.length > 0) {
-		returnVal = foundExchange[0].yahoo;
+		returnVal = foundExchange[0].yahooExchange;
 	}
 
 	return returnVal;
