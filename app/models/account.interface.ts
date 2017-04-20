@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { AccountTypes } from '../enums/account_types.server.enums';
+import { AccountTypes } from '../enums/account_types.enums';
 
 export interface IAccountModel extends mongoose.Document {
   description: string;

@@ -132,7 +132,7 @@ exports.list = function(req: any, res: any) {
 /**
  * Load the account drop down
  */
-exports.fetchAccountNos = function(req: any, res: any) {
+exports.getAccountNos = function(req: any, res: any) {
 	var query = Account.find();
 
 	query.select('description accountNo');
@@ -143,6 +143,25 @@ exports.fetchAccountNos = function(req: any, res: any) {
 
 		res.jsonp(results);
 	});
+};
+
+/**
+ * Load the account drop down
+ * @param user the userid to find accounts for
+ * @return any
+ */
+export function getAccountNos(user: string) : any {
+	var query = Account.find();
+
+	query.select('accountNo');
+	query.exec(function(err : string, results: [Account]) {
+		if (err) {
+			return {};
+		}
+		return results;
+	});
+
+	//Wrap this so that it gets resolved, unpack so that it is an array of strings
 };
 
 /**

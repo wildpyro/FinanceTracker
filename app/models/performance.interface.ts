@@ -1,11 +1,11 @@
 import { Schema } from 'mongoose';
 
 export interface IPerformance {
-    symbol?: string;
-    yahooSymbol?: string;
+    symbol: string;
+    yahooSymbol: string;
     lastUpdated: Date;
     created: Date;
-    user: String;
+    user: string;
     fiftyDayMovingAverage: Number;
     twoHundredDayMovingAverage: Number;
     percentChangeFromTwoHundredDayMVA: Number;

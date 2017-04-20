@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { IStockpositionArchiveModel } from '../models/stockposition_archive.server.model';
+import { IStockpositionArchiveModel } from '../models/stockposition_archive.interface';
 
 let schema: mongoose.Schema = new Schema({
 	archiveDate: {

@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
-import { Exchanges } from '../enums/exchanges.server.enums';
-import { AccountTypes } from '../enums/account_types.server.enums';
-import { AssetTypes } from '../enums/asset_types.server.enums';
+import { Exchanges } from '../enums/exchanges.enums';
+import { AccountTypes } from '../enums/account_types.enums';
+import { AssetTypes } from '../enums/asset_types.enums';
 
 export interface IStockpositionModel extends mongoose.Document {
 	accountType: AccountTypes;
@@ -17,4 +17,3 @@ export interface IStockpositionModel extends mongoose.Document {
 	created: Date;
 	user: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }];
 };
-

@@ -14,15 +14,15 @@ var StockpositiondetailSchema = new Schema({
 		type: String
 	},
 	quote: [{
-		type: Schema.Types.ObjectId, 
+		type: Schema.Types.ObjectId,
 		ref: 'Quote'
 	}],
 	fundamentals: [{
-		type: Schema.Types.ObjectId, 
+		type: Schema.Types.ObjectId,
 		ref: 'Fundamentals'
 	}],
 	performance: [{
-		type: Schema.Types.ObjectId, 
+		type: Schema.Types.ObjectId,
 		ref: 'Performance'
 	}]
 });
