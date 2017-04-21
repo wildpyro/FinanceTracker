@@ -1,7 +1,9 @@
-'use strict';
-
-/* Get unique error field name */
-function getUniqueErrorMessage(err: any) : string {
+/**
+ * Get unique error field name
+ * @param err
+ * @return string
+ */
+function getUniqueErrorMessage(err: any): string {
 	var output;
 
 	try {
@@ -15,7 +17,12 @@ function getUniqueErrorMessage(err: any) : string {
 	return output;
 };
 
-export function getErrorMessage(err: any) : string {
+/**
+ * Get the error message returned
+ * @param err
+ * @return string
+ */
+export function getErrorMessage(err: any): string {
 	var message = '';
 
 	if (err.code) {
