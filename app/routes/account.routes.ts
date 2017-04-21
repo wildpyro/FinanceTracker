@@ -1,7 +1,3 @@
-/**
- * Account router for REST endpoints
- */
-
 import { Router, Request, Response, NextFunction } from 'express';
 
 const users = require('../../app/controllers/users.server.controller');
@@ -44,6 +40,5 @@ export class AccountRouter {
 
 //Create a new instance and expose it.
 const accountRoutes = new AccountRouter();
-accountRoutes.init();
 
 export default accountRoutes.router;
