@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { IStockpositionTotals } from '../models/stockposition.totals.interface';
+import { IStockpositionTotal } from '../models/stockposition.total.interface';
 
 let schema: mongoose.Schema = new Schema({
 	market: {
@@ -20,4 +20,4 @@ let schema: mongoose.Schema = new Schema({
 	}
 });
 
-export let StockpositionTotalSchema = mongoose.model<IStockpositionTotals>('spTotals', schema);
+export let StockpositionTotalSchema = mongoose.model<IStockpositionTotal>('spTotals', schema);
