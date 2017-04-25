@@ -2,7 +2,7 @@ import { Mongoose as mongoose, Model as model } from 'mongoose';
 import { lodash as _ } from 'lodash';
 import * as errorHandler from '../error.controller';
 import { Request, Response, NextFunction } from 'express';
-import * as IUser from '../../models/user.interface';
+import * as IUser from '../../models/user.model';
 
 let User = new model('User');
 
@@ -25,7 +25,7 @@ exports.userByID = function (req, res, next, id) {
 /**
  * Require login routing middleware
  */
-exports.requiresLogin = function (req, res, next) {
+export function requiresLogin(req, res, next) {
 	if (!req.isAuthenticated()) {
 		return res.status(401).send({
 			message: 'User is not logged in'

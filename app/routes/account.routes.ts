@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
+import * as user from '../controllers/user.controller';
 
-import * as user from '../controllers/users.server.controller';
-const accounts = require('../../app/controllers/accounts.server.controller');
+const account = require('../../app/controllers/account.controller');
 
 export class AccountRouter {
   router: Router;
@@ -16,24 +16,24 @@ export class AccountRouter {
    * endpoints.
    */
   init() {
-    this.router.route('/accounts')
-      .get(accounts.list)
-      .post(users.requiresLogin, accounts.create);
+    this.router.route('/account')
+      .get(account.list)
+      .post(user.requiresLogin, account.create);
 
-    this.router.route('/accountsFetch')
-      .get(users.requiresLogin, accounts.hasAuthorization, accounts.list);
+    this.router.route('/accountFetch')
+      .get(user.requiresLogin, account.hasAuthorization, account.list);
 
-    this.router.route('/accounts/fetchAccountNo')
-      .get(accounts.fetchAccountNos);
+    this.router.route('/account/fetchAccountNo')
+      .get(account.fetchAccountNos);
 
-    this.router.route('/accounts/:accountId')
-      .get(accounts.read)
-      //.put(users.requiresLogin, accounts.hasAuthorization, accounts.update)
-      .put(users.requiresLogin, accounts.update)
-      .delete(users.requiresLogin, accounts.hasAuthorization, accounts.delete);
+    this.router.route('/account/:accountId')
+      .get(account.read)
+      //.put(users.requiresLogin, account.hasAuthorization, account.update)
+      .put(user.requiresLogin, account.update)
+      .delete(user.requiresLogin, account.hasAuthorization, account.delete);
 
     // Finish by binding to the middleware
-    this.router.param('accountId', accounts.accountByID);
+    this.router.param('accountId', account.accountByID);
   }
 
 }

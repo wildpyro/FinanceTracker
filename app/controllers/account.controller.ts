@@ -2,7 +2,7 @@ import { Mongoose as mongoose, Model as model } from 'mongoose';
 import { lodash as _ } from 'lodash';
 import { Request, Response, NextFunction } from 'express';
 import * as ErrorHandler from './error.controller';
-import { IAccountModel } from '../models/account.interface';
+import { IAccountModel } from '../models/account.model';
 
 let Account = new model('Account');
 

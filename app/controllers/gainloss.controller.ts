@@ -11,38 +11,38 @@ var mongoose = require('mongoose'),
 /**
  * Create a GainLoss
  */
-exports.create = function(req, res) {
+exports.create = function (req, res) {
 	var gainLoss = new GainLoss(req.body);
 	gainLoss.user = req.user;
 
-	gainLoss.save(function(err) {
+	gainLoss.save(function (err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
-		} 
+		}
 		else {
 			res.jsonp(gainLoss);
-		}	
+		}
 	});
 };
 
 /**
  * Show the current GainLoss
  */
-exports.read = function(req, res) {
+exports.read = function (req, res) {
 	res.jsonp(req.gainLoss);
 };
 
 /**
  * Update a GainLoss
  */
-exports.update = function(req, res) {
-	var gainLoss = req.gainLoss ;
+exports.update = function (req, res) {
+	var gainLoss = req.gainLoss;
 
-	gainLoss = _.extend(gainLoss , req.body);
+	gainLoss = _.extend(gainLoss, req.body);
 
-	gainLoss.save(function(err) {
+	gainLoss.save(function (err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -56,16 +56,16 @@ exports.update = function(req, res) {
 /**
  * Delete an GainLoss
  */
-exports.delete = function(req, res) {
+exports.delete = function (req, res) {
 	var gainLoss = req.gainLoss;
 
-	gainLoss.remove(function(err) {
+	gainLoss.remove(function (err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-			if (err) {return res.status(400).send({message: errorHandler.getErrorMessage(err)});}
+			if (err) { return res.status(400).send({ message: errorHandler.getErrorMessage(err) }); }
 
 			res.jsonp(gainLoss);
 		}
@@ -75,7 +75,7 @@ exports.delete = function(req, res) {
 /**
  * List of GainLoss
  */
-exports.list = function(req, res) {
+exports.list = function (req, res) {
 
 	var query = GainLoss.find(),
 		pagination = {
@@ -105,14 +105,14 @@ exports.list = function(req, res) {
 	if (req.query.sort && req.query.sort.length > 2) {
 		var sortKey = JSON.parse(req.query.sort).predicate,
 			direction = JSON.parse(req.query.sort).reverse ? 'desc' : 'asc';
-	
-		query.sort({[sortKey] : direction});
+
+		query.sort({ [sortKey]: direction });
 	}
 	else {
-		query.sort({date: 'asc'});
+		query.sort({ date: 'asc' });
 	}
 
-	query.page(pagination, function(err, gainLosss){
+	query.page(pagination, function (err, gainLosss) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -126,11 +126,11 @@ exports.list = function(req, res) {
 /**
  * GainLoss middleware
  */
-exports.gainLossByID = function(req, res, next, id) {
-	GainLoss.findById(id).populate('user', 'displayName').exec(function(err, gainLoss) {
+exports.gainLossByID = function (req, res, next, id) {
+	GainLoss.findById(id).populate('user', 'displayName').exec(function (err, gainLoss) {
 		if (err) return next(err);
-		if (! gainLoss) return next(new Error('Failed to load GainLoss ' + id));
-		req.gainLoss = gainLoss ;
+		if (!gainLoss) return next(new Error('Failed to load GainLoss ' + id));
+		req.gainLoss = gainLoss;
 		next();
 	});
 };
@@ -138,9 +138,9 @@ exports.gainLossByID = function(req, res, next, id) {
 /**
  * GainLoss authorization middleware
  */
-exports.hasAuthorization = function(req, res, next) {
+exports.hasAuthorization = function (req, res, next) {
 	if (req.user.id !== req.user.id) {
-		return res.status(403).send({message: 'User is not authorized'});
+		return res.status(403).send({ message: 'User is not authorized' });
 	}
 	next();
 };

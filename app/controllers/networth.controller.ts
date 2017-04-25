@@ -11,11 +11,11 @@ var mongoose = require('mongoose'),
 /**
  * Create a NETWORTH
  */
-exports.create = function(req, res) {
+exports.create = function (req, res) {
 	var networth = new NETWORTH(req.body);
 	networth.user = req.user;
 
-	networth.save(function(err) {
+	networth.save(function (err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -29,19 +29,19 @@ exports.create = function(req, res) {
 /**
  * Show the current NETWORTH
  */
-exports.read = function(req, res) {
+exports.read = function (req, res) {
 	res.jsonp(req.networth);
 };
 
 /**
  * Update a NETWORTH
  */
-exports.update = function(req, res) {
-	var networth = req.networth ;
+exports.update = function (req, res) {
+	var networth = req.networth;
 
-	networth = _.extend(networth , req.body);
+	networth = _.extend(networth, req.body);
 
-	networth.save(function(err) {
+	networth.save(function (err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -55,10 +55,10 @@ exports.update = function(req, res) {
 /**
  * Delete an NETWORTH
  */
-exports.delete = function(req, res) {
-	var networth = req.networth ;
+exports.delete = function (req, res) {
+	var networth = req.networth;
 
-	networth.remove(function(err) {
+	networth.remove(function (err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -72,7 +72,7 @@ exports.delete = function(req, res) {
 /**
  * List of NETWORTHs
  */
-exports.list = function(req, res) {
+exports.list = function (req, res) {
 
 	var sort;
 	var sortObject = {};
@@ -80,8 +80,8 @@ exports.list = function(req, res) {
 	var page = req.query.page || 1;
 
 	var filter = {
-		filters : {
-			mandatory : {
+		filters: {
+			mandatory: {
 				contains: req.query.filter
 			}
 		}
@@ -108,7 +108,7 @@ exports.list = function(req, res) {
 		.find()
 		.filter(filter)
 		.order(sort)
-		.page(pagination, function(err, networths){
+		.page(pagination, function (err, networths) {
 			if (err) {
 				return res.status(400).send({
 					message: errorHandler.getErrorMessage(err)
@@ -122,17 +122,17 @@ exports.list = function(req, res) {
 /**
  * NETWORTH middleware
  */
-exports.networthByID = function(req, res, next, id) {
-	NETWORTH.findById(id).populate('user', 'displayName').exec(function(err, networth) {
+exports.networthByID = function (req, res, next, id) {
+	NETWORTH.findById(id).populate('user', 'displayName').exec(function (err, networth) {
 		if (err) {
 			return next(err);
 		}
 
-		if (! networth) {
+		if (!networth) {
 			return next(new Error('Failed to load NETWORTH ' + id));
 		}
 
-		req.networth = networth ;
+		req.networth = networth;
 		next();
 	});
 };
@@ -140,9 +140,9 @@ exports.networthByID = function(req, res, next, id) {
 /**
  * NETWORTH authorization middleware
  */
-exports.hasAuthorization = function(req, res, next) {
+exports.hasAuthorization = function (req, res, next) {
 	if (req.networth.user.id !== req.user.id) {
-		return res.status(403).send({message: 'User is not authorized'});
+		return res.status(403).send({ message: 'User is not authorized' });
 	}
 	next();
 };

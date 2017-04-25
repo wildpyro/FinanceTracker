@@ -1,19 +1,18 @@
-'use strict';
+import { Model as model, Mongoose as mongoose } from 'mongoose';
+import * as _ from 'lodash';
+import { Request, Response, NextFunction } from 'express';
+import * as async from 'async';
+import * as ErrorHandler from './error.controller';
 
-/**
- * Module dependencies.
- */
-var mongoose = require('mongoose'),
-	passport = require('passport'),
-	_ = require('lodash'),
-	async = require('async'),
+let QUOTE = new model('Quote');
+let FUNDATMENTAL = new model('Fundatmental');
+let PERFORMANCE = new model('Performance');
+
+var passport = require('passport'),
 	yql = require('yql-node'),
 	config = require('../../config/config'),
 	errorHandler = require('./errors.server.controller'),
-	stockPositionsCtrl = require('./stockpositions/sp.base.server.controller'),
-	QUOTE = mongoose.model('Quote'),
-	FUNDATMENTALS = mongoose.model('Fundatmentals'),
-	PERFORMANCE = mongoose.model('Performance');
+	stockPositionsCtrl = require('./stockpositions/sp.base.server.controller');
 
 /**
  * Create a QUOTE
@@ -103,7 +102,7 @@ function updateReferences(response, symbol, yahooSymbol, res) {
 			});
 		},
 		fundamaentals: function (callback) {
-			FUNDATMENTALS.findOneAndUpdate(query, quoteResponse, options, function (err) {
+			FUNDATMENTAL.findOneAndUpdate(query, quoteResponse, options, function (err) {
 				callback(err);
 			});
 		},
