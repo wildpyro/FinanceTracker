@@ -1,14 +1,9 @@
-'use strict';
-
-/**
- * Module dependencies.
- */
-var _ = require('lodash');
+import * as _ from 'lodash';
 
 /**
  * Extend user's controller
  */
-module.exports = _.extend(
+export = _.extend(
 	require('./users/users.authentication.server.controller'),
 	require('./users/users.authorization.server.controller'),
 	require('./users/users.password.server.controller'),

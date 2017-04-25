@@ -4,7 +4,7 @@ import * as crypto from 'crypto';
 User = mongoose.model('User');
 
 export interface IUserModel extends mongoose.Document {
-    firstName: string;
+	firstName: string;
 	lastName: string;
 	displayName: string;
 	email: string;
@@ -26,12 +26,26 @@ export interface IUserModel extends mongoose.Document {
 };
 
 /**
+ * A Validation function for local strategy properties
+ */
+var validateLocalStrategyProperty = function (property: String) {
+	return ((this.provider !== 'local' && !this.updated) || property.length);
+};
+
+/**
+ * A Validation function for local strategy password
+ */
+var validateLocalStrategyPassword = function (password) {
+	return (this.provider !== 'local' || (password && password.length > 6));
+};
+
+/**
  * Create instance method for hashing a password
  * @param password
  * @param salt
  * @return string
  */
-export function hashPassword(password: string, salt: Buffer) : string {
+export function hashPassword(password: string, salt: Buffer): string {
 	if (salt && password) {
 		return crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512').toString('base64');
 	} else {
@@ -45,7 +59,7 @@ export function hashPassword(password: string, salt: Buffer) : string {
  * @param salt
  * @return boolean
  */
-export function authenticate(password: string, salt: Buffer) : boolean {
+export function authenticate(password: string, salt: Buffer): boolean {
 	return password === hashPassword(password, salt);
 };
 
@@ -61,7 +75,7 @@ export function findUniqueUsername(username: string, suffix: string, callback: a
 
 	_this.findOne({
 		username: possibleUsername
-	}, function(err: any, user: IUserModel) {
+	}, function (err: any, user: IUserModel) {
 		if (!err) {
 			if (!user) {
 				callback(possibleUsername);
@@ -71,3 +85,91 @@ export function findUniqueUsername(username: string, suffix: string, callback: a
 		}
 	});
 };
+
+let schema: mongoose.Schema = new Schema({
+	firstName: {
+		type: String,
+		trim: true,
+		default: '',
+		validate: [validateLocalStrategyProperty, 'Please fill in your first name']
+	},
+	lastName: {
+		type: String,
+		trim: true,
+		default: '',
+		validate: [validateLocalStrategyProperty, 'Please fill in your last name']
+	},
+	displayName: {
+		type: String,
+		trim: true
+	},
+	email: {
+		type: String,
+		trim: true,
+		default: '',
+		validate: [validateLocalStrategyProperty, 'Please fill in your email'],
+		match: [/.+\@.+\..+/, 'Please fill a valid email address']
+	},
+	username: {
+		type: String,
+		unique: 'testing error message',
+		required: 'Please fill in a username',
+		trim: true
+	},
+	password: {
+		type: String,
+		default: '',
+		validate: [validateLocalStrategyPassword, 'Password should be longer']
+	},
+	paging: {
+		type: Number,
+		default: 10
+	},
+	salt: {
+		type: String
+	},
+	provider: {
+		type: String,
+		required: 'Provider is required'
+	},
+	providerData: {},
+	additionalProvidersData: {},
+	roles: {
+		type: [{
+			type: String,
+			enum: ['user', 'admin']
+		}],
+		default: ['user']
+	},
+	updated: {
+		type: Date
+	},
+	created: {
+		type: Date,
+		default: Date.now
+	},
+	/* For reset password */
+	resetPasswordToken: {
+		type: String
+	},
+	resetPasswordExpires: {
+		type: Date
+	}
+}).pre('save', function (next: any) {
+	if (this._doc) {
+		let doc = <IUserModel>this._doc;
+
+		if (!doc.created) {
+			doc.created = new Date();
+		}
+
+		if (doc.password && doc.password.length > 6) {
+			doc.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+			doc.password = hashPassword(doc.password, doc.salt);
+		}
+	}
+	next();
+	return this;
+});
+
+export let UserSchema = mongoose.model<IUserModel>('user', schema);

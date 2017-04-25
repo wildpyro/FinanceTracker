@@ -1,21 +1,18 @@
-'use strict';
+import { Mongoose as mongoose, Model as model } from 'mongoose';
+import { lodash as _ } from 'lodash';
+import * as passport from 'passport';
+import { Request, Response, NextFunction } from 'express';
+import * as errorHandler from '../error.controller';
+//import * as mailer from '../stockpositions.server.controller';
 
-/**
- * Module dependencies.
- */
-var _ = require('lodash'),
-	errorHandler = require('../errors.server.controller.js'),
-	mailer = require('../stockpositions.server.controller.js'),
-	mongoose = require('mongoose'),
-	passport = require('passport'),
-	User = mongoose.model('User');
+let User = new model('User');
 
 /**
  * Update user details
  */
-exports.update = function(req, res) {
+exports.update = function (req: Request, res: Response) {
 	// Init Variables
-	var user = req.user;
+	var user = req.body.user;
 	var message = null;
 
 	// For security measurement we remove the roles from the req.body object
@@ -27,13 +24,13 @@ exports.update = function(req, res) {
 		user.updated = Date.now();
 		user.displayName = user.firstName + ' ' + user.lastName;
 
-		user.save(function(err) {
+		user.save(function (err) {
 			if (err) {
 				return res.status(400).send({
 					message: errorHandler.getErrorMessage(err)
 				});
 			} else {
-				req.login(user, function(err) {
+				req.body.login(user, function (err) {
 					if (err) {
 						res.status(400).send(err);
 					} else {
@@ -52,20 +49,20 @@ exports.update = function(req, res) {
 /**
  * Send User
  */
-exports.me = function(req, res) {
-	res.json(req.user || null);
+exports.me = function (req: Request, res: Response) {
+	res.json(req.body.user || null);
 };
 
 /**
- * Manual process for sending the stock position daily email 
+ * Manual process for sending the stock position daily email
  */
-exports.generateDailyStocksEmail = function(req, res) {
-	mailer.sendMail(req.user, function(err) {
+exports.generateDailyStocksEmail = function (req, res) {
+	mailer.sendMail(req.user, function (err) {
 		if (err) {
 			res.status(400).send(err);
 		}
 		else {
-			res.status(200).send({message: 'Email generated and sent'});
+			res.status(200).send({ message: 'Email generated and sent' });
 		}
 	});
 };

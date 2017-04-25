@@ -1,18 +1,15 @@
-'use strict';
+import { Mongoose as mongoose, Model as model } from 'mongoose';
+import { lodash as _ } from 'lodash';
+import * as errorHandler from '../error.controller';
+import { Request, Response, NextFunction } from 'express';
+import { passport } from 'passport';
 
-/**
- * Module dependencies.
- */
-var _ = require('lodash'),
-	errorHandler = require('../errors.server.controller'),
-	mongoose = require('mongoose'),
-	passport = require('passport'),
-	User = mongoose.model('User');
+let User = new model('User');
 
 /**
  * Signup
  */
-exports.signup = function(req, res) {
+exports.signup = function (req: Request, res: Response) {
 	// For security measurement we remove the roles from the req.body object
 	delete req.body.roles;
 
@@ -24,8 +21,8 @@ exports.signup = function(req, res) {
 	user.provider = 'local';
 	user.displayName = user.firstName + ' ' + user.lastName;
 
-	// Then save the user 
-	user.save(function(err) {
+	// Then save the user
+	user.save(function (err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -35,7 +32,7 @@ exports.signup = function(req, res) {
 			user.password = undefined;
 			user.salt = undefined;
 
-			req.login(user, function(err) {
+			req.login(user, function (err) {
 				if (err) {
 					res.status(400).send(err);
 				} else {
@@ -49,8 +46,8 @@ exports.signup = function(req, res) {
 /**
  * Signin after passport authentication
  */
-exports.signin = function(req, res, next) {
-	passport.authenticate('local', function(err, user, info) {
+exports.signin = function (req: Request, res: Response, next: NextFunction) {
+	passport.authenticate('local', function (err: any, user, info) {
 		if (err || !user) {
 			res.status(400).send(info);
 		} else {
@@ -58,7 +55,7 @@ exports.signin = function(req, res, next) {
 			user.password = undefined;
 			user.salt = undefined;
 
-			req.login(user, function(err) {
+			req.login(user, function (err) {
 				if (err) {
 					res.status(400).send(err);
 				} else {
@@ -72,7 +69,7 @@ exports.signin = function(req, res, next) {
 /**
  * Signout
  */
-exports.signout = function(req, res) {
+exports.signout = function (req: Request, res: Response) {
 	req.logout();
 	res.redirect('/');
 };
@@ -80,27 +77,27 @@ exports.signout = function(req, res) {
 /**
  * OAuth callback
  */
-exports.oauthCallback = function(strategy) {
-	return function(req, res, next) {
-		passport.authenticate(strategy, function(err, user, redirectURL) {
+exports.oauthCallback = function (strategy) {
+	return function (req: any, res, next) {
+		passport.authenticate(strategy, function (err, user, redirectURL) {
 			if (err || !user) {
 				return res.redirect('/#!/signin');
 			}
-			req.login(user, function(err) {
+			req.login(user, function (err) {
 				if (err) {
 					return res.redirect('/#!/signin');
 				}
 
 				return res.redirect(redirectURL || '/');
 			});
-		})(req, res, next);
+		})(req : any, res, next);
 	};
 };
 
 /**
  * Helper function to save or update a OAuth user profile
  */
-exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
+exports.saveOAuthUserProfile = function (req: any, providerUserProfile, done) {
 	if (!req.user) {
 		// Define a search query fields
 		var searchMainProviderIdentifierField = 'providerData.' + providerUserProfile.providerIdentifierField;
@@ -120,14 +117,14 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
 			$or: [mainProviderSearchQuery, additionalProviderSearchQuery]
 		};
 
-		User.findOne(searchQuery, function(err, user) {
+		User.findOne(searchQuery, function (err, user) {
 			if (err) {
 				return done(err);
 			} else {
 				if (!user) {
 					var possibleUsername = providerUserProfile.username || ((providerUserProfile.email) ? providerUserProfile.email.split('@')[0] : '');
 
-					User.findUniqueUsername(possibleUsername, null, function(availableUsername) {
+					User.findUniqueUsername(possibleUsername, null, function (availableUsername) {
 						user = new User({
 							firstName: providerUserProfile.firstName,
 							lastName: providerUserProfile.lastName,
@@ -139,7 +136,7 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
 						});
 
 						// And save the user
-						user.save(function(err) {
+						user.save(function (err) {
 							return done(err, user);
 						});
 					});
@@ -162,7 +159,7 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
 			user.markModified('additionalProvidersData');
 
 			// And save the user
-			user.save(function(err) {
+			user.save(function (err) {
 				return done(err, user, '/#!/settings/accounts');
 			});
 		} else {
@@ -174,7 +171,7 @@ exports.saveOAuthUserProfile = function(req, providerUserProfile, done) {
 /**
  * Remove OAuth provider
  */
-exports.removeOAuthProvider = function(req, res, next) {
+exports.removeOAuthProvider = function (req: any, res, next) {
 	var user = req.user;
 	var provider = req.param('provider');
 
@@ -187,13 +184,13 @@ exports.removeOAuthProvider = function(req, res, next) {
 			user.markModified('additionalProvidersData');
 		}
 
-		user.save(function(err) {
+		user.save(function (err) {
 			if (err) {
 				return res.status(400).send({
 					message: errorHandler.getErrorMessage(err)
 				});
 			} else {
-				req.login(user, function(err) {
+				req.login(user, function (err) {
 					if (err) {
 						res.status(400).send(err);
 					} else {

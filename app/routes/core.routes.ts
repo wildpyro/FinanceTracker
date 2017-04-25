@@ -1,6 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
-
-const core = require('../../app/controllers/core.controller');
+import * as core from '../controllers/core.controller';
 
 export class CoreRouter {
   router: Router;

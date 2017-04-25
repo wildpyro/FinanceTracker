@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 
-const users = require('../../app/controllers/users.server.controller');
+import * as user from '../controllers/users.server.controller';
 const accounts = require('../../app/controllers/accounts.server.controller');
 
 export class AccountRouter {
