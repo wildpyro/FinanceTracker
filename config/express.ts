@@ -16,7 +16,7 @@ import { session } from 'express-session';
 import { methodOverride } from 'method-override';
 import { cookieParser } from 'cookie-parser';
 import { helmet } from 'helmet';
-import { passport } from 'passport';
+import * as passport from 'passport';
 import { consolidate } from 'consolidate';
 
 let MongoStore = require('connect-mongo')({ session: session });
@@ -196,7 +196,7 @@ class App {
 		});
 
 		// Assume 404 since no middleware responded
-		this.express.use(function (req : any, res : any) {
+		this.express.use(function (req: any, res: any) {
 			res.status(404).render('404', {
 				url: req.originalUrl,
 				error: 'Not Found'

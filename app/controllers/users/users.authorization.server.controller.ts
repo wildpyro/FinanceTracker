@@ -7,26 +7,33 @@ import * as IUser from '../../models/user.model';
 let User = new model('User');
 
 /**
- * User middleware
+ * get by user id
+ * @param req
+ * @param res
+ * @param next
+ * @param id
  */
-exports.userByID = function (req, res, next, id) {
-	User.findOne({ _id: id }).exec(function (err: any, user) {
+export function userByID(req: Request, res: Response, next: NextFunction, id: any) {
+	User.findOne({ _id: id }).exec(function (err: any, user: IUser.IUserModel) {
 		if (err) {
 			return next(err);
 		}
 		if (!user) {
 			return next(new Error('Failed to load User ' + id));
 		}
-		req.profile = user;
+		req.body.profile = user;
 		next();
 	});
 };
 
 /**
- * Require login routing middleware
+ * Verify that the user is logged in
+ * @param req
+ * @param res
+ * @param next
  */
-export function requiresLogin(req, res, next) {
-	if (!req.isAuthenticated()) {
+export function requiresLogin(req: Request, res: Response, next: NextFunction) {
+	if (!req.body.isAuthenticated()) {
 		return res.status(401).send({
 			message: 'User is not logged in'
 		});
@@ -37,13 +44,14 @@ export function requiresLogin(req, res, next) {
 
 /**
  * User authorizations routing middleware
+ * @param roles
  */
-exports.hasAuthorization = function (roles) {
+export function hasAuthorization(roles: string) {
 	var _this = this;
 
-	return function (req, res, next) {
+	return function (req: Request, res: Response, next: NextFunction) {
 		_this.requiresLogin(req, res, function () {
-			if (_.intersection(req.user.roles, roles).length) {
+			if (_.intersection(req.body.user.roles, roles).length) {
 				return next();
 			} else {
 				return res.status(403).send({

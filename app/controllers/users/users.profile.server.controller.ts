@@ -3,14 +3,14 @@ import { lodash as _ } from 'lodash';
 import * as passport from 'passport';
 import { Request, Response, NextFunction } from 'express';
 import * as errorHandler from '../error.controller';
-//import * as mailer from '../stockpositions.server.controller';
-
-let User = new model('User');
+import * as mailer from 'nodemailer';
 
 /**
  * Update user details
+ * @param req
+ * @param res
  */
-exports.update = function (req: Request, res: Response) {
+export function update(req: Request, res: Response) {
 	// Init Variables
 	var user = req.body.user;
 	var message = null;
@@ -24,13 +24,13 @@ exports.update = function (req: Request, res: Response) {
 		user.updated = Date.now();
 		user.displayName = user.firstName + ' ' + user.lastName;
 
-		user.save(function (err) {
+		user.save(function (err: string) {
 			if (err) {
 				return res.status(400).send({
 					message: errorHandler.getErrorMessage(err)
 				});
 			} else {
-				req.body.login(user, function (err) {
+				req.body.login(user, function (err: string) {
 					if (err) {
 						res.status(400).send(err);
 					} else {
@@ -48,21 +48,26 @@ exports.update = function (req: Request, res: Response) {
 
 /**
  * Send User
+ * @param req
+ * @param res
  */
-exports.me = function (req: Request, res: Response) {
+export function me(req: Request, res: Response) {
 	res.json(req.body.user || null);
 };
 
 /**
+ * Currently this doesn't work
  * Manual process for sending the stock position daily email
+ * @param req
+ * @param res
  */
-exports.generateDailyStocksEmail = function (req, res) {
-	mailer.sendMail(req.user, function (err) {
+export function generateDailyStocksEmail(req: Request, res: Response) {
+	/*mailer.sendMail(req.body.user, function (err: string) {
 		if (err) {
 			res.status(400).send(err);
 		}
 		else {
 			res.status(200).send({ message: 'Email generated and sent' });
 		}
-	});
+	});*/
 };

@@ -40,7 +40,7 @@ export function getGlobbedFiles(globPatterns: any, removeRoot: string): Array<st
 
 	// If glob pattern is array so we use each pattern in a recursive way, otherwise we use glob
 	if (_.isArray(globPatterns)) {
-		globPatterns.forEach(function(globPattern: any) {
+		globPatterns.forEach(function (globPattern: any) {
 			output = _.union(output, _this.getGlobbedFiles(globPattern, removeRoot));
 		});
 	} else if (_.isString(globPatterns)) {
@@ -48,10 +48,10 @@ export function getGlobbedFiles(globPatterns: any, removeRoot: string): Array<st
 			output.push(globPatterns);
 		}
 		else {
-			var files = glob(globPatterns, {sync: true});
+			var files = glob(globPatterns, { sync: true });
 
 			if (removeRoot) {
-				files = files.map(function(file: any) {
+				files = files.map(function (file: any) {
 					return file.replace(removeRoot, '');
 				});
 			}
@@ -67,7 +67,7 @@ export function getGlobbedFiles(globPatterns: any, removeRoot: string): Array<st
  * Get the modules JavaScript files
  * @param whether to include the tests directory
  */
-export function getJavaScriptAssets(includeTests: boolean): Array<string>  {
+export function getJavaScriptAssets(includeTests: boolean): Array<string> {
 	var output = this.getGlobbedFiles(this.assets.lib.js.concat(this.assets.js), 'public/');
 
 	// To include tests

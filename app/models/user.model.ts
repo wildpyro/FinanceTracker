@@ -19,7 +19,7 @@ export interface IUserModel extends mongoose.Document {
 	updated: Date;
 	created: Date;
 	resetPasswordToken: string;
-	resetPasswordExpires: Date;
+	resetPasswordExpires: number;
 
 	//Define it's structure as part of the interface? hashPassword(password: string, salt: Buffer) : string;
 
@@ -28,14 +28,14 @@ export interface IUserModel extends mongoose.Document {
 /**
  * A Validation function for local strategy properties
  */
-var validateLocalStrategyProperty = function (property: String) {
+var validateLocalStrategyProperty = function (property: string) {
 	return ((this.provider !== 'local' && !this.updated) || property.length);
 };
 
 /**
  * A Validation function for local strategy password
  */
-var validateLocalStrategyPassword = function (password) {
+var validateLocalStrategyPassword = function (password: string) {
 	return (this.provider !== 'local' || (password && password.length > 6));
 };
 

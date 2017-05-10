@@ -1,36 +1,38 @@
-'use strict';
 
-/**
- * Module dependencies.
- */
-var _ = require('lodash'),
-	errorHandler = require('../errors.server.controller'),
-	mongoose = require('mongoose'),
-	passport = require('passport'),
-	User = mongoose.model('User'),
-	config = require('../../../config/config'),
-	nodemailer = require('nodemailer'),
-	async = require('async'),
-	crypto = require('crypto');
+import * as crypto from 'crypto';
+import * as async from 'async';
+import * as nodemailer from 'nodemailer';
+import { Mongoose as mongoose, Model as model } from 'mongoose';
+import { lodash as _ } from 'lodash';
+import { Request, Response, NextFunction } from 'express';
+
+import * as errorHandler from '../error.controller';
+import { IUserModel } from '../../models/user.model';
+import * as config from '../../../config/config';
+
+let User = new model('User');
 
 /**
  * Forgot for reset password (forgot POST)
+ * @param req
+ * @param res
+ * @param next
  */
-exports.forgot = function(req, res, next) {
+export function forgot(req: Request, res: Response, next: NextFunction) {
 	async.waterfall([
 		// Generate random token
-		function(done) {
-			crypto.randomBytes(20, function(err, buffer) {
+		function (done: any) {
+			crypto.randomBytes(20, function (err: Error, buffer: Buffer) {
 				var token = buffer.toString('hex');
 				done(err, token);
 			});
 		},
 		// Lookup user by username
-		function(token, done) {
+		function (token: string, done: any) {
 			if (req.body.username) {
 				User.findOne({
 					username: req.body.username
-				}, '-salt -password', function(err, user) {
+				}, '-salt -password', function (err: string, user: IUserModel) {
 					if (!user) {
 						return res.status(400).send({
 							message: 'No account with that username has been found'
@@ -43,7 +45,7 @@ exports.forgot = function(req, res, next) {
 						user.resetPasswordToken = token;
 						user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
-						user.save(function(err) {
+						user.save(function (err: string) {
 							done(err, token, user);
 						});
 					}
@@ -54,25 +56,25 @@ exports.forgot = function(req, res, next) {
 				});
 			}
 		},
-		function(token, user, done) {
+		function (token: string, user: IUserModel, done: any) {
 			res.render('templates/reset-password-email', {
 				name: user.displayName,
-				appName: config.app.title,
+				appName: config.getConfig().app.title,
 				url: 'http://' + req.headers.host + '/auth/reset/' + token
-			}, function(err, emailHTML) {
+			}, function (err: Error, emailHTML: string) {
 				done(err, emailHTML, user);
 			});
 		},
 		// If valid email, send reset email using service
-		function(emailHTML, user, done) {
-			var smtpTransport = nodemailer.createTransport(config.mailer.transport);
+		function (emailHTML: string, user: IUserModel, done: any) {
+			var smtpTransport = nodemailer.createTransport(config.getConfig().mailer.transport);
 			var mailOptions = {
 				to: user.email,
-				from: config.mailer.from,
+				from: config.getConfig().mailer.from,
 				subject: 'Password Reset',
 				html: emailHTML
 			};
-			smtpTransport.sendMail(mailOptions, function(err) {
+			smtpTransport.sendMail(mailOptions, function (err: Error) {
 				if (!err) {
 					res.send({
 						message: 'An email has been sent to ' + user.email + ' with further instructions.'
@@ -82,21 +84,26 @@ exports.forgot = function(req, res, next) {
 				done(err);
 			});
 		}
-	], function(err) {
-		if (err) return next(err);
+	], function (err: Error) {
+
+		if (err) {
+			return next(err);
+		}
 	});
 };
 
 /**
  * Reset password GET from email token
+ * @param req
+ * @param res
  */
-exports.validateResetToken = function(req, res) {
+export function validateResetToken(req: Request, res: Response) {
 	User.findOne({
 		resetPasswordToken: req.params.token,
 		resetPasswordExpires: {
 			$gt: Date.now()
 		}
-	}, function(err, user) {
+	}, function (err: string, user: IUserModel) {
 		if (!user) {
 			return res.redirect('/#!/password/reset/invalid');
 		}
@@ -107,37 +114,40 @@ exports.validateResetToken = function(req, res) {
 
 /**
  * Reset password POST from email token
+ * @param req
+ * @param res
+ * @param next
  */
-exports.reset = function(req, res, next) {
+export function reset(req: Request, res: Response, next: NextFunction) {
 	// Init Variables
 	var passwordDetails = req.body;
 
 	async.waterfall([
 
-		function(done) {
+		function (done: any) {
 			User.findOne({
 				resetPasswordToken: req.params.token,
 				resetPasswordExpires: {
 					$gt: Date.now()
 				}
-			}, function(err, user) {
+			}, function (err: string, user: IUserModel) {
 				if (!err && user) {
 					if (passwordDetails.newPassword === passwordDetails.verifyPassword) {
 						user.password = passwordDetails.newPassword;
 						user.resetPasswordToken = undefined;
 						user.resetPasswordExpires = undefined;
 
-						user.save(function(err) {
+						user.save(function (err: string) {
 							if (err) {
 								return res.status(400).send({
 									message: errorHandler.getErrorMessage(err)
 								});
 							} else {
-								req.login(user, function(err) {
+								req.login(user, function (err: string) {
 									if (err) {
 										res.status(400).send(err);
 									} else {
-										// Return authenticated user 
+										// Return authenticated user
 										res.json(user);
 
 										done(err, user);
@@ -157,55 +167,59 @@ exports.reset = function(req, res, next) {
 				}
 			});
 		},
-		function(user, done) {
+		function (user: IUserModel, done: any) {
 			res.render('templates/reset-password-confirm-email', {
 				name: user.displayName,
-				appName: config.app.title
-			}, function(err, emailHTML) {
+				appName: config.getConfig().app.title
+			}, function (err: any, emailHTML: string) {
 				done(err, emailHTML, user);
 			});
 		},
 		// If valid email, send reset email using service
-		function(emailHTML, user, done) {
-			var smtpTransport = nodemailer.createTransport(config.mailer.options);
+		function (emailHTML: string, user: IUserModel, done: any) {
+			var smtpTransport = nodemailer.createTransport(config.getConfig().mailer.options);
 			var mailOptions = {
 				to: user.email,
-				from: config.mailer.from,
+				from: config.getConfig().mailer.from,
 				subject: 'Your password has been changed',
 				html: emailHTML
 			};
 
-			smtpTransport.sendMail(mailOptions, function(err) {
+			smtpTransport.sendMail(mailOptions, function (err: Error) {
 				done(err, 'done');
 			});
 		}
-	], function(err) {
-		if (err) return next(err);
+	], function (err: Error) {
+		if (err) {
+			return next(err);
+		}
 	});
 };
 
 /**
  * Change Password
+ * @param req
+ * @param res
  */
-exports.changePassword = function(req, res) {
+export function changePassword(req: Request, res: Response) {
 	// Init Variables
 	var passwordDetails = req.body;
 
 	if (req.user) {
 		if (passwordDetails.newPassword) {
-			User.findById(req.user.id, function(err, user) {
+			User.findById(req.user.id, function (err: Error, user: IUserModel) {
 				if (!err && user) {
-					if (user.authenticate(passwordDetails.currentPassword)) {
+					if (User.authenticate(passwordDetails.currentPassword)) {
 						if (passwordDetails.newPassword === passwordDetails.verifyPassword) {
 							user.password = passwordDetails.newPassword;
 
-							user.save(function(err) {
+							user.save(function (err: Error) {
 								if (err) {
 									return res.status(400).send({
 										message: errorHandler.getErrorMessage(err)
 									});
 								} else {
-									req.login(user, function(err) {
+									req.login(user, function (err: Error) {
 										if (err) {
 											res.status(400).send(err);
 										} else {
