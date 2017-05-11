@@ -1,9 +1,6 @@
-'use strict';
-
 /**
  * Express config called from server.js
  */
-
 import * as fs from 'fs';
 import * as https from 'https';
 import * as express from 'express';
@@ -105,13 +102,13 @@ class App {
 
 		// Environment dependent middleware
 		if (process.env.NODE_ENV === 'development') {
-			app.use(logger('dev'));
+			this.express.use(logger('dev'));
 
 			// Disable views cache
-			app.set('view cache', false);
+			this.express.set('view cache', false);
 		}
 		else if (process.env.NODE_ENV === 'production') {
-			app.locals.cache = 'memory';
+			this.express.locals.cache = 'memory';
 		}
 		else if (process.env.NODE_ENV === 'secure') {
 			// Log SSL usage
@@ -125,7 +122,7 @@ class App {
 			var httpsServer = https.createServer({
 				key: privateKey,
 				cert: certificate
-			}, app);
+			}, this.express);
 
 			// Return HTTPS server instance
 			return httpsServer;
@@ -176,11 +173,11 @@ class App {
 	 * initialize all the routes and verify they exist
 	 */
 	private setRouteResolution(): void {
-		config.getGlobbedFiles('./app/routes/**/*.js', null).forEach(function (routePath: string) {
-			require(path.resolve(routePath))(app);
+		config.getGlobbedFiles('./app/routes/**/*.js', null).forEach(function (routePath: String) {
+			require(path.resolve(routePath))();
 		});
 
-		this.express.use(function (err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
+		this.express.use(function (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) {
 			// If the error object doesn't exists
 			if (!err) {
 				return next();

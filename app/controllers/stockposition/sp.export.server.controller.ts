@@ -11,23 +11,23 @@ var mongoose = require('mongoose'),
 /** 
  * Export the data from stock positions to a csv
  */
- exports.exportData = function(req, res) {
- 	if (req.user.id) {
- 		//For now just select everything. Currently authorization isn't supported. 
- 		Stockposition.find().exec(function(err) {
- 			
- 			if (err) {
-				return res.status(400).send({message: errorHandler.getErrorMessage(err)});
-			} else {
-				return res.status(400).send({message: 'File is located: '});
-			}			
- 		});
+exports.exportData = function (req, res) {
+	if (req.user.id) {
+		//For now just select everything. Currently authorization isn't supported. 
+		Stockposition.find().exec(function (err) {
 
- 	}
- 	else {
+			if (err) {
+				return res.status(400).send({ message: errorHandler.getErrorMessage(err) });
+			} else {
+				return res.status(400).send({ message: 'File is located: ' });
+			}
+		});
+
+	}
+	else {
 		return res.status(403).send('User is not authorized');
- 	}
- };
+	}
+};
 
 /**
  * Stockpositions_Export authorization middleware

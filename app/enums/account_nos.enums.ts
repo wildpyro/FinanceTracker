@@ -2,12 +2,12 @@
  * currently this is not used.
  */
 
-import { getAccountNos } from '../controllers/account.controller';
+import { AccountModel } from '../controllers/account.controller';
 
 /**
  * class for account types
  */
-class AccountNo{
+class AccountNo {
     code: string;
     type: string;
 

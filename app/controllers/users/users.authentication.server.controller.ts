@@ -1,9 +1,8 @@
+import * as passport from 'passport';
+import { Request, Response, NextFunction } from 'express';
 import { Mongoose as mongoose, Model as model } from 'mongoose';
 import { lodash as _ } from 'lodash';
 import * as errorHandler from '../error.controller';
-import { Request, Response, NextFunction } from 'express';
-import { Promise } from 'es6-promise';
-import * as passport from 'passport';
 import { IUserModel } from '../../models/user.model';
 
 let User = new model('User');

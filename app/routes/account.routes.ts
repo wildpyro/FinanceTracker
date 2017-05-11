@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import * as user from '../controllers/user.controller';
+import * as user from '../controllers/users/users.authorization.server.controller';
 
 const account = require('../../app/controllers/account.controller');
 

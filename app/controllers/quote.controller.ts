@@ -1,26 +1,24 @@
 import { Model as model, Mongoose as mongoose } from 'mongoose';
-import * as _ from 'lodash';
 import { Request, Response, NextFunction } from 'express';
+import * as _ from 'lodash';
 import * as async from 'async';
-import * as ErrorHandler from './error.controller';
+import * as passport from 'passport';
+import * as yql from 'yql-node';
+import * as errorHandler from './error.controller';
+import * as stockposition from './stockposition/sp.base.server.controller';
+import * as config from '../../config/config';
 
 let QUOTE = new model('Quote');
 let FUNDATMENTAL = new model('Fundatmental');
 let PERFORMANCE = new model('Performance');
 
-var passport = require('passport'),
-	yql = require('yql-node'),
-	config = require('../../config/config'),
-	errorHandler = require('./errors.server.controller'),
-	stockPositionsCtrl = require('./stockpositions/sp.base.server.controller');
-
 /**
- * Create a QUOTE
+ * Create a Quote
  */
-function create(req, res) {
+function create(req: Request, res: Response) {
 	var quote = new QUOTE(req);
 
-	quote.save(function (err) {
+	quote.save(function (err: Error) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -45,8 +43,8 @@ function init() {
 /**
  * Clean up the symbols to put them in yahoo quote format
  */
-function prepSymbols(symbols) {
-	function cleanUp(symbol) {
+function prepSymbols(symbols: String[]) {
+	function cleanUp(symbol: String) {
 		var re = /[.]/g;
 
 		//See if there are more than one period
@@ -65,13 +63,13 @@ function prepSymbols(symbols) {
 /**
  * Update a QUOTE
  */
-function update(req, res) {
+function update(req: Request, res: Response) {
 	var quote = req;
 
 	quote = _.extend(quote, req);
 	var quoteObj = new QUOTE(quote);
 
-	quoteObj.save(function (err) {
+	quoteObj.save(function (err: String) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -86,10 +84,10 @@ function update(req, res) {
  * Update references to the other records associated with a quote
  * Also call a price update to any stock positions that exists.
  */
-function updateReferences(response, symbol, yahooSymbol, res) {
+function updateReferences(response: Response, symbol: String, yahooSymbol: String, res: Response) {
 	var query = { 'Symbol': symbol },
 		options = { 'upsert': true, 'new': true, 'setDefaultOnInsert': true },
-		quoteResponse = JSON.parse(response).query.results.quote;
+		quoteResponse = JSON.parse(response.body).query.results.quote;
 
 	quoteResponse.YahooSymbol = yahooSymbol;
 	quoteResponse.Symbol = symbol;
@@ -128,14 +126,13 @@ function updateReferences(response, symbol, yahooSymbol, res) {
 		});
 }
 
-exports.yahooQUOTE = function (symbol, res) {
+export function yahooQuote(symbol: String, res: Response) {
 	init();
 
 	var yahooSymbol = prepSymbols([symbol]);
+	var query = 'select * from yahoo.finance.quotes where symbol in ("'.concat(yahooSymbol.join(',')).concat('");');
 
-	var query = 'select * from yahoo.finance.quotes where symbol in ("'.concat(yahooSymbol).concat('");');
-
-	yql.execute(query, function (err, results) {
+	yql.execute(query, function (err: Error, results: Response) {
 		if (err) {
 			return res.status(400).send({ message: errorHandler.getErrorMessage(err) });
 		} else {
@@ -147,13 +144,13 @@ exports.yahooQUOTE = function (symbol, res) {
 /**
  * Returns the current prices from yahoo for a set of symbols. Symbols should be suffixed with .<<Exchange>>
  */
-exports.yahooQUOTEs = function (symbols, res) {
+exports.yahooQUOTEs = function (symbols: String[], res: Response) {
 	init();
 
 	var symbols1 = prepSymbols(symbols);
-	var query = 'select * from yahoo.finance.quotes where symbol in ("'.concat(symbols1).concat('");');
+	var query = 'select * from yahoo.finance.quotes where symbol in ("'.concat(symbols1.join(',')).concat('");');
 
-	yql.execute(query, function (err, results) {
+	yql.execute(query, function (err: Error, results) {
 		if (err) {
 			console.log('Eror:', err);
 		} else {
@@ -163,11 +160,11 @@ exports.yahooQUOTEs = function (symbols, res) {
 };
 
 /**
-* QuoteById
-* Fetch a stock quote by Id
-*/
-exports.quoteByID = function (req, res, next, id) {
-	QUOTE.findById(id).populate('user', 'displayName').exec(function (err, quote) {
+ * QuoteById
+ * Fetch a stock quote by Id
+ */
+export function quoteByID(req: Request, res: Response, next: NextFunction, id: Number) {
+	QUOTE.findById(id).populate('user', 'displayName').exec(function (err: Error, quote) {
 		if (err) {
 			return next(err);
 		}
@@ -175,7 +172,7 @@ exports.quoteByID = function (req, res, next, id) {
 		if (!quote) {
 			return next(new Error('Failed to load QUOTE ' + id));
 		}
-		req.quote = quote;
+		req.body.quote = quote;
 		next();
 	});
 };

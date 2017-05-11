@@ -13,17 +13,18 @@ export class StockpositionRouter {
 
 	init() {
 
-		app.route('/stockpositions')
+
+		this.router.route('/stockpositions')
 			.get(users.requiresLogin, stockposition.listBase)
 			.post(users.requiresLogin, stockposition.checkDuplicates, stockposition.create);
 
-		app.route('/stockpositions/:stockpositionId')
+		this.router.route('/stockpositions/:stockpositionId')
 			.get(stockposition.readBase)
 			.put(users.requiresLogin, stockposition.update, stockposition.updatePrice)
 			.delete(users.requiresLogin, stockposition.deleteBase);
 
 		// Finish by binding the Stockposition middleware
-		app.param('stockpositionId', stockposition.stockpositionByID);
+		this.router.param('stockpositionId', stockposition.stockpositionByID);
 	}
 }
 

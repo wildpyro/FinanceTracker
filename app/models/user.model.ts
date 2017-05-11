@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import * as crypto from 'crypto';
 
-User = mongoose.model('User');
+let User = mongoose.model('User');
 
 export interface IUserModel extends mongoose.Document {
 	firstName: string;

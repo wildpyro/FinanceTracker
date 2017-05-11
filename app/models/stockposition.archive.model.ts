@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { IStockpositionModel } from '../models/stockposition.interface';
+import { IStockpositionModel } from '../models/stockposition.model';
 
 export interface IStockpositionArchiveModel extends mongoose.Document {
 	year: Number;

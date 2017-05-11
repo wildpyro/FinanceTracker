@@ -22,7 +22,7 @@ export class TxnRouter {
 			.put(user.requiresLogin, txn.hasAuthorization, txn.update)
 			.delete(user.requiresLogin, txn.hasAuthorization, txn.delete);
 
-		app.param('txnId', txn.txnByID);
+		this.router.param('txnId', txn.txnByID);
 	}
 }
 
