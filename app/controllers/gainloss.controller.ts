@@ -1,21 +1,20 @@
-'use strict';
+import { Model as model, Mongoose as mongoose } from 'mongoose';
+import { Request, Response, NextFunction } from 'express';
+import * as _ from 'lodash';
+import * as errorHandler from './error.controller';
+import { ISort } from '../types/sort.types';
+import { IGainLossModel } from '../models/gainloss.model';
 
-/**
- * Module dependencies.
- */
-var mongoose = require('mongoose'),
-	errorHandler = require('./errors.server.controller'),
-	GainLoss = mongoose.model('GainLoss'),
-	_ = require('lodash');
+let GainLoss = new model('GainLoss');
 
 /**
  * Create a GainLoss
  */
-exports.create = function (req, res) {
-	var gainLoss = new GainLoss(req.body);
+export function create(req: Request, res: Response) {
+	let gainLoss = new GainLoss(req.body);
 	gainLoss.user = req.user;
 
-	gainLoss.save(function (err) {
+	gainLoss.save(function (err: Error) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -30,19 +29,19 @@ exports.create = function (req, res) {
 /**
  * Show the current GainLoss
  */
-exports.read = function (req, res) {
-	res.jsonp(req.gainLoss);
+export function read(req: Request, res: Response) {
+	res.jsonp(req.body.gainLoss);
 };
 
 /**
  * Update a GainLoss
  */
-exports.update = function (req, res) {
-	var gainLoss = req.gainLoss;
+export function update(req: Request, res: Response) {
+	let gainLoss = req.body.gainLoss;
 
 	gainLoss = _.extend(gainLoss, req.body);
 
-	gainLoss.save(function (err) {
+	gainLoss.save(function (err: Error) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -56,10 +55,10 @@ exports.update = function (req, res) {
 /**
  * Delete an GainLoss
  */
-exports.delete = function (req, res) {
-	var gainLoss = req.gainLoss;
+export function delete1(req: Request, res: Response) {
+	let gainLoss = req.body.gainLoss;
 
-	gainLoss.remove(function (err) {
+	gainLoss.remove(function (err: Error) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -75,9 +74,9 @@ exports.delete = function (req, res) {
 /**
  * List of GainLoss
  */
-exports.list = function (req, res) {
+export function list(req: Request, res: Response) {
 
-	var query = GainLoss.find(),
+	let query = GainLoss.find(),
 		pagination = {
 			start: ((req.query.page || 1) - 1) * (req.query.count || 50),
 			count: req.query.count || 50
@@ -86,7 +85,7 @@ exports.list = function (req, res) {
 	//Filter
 	if (req.query.filter && !_.isEmpty(req.query.filter) && req.query.filter.length > 2) {
 
-		var filter = JSON.parse(req.query.filter);
+		let filter = JSON.parse(req.query.filter);
 
 		if (filter.settlementDate) {
 			query.where('settlementDate').in(JSON.parse(req.query.filter).date);
@@ -103,16 +102,17 @@ exports.list = function (req, res) {
 
 	//Sort
 	if (req.query.sort && req.query.sort.length > 2) {
-		var sortKey = JSON.parse(req.query.sort).predicate,
+		let sortKey = JSON.parse(req.query.sort).predicate,
 			direction = JSON.parse(req.query.sort).reverse ? 'desc' : 'asc';
 
 		query.sort({ [sortKey]: direction });
 	}
 	else {
 		query.sort({ date: 'asc' });
+		let sortObject: ISort = { fields: '-date' };
 	}
 
-	query.page(pagination, function (err, gainLosss) {
+	query.page(pagination, function (err: Error, gainLosss: IGainLossModel) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -126,11 +126,15 @@ exports.list = function (req, res) {
 /**
  * GainLoss middleware
  */
-exports.gainLossByID = function (req, res, next, id) {
-	GainLoss.findById(id).populate('user', 'displayName').exec(function (err, gainLoss) {
-		if (err) return next(err);
-		if (!gainLoss) return next(new Error('Failed to load GainLoss ' + id));
-		req.gainLoss = gainLoss;
+export function gainLossByID(req: Request, res: Response, next: NextFunction, id: Number) {
+	GainLoss.findById(id).populate('user', 'displayName').exec(function (err: Error, gainLoss: IGainLossModel) {
+		if (err) {
+			return next(err);
+		}
+		if (!gainLoss) {
+			return next(new Error('Failed to load GainLoss ' + id));
+		}
+		req.body.gainLoss = gainLoss;
 		next();
 	});
 };
@@ -138,7 +142,7 @@ exports.gainLossByID = function (req, res, next, id) {
 /**
  * GainLoss authorization middleware
  */
-exports.hasAuthorization = function (req, res, next) {
+export function hasAuthorization(req: Request, res: Response, next: NextFunction) {
 	if (req.user.id !== req.user.id) {
 		return res.status(403).send({ message: 'User is not authorized' });
 	}
