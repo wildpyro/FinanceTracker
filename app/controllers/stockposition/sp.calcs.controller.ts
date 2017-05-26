@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-var mongoose = require('mongoose'),
+let mongoose = require('mongoose'),
 	_ = require('lodash'),
 	Stockposition = mongoose.model('Stockposition'),
 	SpTotals = mongoose.model('spTotals');
@@ -30,7 +30,7 @@ exports.calcTotal = function(user, callback) {
             callback(err);
         }
  
-		var spTotals = new SpTotals();
+		let spTotals = new SpTotals();
 		spTotals.market = Number(result[0].totalmv).toFixed(2);
 		spTotals.book = Number(result[0].totalbook).toFixed(2);
 		spTotals.gainLoss = result[0].totalmv - result[0].totalbook; 
@@ -53,13 +53,13 @@ exports.calcTotalBySymbol = function(req, callback) {
         if (err) {
             callback(err);
         }
- 
-		var spTotals = new SpTotals();
+
+		let spTotals = new SpTotals();
 
 		spTotals.market = Number(result[0].totalmv).toFixed(2);
 		spTotals.book = Number(result[0].totalbook).toFixed(2);
-		spTotals.gainLoss = result[0].totalmv - result[0].totalbook; 
-		spTotals.gainLossPct = Number(spTotals.gainLoss/spTotals.book * 100).toFixed(2);
+		spTotals.gainLoss = result[0].totalmv - result[0].totalbook;
+		spTotals.gainLossPct = Number(spTotals.gainLoss / spTotals.book * 100).toFixed(2);
 
 		callback(spTotals);
 	});

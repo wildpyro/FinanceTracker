@@ -47,7 +47,7 @@ export function requiresLogin(req: Request, res: Response, next: NextFunction) {
  * @param roles
  */
 export function hasAuthorization(roles: string) {
-	var _this = this;
+	let _this = this;
 
 	return function (req: Request, res: Response, next: NextFunction) {
 		_this.requiresLogin(req, res, function () {

@@ -1,8 +1,8 @@
 'use strict';
-var _ = require('lodash');
+let _ = require('lodash');
 
 /**
- * Add in all the children controllers 
+ * Add in all the children controllers
  */
 module.exports = _.extend(
 	require('./bns.server.layout'),
@@ -14,7 +14,7 @@ module.exports = _.extend(
         this.name = layoutName;
         this.startPosition = startPosition;
         this.endPosition = endPosition;
-        this.logicalRecordLength = logicalRecordLength;     
+        this.logicalRecordLength = logicalRecordLength;
     }
-        
+
 };*/

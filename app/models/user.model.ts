@@ -28,14 +28,14 @@ export interface IUserModel extends mongoose.Document {
 /**
  * A Validation function for local strategy properties
  */
-var validateLocalStrategyProperty = function (property: string) {
+let validateLocalStrategyProperty = function (property: string) {
 	return ((this.provider !== 'local' && !this.updated) || property.length);
 };
 
 /**
  * A Validation function for local strategy password
  */
-var validateLocalStrategyPassword = function (password: string) {
+let validateLocalStrategyPassword = function (password: string) {
 	return (this.provider !== 'local' || (password && password.length > 6));
 };
 
@@ -70,8 +70,8 @@ export function authenticate(password: string, salt: Buffer): boolean {
  * @param callback
  */
 export function findUniqueUsername(username: string, suffix: string, callback: any) {
-	var _this = this;
-	var possibleUsername = username + (suffix || '');
+	let _this = this;
+	let possibleUsername = username + (suffix || '');
 
 	_this.findOne({
 		username: possibleUsername

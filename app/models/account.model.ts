@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import { AccountTypes } from '../enums/account_types.enums';
+import { IStockpositionModel } from './stockposition.model';
 
 export interface IAccountModel extends mongoose.Document {
   description: string;
@@ -7,11 +8,11 @@ export interface IAccountModel extends mongoose.Document {
   accountType: AccountTypes;
   created: Date;
   user: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }];
-  stockPositions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Stockposition' }];
+  stockPositions: IStockpositionModel[];
   marketValue: Number;
 }
 
-let schema: mongoose.Schema = new Schema({
+let schema: mongoose.Schema = new mongoose.Schema({
   description: {
     type: String,
     default: '',

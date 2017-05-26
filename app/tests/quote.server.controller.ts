@@ -3,13 +3,13 @@
 /**
  * Module dependencies.
  */
-var should = require('should'),
+let should = require('should'),
     quoteCtrl = require('../../controllers/quote.server.controller.js');
 
 /**
  * Globals
  */
-var quote;
+let quote;
 
 /**
  * Unit tests
@@ -19,7 +19,7 @@ describe('Quote Controller Unit Tests:', function () {
     describe('prepSymbols', function () {
         //Multiple symbols 
         it('Should format symbol multiple', function (done) {
-            var tester = ['AX.UN.TSX','RY.TSX'];
+            let tester = ['AX.UN.TSX', 'RY.TSX'];
 
             return quoteCtrl.prepSymbols(tester, function (err) {
                 should.not.exist(err);
@@ -29,7 +29,7 @@ describe('Quote Controller Unit Tests:', function () {
 
         //Single symbol 
         it('Should format symbol single', function (done) {
-            var tester = ['AX.UN.TO'];
+            let tester = ['AX.UN.TO'];
             return quoteCtrl.prepSymbols(tester, function (err) {
                 should.not.exist(err);
                 done();

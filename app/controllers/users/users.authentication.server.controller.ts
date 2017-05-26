@@ -17,8 +17,8 @@ export function signup(req: Request, res: Response) {
 	delete req.body.roles;
 
 	// Init Variables
-	var user = new User(req.body);
-	var message = null;
+	let user = new User(req.body);
+	let message = null;
 
 	// Add missing user fields
 	user.provider = 'local';
@@ -112,25 +112,25 @@ export function oauthCallback(strategy: string) {
 export function saveOAuthUserProfile(req: Request, providerUserProfile: any, done: any) {
 	if (!req.body.user) {
 		// Define a search query fields
-		var searchMainProviderIdentifierField = 'providerData.' + providerUserProfile.providerIdentifierField;
-		var searchAdditionalProviderIdentifierField = 'additionalProvidersData.'
+		let searchMainProviderIdentifierField = 'providerData.' + providerUserProfile.providerIdentifierField;
+		let searchAdditionalProviderIdentifierField = 'additionalProvidersData.'
 			+ providerUserProfile.provider
 			+ '.'
 			+ providerUserProfile.providerIdentifierField;
 
 		// Define main provider search query
-		var mainProviderSearchQuery = {};
+		let mainProviderSearchQuery = {};
 		//TODO commented out for now
 		//mainProviderSearchQuery.provider = providerUserProfile.provider;
 		mainProviderSearchQuery[searchMainProviderIdentifierField] = providerUserProfile.providerData[providerUserProfile.providerIdentifierField];
 
 		// Define additional provider search query
-		var additionalProviderSearchQuery = {};
+		let additionalProviderSearchQuery = {};
 		additionalProviderSearchQuery[searchAdditionalProviderIdentifierField]
 			= providerUserProfile.providerData[providerUserProfile.providerIdentifierField];
 
 		// Define a search query to find existing user with current provider profile
-		var searchQuery = {
+		let searchQuery = {
 			$or: [mainProviderSearchQuery, additionalProviderSearchQuery]
 		};
 
@@ -139,7 +139,7 @@ export function saveOAuthUserProfile(req: Request, providerUserProfile: any, don
 				return done(err);
 			} else {
 				if (!user) {
-					var possibleUsername = providerUserProfile.username || ((providerUserProfile.email) ? providerUserProfile.email.split('@')[0] : '');
+					let possibleUsername = providerUserProfile.username || ((providerUserProfile.email) ? providerUserProfile.email.split('@')[0] : '');
 
 					User.findUniqueUsername(possibleUsername, null, function (availableUsername: string) {
 						user = new User({
@@ -164,7 +164,7 @@ export function saveOAuthUserProfile(req: Request, providerUserProfile: any, don
 		});
 	} else {
 		// User is already logged in, join the provider data to the existing user
-		var user = req.body.user;
+		let user = req.body.user;
 
 		// Check if user exists, is not signed in using this provider, and doesn't have that provider data already configured
 		if (user.provider !== providerUserProfile.provider
@@ -197,8 +197,8 @@ export function saveOAuthUserProfile(req: Request, providerUserProfile: any, don
  * @param next
  */
 export function removeOAuthProvider(req: Request, res: Response, next: NextFunction) {
-	var user = req.body.user;
-	var provider = req.param('provider');
+	let user = req.body.user;
+	let provider = req.param('provider');
 
 	if (user && provider) {
 		// Delete the additional provider

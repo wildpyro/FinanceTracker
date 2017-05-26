@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-var mongoose = require('mongoose'),
+let mongoose = require('mongoose'),
 	StockpositionModel = mongoose.model('Stockposition'),
 	Txn = mongoose.model('Txn'),
 	GainLoss = mongoose.model('GainLoss'),
@@ -49,7 +49,7 @@ class BNSLayout_Record {
 
 exports.importFiles = function(req, res) {
 
-	var type = req.body.type;
+	let type = req.body.type;
 		
 	if (type === 'txnhist') {
 		importTrades(req,res);
@@ -74,12 +74,12 @@ function importGainLoss(req, res) {
 			console.log('Error:', err);	
 		}
 
-		var options = { 'upsert': true, 'new': true, 'setDefaultOnInsert': true },
+		let options = { 'upsert': true, 'new': true, 'setDefaultOnInsert': true },
 			errorMessage;
 		
-		for (var i = 1; i <= output.length-1; i++) {
+		for (let i = 1; i <= output.length-1; i++) {
 
-			var record = output[i],
+			let record = output[i],
 				gainLoss = 
 					new GainLoss({ 
 						'settlementDate': record[3],
@@ -96,7 +96,7 @@ function importGainLoss(req, res) {
 						'user': req.user
 					});
 					
-			var query = GainLoss.findOneAndUpdate({'settle': gainLoss.settleAmount, 'settlementDate': gainLoss.settlementDate}, gainLoss, options);
+			let query = GainLoss.findOneAndUpdate({'settle': gainLoss.settleAmount, 'settlementDate': gainLoss.settlementDate}, gainLoss, options);
 			query.exec(function(err, createdTxn) {	
 				if (err) {
 					errorMessage = errorHandler.getErrorMessage(err);
@@ -114,28 +114,28 @@ function importGainLoss(req, res) {
 
 function importStockPosition(req, res) {
 
-	var layout = req.body.layout,
+	let layout = req.body.layout,
 		fileData = req.body.file;
 
-	var lines = fileData.split(/\r\n|\r|\n/);
+	let lines = fileData.split(/\r\n|\r|\n/);
 	
 	//strip the header and trailer rows 
-	var linesLength = lines.length - startPosition - endPosition;
-	var totalStocks = Number(linesLength) / Number(logicalRecordLength); 
+	let linesLength = lines.length - startPosition - endPosition;
+	let totalStocks = Number(linesLength) / Number(logicalRecordLength); 
 
-	for (var i = 0; i <= totalStocks; i++) {
-		var start = i * logicalRecordLength + startPosition; 
+	for (let i = 0; i <= totalStocks; i++) {
+		let start = i * logicalRecordLength + startPosition; 
 		
 		if (i === 0) {
 			start = startPosition;
 		}
 
-		var record = lines.slice(start,start+logicalRecordLength);
+		let record = lines.slice(start,start+logicalRecordLength);
 
 		//Get rid of the totals line at the end. 
 		if (record.length === logicalRecordLength) {
 			//Try and map to the bns layout model. 
-			var rec = new BNSLayout_Record(record);
+			let rec = new BNSLayout_Record(record);
 
 			records.push(rec);			
 		}
@@ -165,14 +165,14 @@ function importTrades(req, res) {
 			console.log('Error:', err);	
 		}
 
-		var options = { 'upsert': true, 'new': true, 'setDefaultOnInsert': true },
+		let options = { 'upsert': true, 'new': true, 'setDefaultOnInsert': true },
 			errorMessage;
 		
-		for (var i = 1; i <= output.length-1; i++) {
+		for (let i = 1; i <= output.length-1; i++) {
 
-			var record = output[i];
+			let record = output[i];
 
-			var description = String(record[0]).trim(),
+			let description = String(record[0]).trim(),
 				symbol = String(record[1]),
 				settlementDate = record[2],
 				shares = Math.abs(Number(record[6])),
@@ -189,44 +189,44 @@ function importTrades(req, res) {
 				 **/ 
 
 				if (['CASH DIV', 'STOCKDIV', 'REI'].indexOf(record[5]) > -1 && settleAmount > 0) {					
-					var income = 
+					let income =
 						new Income({
-								'settlementDate': settlementDate,  
+								'settlementDate': settlementDate,
 								'description': description,
-								'symbol': symbol,  
-								'price': price, 
+								'symbol': symbol,
+								'price': price,
 								'shares': shares,
 								'exchangeRate': record[4],
-								'tradeCurrency': record[7],								  
+								'tradeCurrency': record[7],
 								'settle': settleAmount,
 								'user': req.user});
 
-					var queryDiv = Income.findOneAndUpdate({'settle': settleAmount, 'settlementDate': settlementDate}, income, options);
-					queryDiv.exec(function(err, createdRow) {	
+					let queryDiv = Income.findOneAndUpdate({'settle': settleAmount, 'settlementDate': settlementDate}, income, options);
+					queryDiv.exec(function(err, createdRow) {
 						if (err) {
 							errorMessage = errorHandler.getErrorMessage(err);
 						}
-					});					
+					});
 				}
 			}
-			//Do buys and sells 
+			//Do buys and sells
 			else {
-				var txn = 
+				let txn =
 					new Txn({
-							'settlementDate': settlementDate, 
-							'accountType': accountType, 
-							'symbol': symbol, 
-							'type': TxnTypes.getByITrade(record[5]), 
-							'price': price, 
-							'shares': shares, 
+							'settlementDate': settlementDate,
+							'accountType': accountType,
+							'symbol': symbol,
+							'type': TxnTypes.getByITrade(record[5]),
+							'price': price,
+							'shares': shares,
 							'commission': Math.abs(settleAmount - (shares * price)).toFixed(2),
 							'exchangeRate': record[4],
-							'tradeCurrency': record[7],									 
-							'settle': settleAmount,  
+							'tradeCurrency': record[7],
+							'settle': settleAmount,
 							'user': req.user});
 
-				var query = Txn.findOneAndUpdate({'accountType': txn.accountType, 'type': txn.type, 'settle': txn.settle, 'settlementDate': txn.settlementDate}, txn, options);
-				query.exec(function(err, createdRow) {	
+				let query = Txn.findOneAndUpdate({'accountType': txn.accountType, 'type': txn.type, 'settle': txn.settle, 'settlementDate': txn.settlementDate}, txn, options);
+				query.exec(function(err, createdRow) {
 					if (err) {
 						errorMessage = errorHandler.getErrorMessage(err);
 					}
@@ -235,10 +235,10 @@ function importTrades(req, res) {
 		}
 
 		if (errorMessage) {
-			return res.status(400).send({ message: errorMessage});	
+			return res.status(400).send({ message: errorMessage});
 		}
-				
+
 		return res.status(200).send({message: 'Transactions Loaded'});
-		
-	});	
+
+	});
 }

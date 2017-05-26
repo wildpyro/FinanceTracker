@@ -4,9 +4,9 @@ import { Request, Response, NextFunction } from 'express';
 import * as ErrorHandler from './error.controller';
 import { IAccountModel } from '../models/account.model';
 
-let Account = new model('Account');
+export let Account = new model('Account');
 
-export class AccountModel {
+class AccountModel {
 
 	private _accountModel: IAccountModel;
 
@@ -19,7 +19,7 @@ export class AccountModel {
 	 * @param req
 	 * @param res - the callback
 	 */
-	create(req: any, res: any) {
+	create(req: Request, res: Response) {
 		let account: IAccountModel = <IAccountModel>req.body;
 		//let account = new Account(req.body);
 
@@ -41,8 +41,8 @@ export class AccountModel {
 	 * @param req
 	 * @param res - the callback
 	 */
-	read(req: any, res: any) {
-		res.jsonp(req.account);
+	read(req: Request, res: Response) {
+		res.jsonp(req.body.account);
 	};
 
 	/**
@@ -50,8 +50,8 @@ export class AccountModel {
 	 * @param req
 	 * @param res - the callback
 	 */
-	update(req: any, res: any) {
-		let account = req.account;
+	update(req: Request, res: Response) {
+		let account = req.body.account;
 
 		account = _.extend(account, req.body);
 
@@ -71,8 +71,8 @@ export class AccountModel {
 	 * @param req
 	 * @param res - the callback
 	 */
-	delete1(req: any, res: any) {
-		let account = req.account;
+	delete1(req: Request, res: Response) {
+		let account = req.body.account;
 
 		account.remove(function (err: any) {
 			if (err) {
@@ -90,7 +90,7 @@ export class AccountModel {
 	 * @param req
 	 * @param res
 	 */
-	static list(req: any, res: any) {
+	static list(req: Request, res: Response) {
 
 		let sort;
 		let sortObject = {};
@@ -154,11 +154,11 @@ export class AccountModel {
 	 * @param req
 	 * @param res
 	 */
-	getAccountNosRQ(req: any, res: any) {
+	getAccountNosRQ(req: Request, res: Response) {
 		let query = Account.find();
 
 		query.select('description accountNo');
-		query.exec(function (err: any, results: [Account]) {
+		query.exec(function (err: Error, results: [Account]) {
 			if (err) {
 				return res.status(400).send({ message: errorHandler.getErrorMessage(err) });
 			}
@@ -193,7 +193,7 @@ export class AccountModel {
 	 * @param next
 	 * @param id
 	 */
-	accountByID(req: any, res: any, next: NextFunction, id: number) {
+	accountByID(req: Request, res: Response, next: NextFunction, id: number) {
 		Account.findById(id).populate('user', 'displayName').exec(function (err: any, account: Account) {
 			if (err) {
 				return next(err);
@@ -203,7 +203,7 @@ export class AccountModel {
 				return next(new Error('Failed to load ACCOUNT ' + id));
 			}
 
-			req.account = account;
+			req.body.account = account;
 			next();
 		});
 	};

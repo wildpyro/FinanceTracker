@@ -2,7 +2,7 @@
 /**
  * Module dependencies.
  */
-var mongoose = require('mongoose'),
+let mongoose = require('mongoose'),
 	_ = require('lodash'),
 	errorHandler = require('../errors.server.controller'),
 	Stockposition = require('../stockpositions.server.controller'),
@@ -13,7 +13,7 @@ var mongoose = require('mongoose'),
 
 function archive(req, res, stockpositions) {
 
-	var month = req.body.month.toLowerCase(),
+	let month = req.body.month.toLowerCase(),
 		year = req.body.year;
 
 	if (month === undefined || month.length !== 3 || months.indexOf(month) === -1) {
@@ -24,9 +24,9 @@ function archive(req, res, stockpositions) {
 		return res.status(400).send({message: 'You have not selected a valid year'}); 	
 	}
 
-	var stockpositions_archive = new Stockposition_Archive();
+	let stockpositions_archive = new Stockposition_Archive();
 	
-	var addDate = Date.parse(month + ' 1, ' + year);
+	let addDate = Date.parse(month + ' 1, ' + year);
 
 	stockpositions_archive.month = month;
 	stockpositions_archive.year = year;
@@ -57,7 +57,7 @@ function archive(req, res, stockpositions) {
  */
 exports.listArchive = function(req, res) {
 
- 	var query = Stockposition_Archive.find();
+ 	let query = Stockposition_Archive.find();
 
 	query.select('-stockpositions'); //Exclude the stock positions as we only want the totals 
 	query.where({'user' : req.user._id});
@@ -78,7 +78,7 @@ exports.listArchive = function(req, res) {
  */
 exports.listSymbolHistory = function(req, res) {
 
- 	var query = Stockposition_Archive.find();
+ 	let query = Stockposition_Archive.find();
 
 	query.select('-stockpositions'); //Exclude the stock positions as we only want the totals 
 	query.where({'user' : req.user._id});
@@ -99,7 +99,7 @@ exports.listSymbolHistory = function(req, res) {
  */
 exports.monthlyReporting = function(req, res) {
 
- 	var query = StockpositionModel.find();
+ 	let query = StockpositionModel.find();
 	//Commented out until I fix the user links query.where({'user' : req.user._id});
 	query.exec(function(err, stockpositions) {
 		if (err) {
@@ -110,36 +110,36 @@ exports.monthlyReporting = function(req, res) {
 		}
 		else {
  			archive(req, res, stockpositions);
-		}			
+		}
 	});
  };
 
-/** 
- * Restore the data back.  
+/**
+ * Restore the data back.
  */
 exports.restoreStockPositionsFromArchive = function(req, res) {
 
-	var query = Stockposition_Archive.find;
+	let query = Stockposition_Archive.find;
 
-	//Figure out what to do here. How to select the max 
-	query.sort({}); 
+	//Figure out what to do here. How to select the max
+	query.sort({});
 	query.limit(1);
 
 	query.exec(function(err, archive) {
-		for (var i = archive.length - 1; i >= 0; i--) {
-			var collection = archive[i].stockpositions; 
+		for (let i = archive.length - 1; i >= 0; i--) {
+			let collection = archive[i].stockpositions;
 
-			for (var ii = collection.length - 1; ii >= 0; ii--) {
-				var stockposition = new StockpositionModel(collection[ii]);
+			for (let ii = collection.length - 1; ii >= 0; ii--) {
+				let stockposition = new StockpositionModel(collection[ii]);
 				stockposition.save();
 			}
 
 			if (err) {
 				return res.status(400).send({message: errorHandler.getErrorMessage(err)});
-			} 
+			}
 			else {
 				return res.status(200).send({message: 'Restore complete'});
-			}							 
+			}
 		}
 	});
-}; 
+};

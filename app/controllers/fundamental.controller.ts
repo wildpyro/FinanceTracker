@@ -6,7 +6,7 @@ import { IFundamentalModel } from '../models/fundamental.model';
 let Fundamentals = new model('Fundamentals');
 
 exports.localSearch = function (symbol: String, res: Response) {
-	var fundamentals = Fundamentals.findOne({ 'Symbol': symbol });
+	let fundamentals = Fundamentals.findOne({ 'Symbol': symbol });
 
 	fundamentals.exec(function (err: Error, fundamentals: IFundamentalModel) {
 		if (err) {

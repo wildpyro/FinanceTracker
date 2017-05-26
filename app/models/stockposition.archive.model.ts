@@ -14,7 +14,7 @@ export interface IStockpositionArchiveModel extends mongoose.Document {
 	user: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }];
 };
 
-let schema: mongoose.Schema = new Schema({
+let schema: mongoose.Schema = new mongoose.Schema({
 	archiveDate: {
 		type: Date,
 		default: Date.now
@@ -29,7 +29,7 @@ let schema: mongoose.Schema = new Schema({
 		type: 'Date'
 	},
 	user: {
-		type: Schema.ObjectId,
+		type: mongoose.Schema.ObjectId,
 		ref: 'User'
 	},
 	market: {

@@ -3,17 +3,17 @@
 /**
  * Module dependencies.
  */
-var mongoose = require('mongoose'),
+let mongoose = require('mongoose'),
 	_ = require('lodash'),
 	errorHandler = require('../errors.server.controller'),
 	Stockposition = require('./sp.base.server.controller');
 
-/** 
+/**
  * Export the data from stock positions to a csv
  */
 exports.exportData = function (req, res) {
 	if (req.user.id) {
-		//For now just select everything. Currently authorization isn't supported. 
+		//For now just select everything. Currently authorization isn't supported.
 		Stockposition.find().exec(function (err) {
 
 			if (err) {

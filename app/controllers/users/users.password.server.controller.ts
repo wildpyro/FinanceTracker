@@ -23,7 +23,7 @@ export function forgot(req: Request, res: Response, next: NextFunction) {
 		// Generate random token
 		function (done: any) {
 			crypto.randomBytes(20, function (err: Error, buffer: Buffer) {
-				var token = buffer.toString('hex');
+				let token = buffer.toString('hex');
 				done(err, token);
 			});
 		},
@@ -67,8 +67,8 @@ export function forgot(req: Request, res: Response, next: NextFunction) {
 		},
 		// If valid email, send reset email using service
 		function (emailHTML: string, user: IUserModel, done: any) {
-			var smtpTransport = nodemailer.createTransport(config.getConfig().mailer.transport);
-			var mailOptions = {
+			let smtpTransport = nodemailer.createTransport(config.getConfig().mailer.transport);
+			let mailOptions = {
 				to: user.email,
 				from: config.getConfig().mailer.from,
 				subject: 'Password Reset',
@@ -120,7 +120,7 @@ export function validateResetToken(req: Request, res: Response) {
  */
 export function reset(req: Request, res: Response, next: NextFunction) {
 	// Init Variables
-	var passwordDetails = req.body;
+	let passwordDetails = req.body;
 
 	async.waterfall([
 
@@ -177,8 +177,8 @@ export function reset(req: Request, res: Response, next: NextFunction) {
 		},
 		// If valid email, send reset email using service
 		function (emailHTML: string, user: IUserModel, done: any) {
-			var smtpTransport = nodemailer.createTransport(config.getConfig().mailer.options);
-			var mailOptions = {
+			let smtpTransport = nodemailer.createTransport(config.getConfig().mailer.options);
+			let mailOptions = {
 				to: user.email,
 				from: config.getConfig().mailer.from,
 				subject: 'Your password has been changed',
@@ -203,7 +203,7 @@ export function reset(req: Request, res: Response, next: NextFunction) {
  */
 export function changePassword(req: Request, res: Response) {
 	// Init Variables
-	var passwordDetails = req.body;
+	let passwordDetails = req.body;
 
 	if (req.user) {
 		if (passwordDetails.newPassword) {

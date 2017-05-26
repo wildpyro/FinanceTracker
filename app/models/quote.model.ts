@@ -2,26 +2,27 @@ import * as mongoose from 'mongoose';
 
 export interface IQuoteModel extends mongoose.Document {
 	lastUpdated: Date;
-	Symbol: String;
-	Change: String;
-	DaysLow: Number;
-	DaysHigh: Number;
-	YearLow: Number;
-	YearHigh: Number;
-	DaysRange: String;
-	Name: String;
-	Volume: Number;
-	StockExchange: String;
-	YahooSymbol: String;
-	PreviousClose: Number;
-	Open: Number;
-	PercentChangeFromYearLow: String;
-	MarketCapitalization: String;
-	PercentChange: String;
+	Symbol: string;
+	Change: string;
+	DaysLow: number;
+	DaysHigh: number;
+	YearLow: number;
+	YearHigh: number;
+	DaysRange: string;
+	Name: string;
+	Volume: number;
+	StockExchange: string;
+	YahooSymbol: string;
+	LastTradePriceOnly: number;
+	PreviousClose: number;
+	Open: number;
+	PercentChangeFromYearLow: string;
+	MarketCapitalization: string;
+	PercentChange: string;
 	created: Date;
 };
 
-let schema: mongoose.Schema = new Schema({
+let schema: mongoose.Schema = new mongoose.Schema({
 	lastUpdated: {
 		type: Date
 	},
@@ -57,6 +58,9 @@ let schema: mongoose.Schema = new Schema({
 	},
 	YahooSymbol: {
 		type: String
+	},
+	LastTradePriceOnly: {
+		type: Number
 	},
 	PreviousClose: {
 		type: Number

@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 /**
  * class to hold various transaction types and what they map to in the import layouts
  */
-class TxnType{
+class TxnType {
     type: string;
     iTrade: string;
 
@@ -22,25 +22,25 @@ export const TXNTYPES: TxnTypes = [
     new TxnType('Drip', 'Drip')
 ];
 
-export function getTypes() : TxnTypes {
+export function getTypes(): TxnTypes {
     return TXNTYPES;
 };
 
 /**
  * Get type by ITradeType
  */
-export function getByITrade(iTradeCode: string) : string {
+export function getByITrade(iTradeCode: string): string {
 
-	var iTradeType = _.filter(TXNTYPES, function(i) {
-		if (i.ITrade === iTradeCode) {
-			return i;
-		}
-	});
+    let iTradeType = _.filter(TXNTYPES, function (i) {
+        if (i.ITrade === iTradeCode) {
+            return i;
+        }
+    });
 
-	var returnVal = '';
-	if (iTradeType !== undefined && iTradeType.length > 0) {
-		returnVal = iTradeType[0].type;
-	}
+    let returnVal = '';
+    if (iTradeType !== undefined && iTradeType.length > 0) {
+        returnVal = iTradeType[0].type;
+    }
 
-	return returnVal;
+    return returnVal;
 };

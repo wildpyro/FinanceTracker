@@ -4,10 +4,10 @@
  * @return string
  */
 function getUniqueErrorMessage(err: any): string {
-	var output;
+	let output;
 
 	try {
-		var fieldName = err.err.substring(err.err.lastIndexOf('.$') + 2, err.err.lastIndexOf('_1'));
+		let fieldName = err.err.substring(err.err.lastIndexOf('.$') + 2, err.err.lastIndexOf('_1'));
 		output = fieldName.charAt(0).toUpperCase() + fieldName.slice(1) + ' already exists';
 
 	} catch (ex) {
@@ -23,7 +23,7 @@ function getUniqueErrorMessage(err: any): string {
  * @return string
  */
 export function getErrorMessage(err: any): string {
-	var message = '';
+	let message = '';
 
 	if (err.code) {
 		switch (err.code) {
@@ -35,7 +35,7 @@ export function getErrorMessage(err: any): string {
 				message = 'Something went wrong';
 		}
 	} else {
-		for (var errName in err.errors) {
+		for (let errName in err.errors) {
 			if (err.errors[errName].message) {
 				message = err.errors[errName].message;
 			}

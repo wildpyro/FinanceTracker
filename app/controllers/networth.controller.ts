@@ -8,7 +8,7 @@ import { INetworthModel } from '../models/networth.model';
 let Networth = new model('networth');
 
 export function create(req: Request, res: Response) {
-	var networth = new Networth(req.body);
+	let networth = new Networth(req.body);
 	networth.user = req.body.user;
 
 	networth.save(function (err: Error) {
@@ -33,7 +33,7 @@ export function read(req: Request, res: Response) {
  * Update a Networth
  */
 export function update(req: Request, res: Response) {
-	var networth = req.body.networth;
+	let networth = req.body.networth;
 
 	networth = _.extend(networth, req.body);
 
@@ -70,10 +70,11 @@ export function delete1(req: Request, res: Response) {
  */
 export function list(req: Request, res: Response) {
 
-	let sort;
-	let sortObject = {};
-	let count = req.query.count || 5;
-	let page = req.query.page || 1;
+	let query = Income.find(),
+		pagination = {
+			start: ((req.query.page || 1) - 1) * (req.query.count || 50),
+			count: req.query.count || 50
+		};
 
 	let filter = {
 		filters: {
@@ -83,36 +84,27 @@ export function list(req: Request, res: Response) {
 		}
 	};
 
-	let pagination = {
-		start: (page - 1) * count,
-		count: count
-	};
+	//Sort
+	if (req.query.sort && req.query.sort.length > 2) {
+		let sortKey = JSON.parse(req.query.sort).predicate,
+			direction = JSON.parse(req.query.sort).reverse ? 'desc' : 'asc';
 
-	if (req.query.sorting) {
-		var sortKey = Object.keys(req.query.sorting)[0];
-		var sortValue = req.query.sorting[sortKey];
-		sortObject[sortValue] = sortKey;
-	} else {
-		let sortObject: ISort = { fields: '_id' };
+		query.sort({ [sortKey]: direction });
+	}
+	else {
+		query.sort({ date: 'asc' });
 	}
 
-	sort = {
-		sort: sortObject
-	};
-
-	Networth
-		.find()
-		.filter(filter)
-		.order(sort)
-		.page(pagination, function (err: Error, networths: INetworthModel) {
-			if (err) {
-				return res.status(400).send({
-					message: errorHandler.getErrorMessage(err)
-				});
-			} else {
-				res.jsonp(networths);
-			}
-		});
+	Networth.page(pagination, function (err: Error, networths: INetworthModel) {
+		if (err) {
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
+		}
+		else {
+			res.jsonp(networths);
+		}
+	});
 };
 
 /**

@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-var mongoose = require('mongoose'),
+let mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Txn = mongoose.model('Txn'),
 	_ = require('lodash');
@@ -12,7 +12,7 @@ var mongoose = require('mongoose'),
  * Create a Txn
  */
 exports.create = function (req, res) {
-	var txn = new Txn(req.body);
+	let txn = new Txn(req.body);
 	txn.user = req.user;
 
 	txn.save(function (err) {
@@ -38,7 +38,7 @@ exports.read = function (req, res) {
  * Update a Txn
  */
 exports.update = function (req, res) {
-	var txn = req.txn;
+	let txn = req.txn;
 
 	txn = _.extend(txn, req.body);
 
@@ -57,7 +57,7 @@ exports.update = function (req, res) {
  * Delete an Txn
  */
 exports.delete = function (req, res) {
-	var txn = req.txn;
+	let txn = req.txn;
 
 	txn.remove(function (err) {
 		if (err) {
@@ -77,7 +77,7 @@ exports.delete = function (req, res) {
  */
 exports.list = function (req, res) {
 
-	var query = Txn.find(),
+	let query = Txn.find(),
 		pagination = {
 			start: ((req.query.page || 1) - 1) * (req.query.count || 50),
 			count: req.query.count || 50
@@ -86,7 +86,7 @@ exports.list = function (req, res) {
 	//Filter
 	if (req.query.filter && !_.isEmpty(req.query.filter) && req.query.filter.length > 2) {
 
-		var filter = JSON.parse(req.query.filter);
+		let filter = JSON.parse(req.query.filter);
 
 		if (filter.date) {
 			query.where('date').in(JSON.parse(req.query.filter).date);
@@ -115,7 +115,7 @@ exports.list = function (req, res) {
 
 	//Sort
 	if (req.query.sort && req.query.sort.length > 2) {
-		var sortKey = JSON.parse(req.query.sort).predicate,
+		let sortKey = JSON.parse(req.query.sort).predicate,
 			direction = JSON.parse(req.query.sort).reverse ? 'desc' : 'asc';
 
 		query.sort({ [sortKey]: direction });

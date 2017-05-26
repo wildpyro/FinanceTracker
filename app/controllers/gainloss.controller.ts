@@ -2,7 +2,6 @@ import { Model as model, Mongoose as mongoose } from 'mongoose';
 import { Request, Response, NextFunction } from 'express';
 import * as _ from 'lodash';
 import * as errorHandler from './error.controller';
-import { ISort } from '../types/sort.types';
 import { IGainLossModel } from '../models/gainloss.model';
 
 let GainLoss = new model('GainLoss');
@@ -82,7 +81,6 @@ export function list(req: Request, res: Response) {
 			count: req.query.count || 50
 		};
 
-	//Filter
 	if (req.query.filter && !_.isEmpty(req.query.filter) && req.query.filter.length > 2) {
 
 		let filter = JSON.parse(req.query.filter);
@@ -100,7 +98,6 @@ export function list(req: Request, res: Response) {
 		}
 	}
 
-	//Sort
 	if (req.query.sort && req.query.sort.length > 2) {
 		let sortKey = JSON.parse(req.query.sort).predicate,
 			direction = JSON.parse(req.query.sort).reverse ? 'desc' : 'asc';
@@ -109,7 +106,6 @@ export function list(req: Request, res: Response) {
 	}
 	else {
 		query.sort({ date: 'asc' });
-		let sortObject: ISort = { fields: '-date' };
 	}
 
 	query.page(pagination, function (err: Error, gainLosss: IGainLossModel) {

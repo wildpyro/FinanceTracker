@@ -12,8 +12,8 @@ import * as mailer from 'nodemailer';
  */
 export function update(req: Request, res: Response) {
 	// Init Variables
-	var user = req.body.user;
-	var message = null;
+	let user = req.body.user;
+	let message = null;
 
 	// For security measurement we remove the roles from the req.body object
 	delete req.body.roles;

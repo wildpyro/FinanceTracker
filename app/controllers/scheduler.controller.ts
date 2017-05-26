@@ -6,7 +6,7 @@ import * as schedule from 'node-schedule';
 import * as nodemailer from 'nodemailer';
 import * as ErrorHandler from './error.controller';
 import * as quoteCtrl from './quote.controller';
-import * as stockPositionsCtrl from './stockposition/sp.base.server.controller';
+import * as stockPositionsCtrl from './stockposition/sp.base.controller';
 
 
 let User = new model('User');
@@ -16,7 +16,7 @@ let StockPositions = new model('StockPositions');
  * Send out an email of the daily sotck positions
  */
 export function dailyStockPositionsSchedule() {
-    var j = schedule.scheduleJob({ hour: 16, minute: 0, dayOfWeek: 1 - 5 }, function () {
+    let j = schedule.scheduleJob({ hour: 16, minute: 0, dayOfWeek: 1 - 5 }, function () {
 
         async.waterfall([
             function (callback) {
@@ -50,7 +50,7 @@ export function dailyStockPositionsSchedule() {
  * Right now this does one call at a time. Bulk call would probably be better.
  */
 export function dailyQuoteUpdateSchedule() {
-    var j = schedule.scheduleJob({ hour: 15, minute: 45, dayOfWeek: 1 - 5 }, function () {
+    let j = schedule.scheduleJob({ hour: 15, minute: 45, dayOfWeek: 1 - 5 }, function () {
         async.waterfall([
             function (callback: any) {
                 User.find().exec(function (err: Error, users) {
